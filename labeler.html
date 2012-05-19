@@ -8,8 +8,13 @@
     <script>
       soundManager.url = 'soundmanagerv297a-20120513/swf';
       soundManager.debugMode = false;
-    </script>
-    <script>
+      soundManager.useFlashBlock = false;
+      soundManager.flashVersion = 9;
+      soundManager.flash9Options.useEQData = true;
+      soundManager.flash9Options.usePeakData = true;
+      soundManager.useHighPerformance = true;
+      soundManager.useFastPolling = true;
+
       $(document).ready(function() {
         $("#slider").slider({
           slide: function(event, ui) {
@@ -18,15 +23,38 @@
           }
         });
       });
+
+      lastActualX = 0;
+      function whilePlaying() {
+        var canvas = document.getElementById('canvas');
+        var canvasDiv = document.getElementById('canvas-div');
+        var context = canvas.getContext('2d');
+        var halfWidth = canvas.width / 2;
+        millisecondsToPixels = 0.05;
+        var actualX =
+          Math.floor(this.position * millisecondsToPixels);
+        context.fillStyle = 'rgb(0,0,0)';
+      
+        // draw fake waveform
+        if (this.peakData) {
+          height = (this.peakData.left + this.peakData.right) / 2 * 18;
+          context.clearRect(lastActualX, 260,
+            actualX - lastActualX, canvas.height - 260);
+          context.fillStyle = 'rgb(0,0,0)';
+          context.fillRect(lastActualX, 280 - height,
+            actualX - lastActualX, height * 2);
+        }
+        lastActualX = actualX;
+      }
+
       soundManager.onready(function() {
         globals = {
           theSound: soundManager.createSound({
             id: 'theSound',
             url: '/Eb-chord.mp3',
-            whileplaying: function() {
-              var relative = this.position / this.duration;
-              $("#slider").slider('option', 'value', relative * 100);
-            }
+            useEQData: true,
+            usePeakData: true,
+            whileplaying: whilePlaying
           })
         };
       });
@@ -37,9 +65,14 @@
        position:absolute;position:fixed;*position:absolute;bottom:10px;right:10px;width:50em;height:18em;overflow:auto;background:#fff;margin:1em;padding:1em;border:1px solid #999;font-family:"lucida console",verdana,tahoma,"sans serif";font-size:x-small;line-height:1.5em;opacity:0.9;filter:alpha(opacity=90);
       }
       #slider { margin: 10px; }
+      #canvas { border: 1px black solid; }
     </style>
   </head>
   <body>
+    <canvas id='canvas' width='600' height='300'>
+<!-- style='width:100%;height:100px'>-->
+      HTML5 Canvas element not supported.
+    </canvas>
     <div id="slider"></div>
     <button onClick="globals.theSound.play()">Play</button>
   </body>
