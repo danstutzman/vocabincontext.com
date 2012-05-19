@@ -1,8 +1,31 @@
-var http = require("http"),
+var exec = require('child_process').exec,
+    http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs")
     port = process.argv[2] || 8888;
+
+function serveFilename(filename, response) {
+  fs.readFile(filename, "binary", function(err, file) {
+    if (err) {        
+      response.writeHead(500, {"Content-Type": "text/plain"});
+      response.write(err + "\n");
+      response.end();
+      return;
+    }
+
+    if (filename.match(/\.html$/))
+      mimeType = "text/html";
+    else if (filename.match(/\.js$/))
+      mimeType = "application/javascript";
+    else
+      mimeType = "text/plain";
+
+    response.writeHead(200, {"Content-Type": mimeType});
+    response.write(file, "binary");
+    response.end();
+  });
+}
 
 http.createServer(function(request, response) {
   var uri = url.parse(request.url).pathname,
@@ -19,24 +42,20 @@ http.createServer(function(request, response) {
 
     if (fs.statSync(filename).isDirectory()) filename += '/index.html';
 
-    fs.readFile(filename, "binary", function(err, file) {
-      if(err) {        
-        response.writeHead(500, {"Content-Type": "text/plain"});
-        response.write(err + "\n");
-        response.end();
-        return;
-      }
+    if (filename.match(/\.coffee$/)) {
+      var command = '/usr/local/bin/coffee -c ' + filename;
+      child = exec(command, function(error, stdout, stderr) {
+        //console.log('stdout: ' + stdout);
+        //console.log('stderr: ' + stderr);
+        if (error !== null) {
+          console.log('error execing ' + command + ': ' + error);
+        }
 
-      if (filename.match(/\.html$/))
-        mimeType = "text/html";
-      else if (filename.match(/\.js$/))
-        mimeType = "application/javascript";
-      else
-        mimeType = "text/plain";
-      response.writeHead(200, {"Content-Type": mimeType});
-      response.write(file, "binary");
-      response.end();
-    });
+        serveFilename(filename.replace('.coffee', '.js'), response);
+      });
+    } else {
+      serveFilename(filename, response);
+    }
   });
 }).listen(parseInt(port, 10));
 
