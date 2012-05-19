@@ -6,7 +6,8 @@ var http = require("http"),
 
 http.createServer(function(request, response) {
   var uri = url.parse(request.url).pathname,
-    filename = path.join(process.cwd(), uri);
+    filename = path.join(process.cwd(), uri),
+    mimeType;
   
   path.exists(filename, function(exists) {
     if(!exists) {
@@ -26,7 +27,13 @@ http.createServer(function(request, response) {
         return;
       }
 
-      response.writeHead(200);
+      if (filename.match(/\.html$/))
+        mimeType = "text/html";
+      else if (filename.match(/\.js$/))
+        mimeType = "application/javascript";
+      else
+        mimeType = "text/plain";
+      response.writeHead(200, {"Content-Type": mimeType});
       response.write(file, "binary");
       response.end();
     });
