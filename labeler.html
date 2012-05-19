@@ -11,12 +11,22 @@
     </script>
     <script>
       $(document).ready(function() {
-        $("#slider").slider();
+        $("#slider").slider({
+          slide: function(event, ui) {
+            var millis = ui.value / 100.0 * globals.theSound.duration;
+            globals.theSound.setPosition(millis);
+          }
+        });
+      });
       soundManager.onready(function() {
         globals = {
           theSound: soundManager.createSound({
             id: 'theSound',
-            url: '/Eb-chord.mp3'
+            url: '/Eb-chord.mp3',
+            whileplaying: function() {
+              var relative = this.position / this.duration;
+              $("#slider").slider('option', 'value', relative * 100);
+            }
           })
         };
       });
