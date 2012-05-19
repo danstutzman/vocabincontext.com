@@ -5,9 +5,8 @@ var http = require("http"),
     port = process.argv[2] || 8888;
 
 http.createServer(function(request, response) {
-
-  var uri = url.parse(request.url).pathname
-    , filename = path.join(process.cwd(), uri);
+  var uri = url.parse(request.url).pathname,
+    filename = path.join(process.cwd(), uri);
   
   path.exists(filename, function(exists) {
     if(!exists) {
@@ -17,7 +16,7 @@ http.createServer(function(request, response) {
       return;
     }
 
-	if (fs.statSync(filename).isDirectory()) filename += '/index.html';
+    if (fs.statSync(filename).isDirectory()) filename += '/index.html';
 
     fs.readFile(filename, "binary", function(err, file) {
       if(err) {        
@@ -34,4 +33,5 @@ http.createServer(function(request, response) {
   });
 }).listen(parseInt(port, 10));
 
-console.log("Static file server running at\n  => http://localhost:" + port + "/\nCTRL + C to shutdown");
+console.log("Static file server running at\n  => http://localhost:" +
+  port + "/\nCTRL + C to shutdown");
