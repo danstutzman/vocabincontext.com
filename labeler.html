@@ -12,6 +12,13 @@
     <script>
       $(document).ready(function() {
         $("#slider").slider();
+      soundManager.onready(function() {
+        globals = {
+          theSound: soundManager.createSound({
+            id: 'theSound',
+            url: '/Eb-chord.mp3'
+          })
+        };
       });
     </script>
     <style>
@@ -24,6 +31,6 @@
   </head>
   <body>
     <div id="slider"></div>
-    <button onClick="soundManager.play('chord', 'Eb-chord.mp3');">Play</button>
+    <button onClick="globals.theSound.play()">Play</button>
   </body>
 </html>
