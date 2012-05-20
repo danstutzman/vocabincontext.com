@@ -1,4 +1,4 @@
-findClosest = require('../app/FindClosest').findClosest
+findClosest = require('../app/TimeSeries').findClosest
 
 describe 'findClosest', ->
   it 'should work with 0-sized arrays', ->
