@@ -1,13 +1,11 @@
-soundManager.url = 'soundmanagerv297a-20120513/swf'
-soundManager.debugMode = false
-soundManager.useFlashBlock = false
-soundManager.flashVersion = 9
-soundManager.flash9Options.useEQData = true
-soundManager.flash9Options.usePeakData = true
-soundManager.useHighPerformance = true
-soundManager.useFastPolling = true
-
-window.lastActualX = 0
+@soundManager.url = 'soundmanagerv297a-20120513/swf'
+@soundManager.debugMode = false
+@soundManager.useFlashBlock = false
+@soundManager.flashVersion = 9
+@soundManager.flash9Options.useEQData = true
+@soundManager.flash9Options.usePeakData = true
+@soundManager.useHighPerformance = true
+@soundManager.useFastPolling = true
 
 whilePlaying = ->
   try
@@ -20,12 +18,13 @@ whilePlaying = ->
     # draw fake waveform
     if @peakData
       height = (@peakData.left + @peakData.right) / 2 * 18
-      context.clearRect window.lastActualX, 260,
-        actualX - window.lastActualX, canvas.height - 260
+      @lastActualX = @lastActualX ? 0
+      context.clearRect @lastActualX, 260,
+        actualX - @lastActualX, canvas.height - 260
       context.fillStyle = 'rgb(0,0,0)'
-      context.fillRect window.lastActualX, 280 - height,
-        actualX - window.lastActualX, height * 2
-    window.lastActualX = actualX
+      context.fillRect @lastActualX, 280 - height,
+        actualX - @lastActualX, height * 2
+    @lastActualX = actualX
 
     relative = @position / @duration
     $("#slider").slider 'option', 'value', relative * 100
@@ -38,7 +37,7 @@ $(document).ready ->
     millis = ui.value / 100.0 * globals.theSound.duration
     globals.theSound.setPosition millis
 
-soundManager.onready ->
+@soundManager.onready ->
   window.globals = theSound: soundManager.createSound(
     id: 'theSound'
     url: '/Eb-chord.mp3'

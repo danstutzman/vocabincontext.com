@@ -43,8 +43,8 @@ http.createServer(function(request, response) {
     if (fs.statSync(filename).isDirectory()) filename += '/index.html';
 
     if (filename.match(/\.coffee$/)) {
-      // -c means compile, -b means without containing block
-      var command = '/usr/local/bin/coffee -c -b ' + filename;
+      // -c means compile
+      var command = '/usr/local/bin/coffee -c ' + filename;
       child = exec(command, function(error, stdout, stderr) {
         //console.log('stdout: ' + stdout);
         //console.log('stderr: ' + stderr);
