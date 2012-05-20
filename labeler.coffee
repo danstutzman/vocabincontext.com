@@ -15,7 +15,7 @@ setupPlayButton = ->
 lastActualX = 0
 whilePlaying = ->
   try
-    context = $('#canvas')[0]
+    canvas = $('#canvas')[0]
     context = canvas.getContext('2d')
     actualX = Math.floor(canvas.width * @position / @duration)
     context.fillStyle = 'rgb(0,0,0)'
