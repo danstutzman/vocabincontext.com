@@ -1,4 +1,5 @@
 findClosest = require('../app/TimeSeries').findClosest
+TimeSeries = require('../app/TimeSeries').TimeSeries
 
 describe 'findClosest', ->
   it 'should work with 0-sized arrays', ->
@@ -40,3 +41,27 @@ describe 'findClosest', ->
     expect(findClosest(0.3, [0.3, 0.31])).toEqual(0.3)
   it 'should work with float arrays when element not in list', ->
     expect(findClosest(0.3, [0.29, 0.31])).toEqual(0.29)
+
+describe 'TimeSeries', ->
+  it 'should start out empty', ->
+    ts = new TimeSeries
+    expect(ts.sortedKeys).toEqual([])
+  it 'should be able to store one element', ->
+    ts = (new TimeSeries).add(5, 50)
+    expect((new TimeSeries).add(5, 50).sortedKeys).toEqual([5])
+    expect((new TimeSeries).add(5, 50).add(5, 60).sortedKeys).toEqual([5])
+  it 'should be able to store two elements', ->
+    expect((new TimeSeries).add(4, 40).add(6, 60).sortedKeys).toEqual([4, 6])
+    expect((new TimeSeries).add(6, 60).add(4, 40).sortedKeys).toEqual([4, 6])
+  it 'should be able to store three elements', ->
+    expect((new TimeSeries).add(1, 10).add(2, 20).add(3, 30).sortedKeys).toEqual([1, 2, 3])
+    expect((new TimeSeries).add(1, 10).add(3, 30).add(2, 20).sortedKeys).toEqual([1, 2, 3])
+    expect((new TimeSeries).add(2, 20).add(1, 10).add(3, 30).sortedKeys).toEqual([1, 2, 3])
+    expect((new TimeSeries).add(2, 20).add(3, 30).add(1, 10).sortedKeys).toEqual([1, 2, 3])
+    expect((new TimeSeries).add(3, 30).add(1, 10).add(2, 20).sortedKeys).toEqual([1, 2, 3])
+    expect((new TimeSeries).add(3, 30).add(2, 20).add(1, 10).sortedKeys).toEqual([1, 2, 3])
+  it 'should be able to store two elements from three adds', ->
+    expect((new TimeSeries).add(1, 10).add(2, 20).add(1, 30).sortedKeys).toEqual([1, 2])
+    expect((new TimeSeries).add(2, 20).add(1, 10).add(1, 30).sortedKeys).toEqual([1, 2])
+    expect((new TimeSeries).add(1, 10).add(2, 20).add(2, 30).sortedKeys).toEqual([1, 2])
+    expect((new TimeSeries).add(2, 20).add(1, 10).add(2, 30).sortedKeys).toEqual([1, 2])

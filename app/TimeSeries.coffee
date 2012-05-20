@@ -19,3 +19,41 @@ exports.findClosest = (needle, haystack) ->
       return elementBelow
 
   return haystack[mid]
+
+class TimeSeries
+  constructor: ->
+    @sortedKeys = []
+    @keyToValue = []
+
+  add: (key, value) ->
+    low = 0
+    high = @sortedKeys.length - 1
+    mid = Math.floor((low + high) / 2)
+   
+    while low <= high
+      mid = Math.floor((low + high) / 2)
+      elementBelow = @sortedKeys[mid]
+      elementAbove = @sortedKeys[mid + 1]
+      if key < elementBelow
+        high = mid - 1
+      else if key > elementAbove
+        low = mid + 1
+      else if key == elementBelow
+        @keyToValue[elementBelow] = value
+        return this
+      else if key == elementAbove
+        @keyToValue[elementAbove] = value
+        return this
+      else
+        @sortedKeys.splice mid + 1, 0, key
+        @keyToValue[key] = value
+        return this
+  
+    if key < @sortedKeys[mid]
+      @sortedKeys.splice mid, 0, key
+    else
+      @sortedKeys.splice mid + 1, 0, key
+    @keyToValue[key] = value
+    return this
+
+exports.TimeSeries = TimeSeries
