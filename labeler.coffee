@@ -17,17 +17,16 @@ whilePlaying = ->
   try
     context = $('#canvas')[0]
     context = canvas.getContext('2d')
-    millisecondsToPixels = 0.05
-    actualX = Math.floor(@position * millisecondsToPixels)
+    actualX = Math.floor(canvas.width * @position / @duration)
     context.fillStyle = 'rgb(0,0,0)'
 
     # draw fake waveform
     if @peakData
       height = (@peakData.left + @peakData.right) / 2 * 18
-      context.clearRect lastActualX, 260,
-        actualX - lastActualX, canvas.height - 260
+      context.clearRect lastActualX, 0,
+        actualX - lastActualX, canvas.height
       context.fillStyle = 'rgb(0,0,0)'
-      context.fillRect lastActualX, 280 - height,
+      context.fillRect lastActualX, canvas.height / 2,
         actualX - lastActualX, height * 2
     lastActualX = actualX
 
