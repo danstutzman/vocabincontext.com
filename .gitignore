@@ -1,2 +1,3 @@
 .*.swp
-labeler.js
+app/TimeSeries.js
+main.js
