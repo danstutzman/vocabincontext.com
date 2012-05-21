@@ -30,14 +30,19 @@ require [
       context = canvas.getContext('2d')
       actualX = Math.floor(canvas.width * @position / @duration)
       context.fillStyle = 'rgb(0,0,0)'
+      context.strokeStyle = "black"
+      context.lineWidth = '1'
+
   
       # draw fake waveform
       if @peakData
-        height = (@peakData.left + @peakData.right) / 2 * 50
+        # add 0.25 so there's a minimum 1-pix line
+        height = ((@peakData.left + @peakData.right) / 2 * 50) + 0.25
         context.clearRect lastActualX, 0,
           actualX - lastActualX, canvas.height
         context.fillStyle = 'rgb(0,0,0)'
-        context.fillRect lastActualX, canvas.height / 2,
+        # add 0.5 to avoid the line straddling the middle
+        context.fillRect lastActualX, canvas.height / 2 + 0.5 - height,
           actualX - lastActualX, height * 2
       lastActualX = actualX
   
@@ -66,7 +71,14 @@ require [
     setupPlayButton()
   window.soundManager = sm # Flash expects window.soundManager
   sm.beginDelayedInit()
+
+  resizeCanvas = ->
+    canvas = $('#canvas')[0]
+    canvas.width = window.innerWidth - 20
   
   $(document).ready ->
     updateSliderFromSound()
+    resizeCanvas()
 
+  $(window).resize ->
+    resizeCanvas()
