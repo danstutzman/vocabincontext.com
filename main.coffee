@@ -44,6 +44,10 @@ require [
   
     catch error
       console.log "Error in whilePlaying: #{error}"
+
+  hideThrobber = ->
+    $('#throbber-background').hide()
+    $('#throbber-foreground').hide()
   
   sm = new SoundManager()
   sm.url = 'soundmanagerv297a-20120513/swf'
@@ -62,6 +66,7 @@ require [
       usePeakData: true
       whileplaying: whilePlaying
     setupPlayButton()
+    hideThrobber()
   window.soundManager = sm # Flash expects window.soundManager
   sm.beginDelayedInit()
 
