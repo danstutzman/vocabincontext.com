@@ -23,28 +23,20 @@ require [
     play.click ->
       theSound.play()
   
-  lastActualX = 0
+  canvas = $('#canvas')[0]
+  context = canvas.getContext('2d')
+  timeSeries = new timeSeries.TimeSeries
   whilePlaying = ->
     try
-      canvas = $('#canvas')[0]
-      context = canvas.getContext('2d')
-      actualX = Math.floor(canvas.width * @position / @duration)
-      context.fillStyle = 'rgb(0,0,0)'
-      context.strokeStyle = "black"
-      context.lineWidth = '1'
-
-  
       # draw fake waveform
       if @peakData
-        # add 0.25 so there's a minimum 1-pix line
-        height = ((@peakData.left + @peakData.right) / 2 * 50) + 0.25
-        context.clearRect lastActualX, 0,
-          actualX - lastActualX, canvas.height
-        context.fillStyle = 'rgb(0,0,0)'
-        # add 0.5 to avoid the line straddling the middle
-        context.fillRect lastActualX, canvas.height / 2 + 0.5 - height,
-          actualX - lastActualX, height * 2
-      lastActualX = actualX
+        actualX = Math.floor(canvas.width * @position / @duration)
+        position = @position / @duration
+        previousX = Math.floor(timeSeries.getClosestKey(position) *
+          canvas.width)
+        timeSeries.add position, (@peakData.left + @peakData.right) / 2
+        for x in [previousX..actualX]
+          drawFakeWaveformStripe(x)
   
       relative = @position / @duration
       $("#slider").slider 'option', 'value', relative * 100
@@ -72,13 +64,26 @@ require [
   window.soundManager = sm # Flash expects window.soundManager
   sm.beginDelayedInit()
 
+  drawFakeWaveformStripe = (x) ->
+    position = x / canvas.width
+    height = timeSeries.getClosestValue(position) * 100 + 0.25
+    context.clearRect x, 0, 1, canvas.height / 2
+    context.fillStyle = 'rgb(0,0,0)'
+    # add 0.5 to avoid the line straddling the middle
+    context.fillRect x, canvas.height / 2 + 0.5 - height, 1, height * 2
+
+  redrawCanvas = ->
+    for x in [0..canvas.width]
+      drawFakeWaveformStripe(x)
+
   resizeCanvas = ->
-    canvas = $('#canvas')[0]
     canvas.width = window.innerWidth - 20
   
   $(document).ready ->
     updateSliderFromSound()
     resizeCanvas()
+    redrawCanvas()
 
   $(window).resize ->
     resizeCanvas()
+    redrawCanvas()

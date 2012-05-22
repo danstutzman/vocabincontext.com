@@ -57,6 +57,13 @@ define ->
         @sortedKeys.splice mid + 1, 0, key
       @keyToValue[key] = value
       return this
+
+    getClosestKey: (key) ->
+      findClosest(key, @sortedKeys)
+
+    getClosestValue: (key) ->
+      closestKey = findClosest(key, @sortedKeys)
+      @keyToValue[closestKey]
   
   return {
     'findClosest': findClosest
