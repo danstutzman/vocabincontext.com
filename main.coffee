@@ -67,7 +67,7 @@ require [
   drawFakeWaveformStripe = (x) ->
     position = x / canvas.width
     height = timeSeries.getClosestValue(position) * 100 + 0.25
-    context.clearRect x, 0, 1, canvas.height / 2
+    context.clearRect x, 0, 1, canvas.height
     context.fillStyle = 'rgb(0,0,0)'
     # add 0.5 to avoid the line straddling the middle
     context.fillRect x, canvas.height / 2 + 0.5 - height, 1, height * 2
