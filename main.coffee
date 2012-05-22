@@ -83,7 +83,8 @@ require [
       drawFakeWaveformStripe(x)
 
   resizeCanvas = ->
-    canvas.width = window.innerWidth - 20
+    canvas.width = window.innerWidth - 16
+    canvas.style.width = "#{canvas.width}px"
   
   $(document).ready ->
     resizeCanvas()
