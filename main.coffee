@@ -2,12 +2,9 @@
 window.SM2_DEFER = true
 
 require [
-#  'order!http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
-#  'order!http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js',
-  'order!jquery-1.7.2.min.js',
-  'order!jquery-ui-1.8.20.custom.min.js',
+  'jquery-1.7.2.min.js',
   'soundmanagerv297a-20120513/script/soundmanager2.js',
-  'app/TimeSeries'], (jquery, jqueryUI, soundManager, timeSeries) ->
+  'app/TimeSeries'], (jquery, soundManager, timeSeries) ->
 
   theSound = undefined
   
