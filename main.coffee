@@ -11,12 +11,6 @@ require [
 
   theSound = undefined
   
-  updateSliderFromSound = ->
-    $('#slider').slider
-      slide: (event, ui) ->
-        millis = ui.value / 100.0 * theSound.duration
-        theSound.setPosition millis
-  
   setupPlayButton = ->
     play = $('#play-button')
     play.attr 'disabled', false
@@ -26,20 +20,27 @@ require [
   canvas = $('#canvas')[0]
   context = canvas.getContext('2d')
   timeSeries = new timeSeries.TimeSeries
+  lastCursorX = 0
+  justSetPosition = false
   whilePlaying = ->
     try
       # draw fake waveform
-      if @peakData
-        actualX = Math.floor(canvas.width * @position / @duration)
+      if @peakData && not justSetPosition
+        cursorX = Math.floor(canvas.width * @position / @duration)
         position = @position / @duration
         previousX = Math.floor(timeSeries.getClosestKey(position) *
           canvas.width)
         timeSeries.add position, (@peakData.left + @peakData.right) / 2
-        for x in [previousX..actualX]
+        for x in [previousX..cursorX]
           drawFakeWaveformStripe(x)
-  
-      relative = @position / @duration
-      $("#slider").slider 'option', 'value', relative * 100
+
+      # draw cursor
+      drawFakeWaveformStripe(lastCursorX) # erase old cursor
+      context.fillStyle = 'rgb(255,0,0)'
+      context.fillRect cursorX, 0, 1, canvas.height
+      lastCursorX = cursorX
+
+      justSetPosition = false
   
     catch error
       console.log "Error in whilePlaying: #{error}"
@@ -80,9 +81,12 @@ require [
     canvas.width = window.innerWidth - 20
   
   $(document).ready ->
-    updateSliderFromSound()
     resizeCanvas()
     redrawCanvas()
+    $('#canvas').click (event) ->
+      millis = event.offsetX * theSound.duration / canvas.width
+      justSetPosition = true
+      theSound.setPosition millis
 
   $(window).resize ->
     resizeCanvas()
