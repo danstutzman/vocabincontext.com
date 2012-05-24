@@ -102,6 +102,14 @@ require [
     for x in [0..canvas.width]
       drawFakeWaveformStripe(x)
 
+    # draw cursor
+    if theSound
+      cursorX = Math.floor(canvas.width * theSound.position / theSound.duration)
+      drawFakeWaveformStripe(lastCursorX) # erase old cursor
+      context.fillStyle = 'rgb(255,0,0)'
+      context.fillRect cursorX, 0, 1, canvas.height
+      lastCursorX = cursorX
+
   resizeCanvas = ->
     canvas.width = window.innerWidth - 16
     canvas.style.width = "#{canvas.width}px"
