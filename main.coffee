@@ -19,7 +19,7 @@ require [
   setupPlayButton = ->
     play = $('#play-button')
     play.attr 'disabled', false
-    play.click ->
+    play.bind 'click', ->
       if isPaused
         theSound.play()
         isPaused = false
@@ -107,15 +107,21 @@ require [
   resizeCanvas = ->
     canvas.width = window.innerWidth - 16
     canvas.style.width = "#{canvas.width}px"
+
+  mouseMove = (event) ->
+    millis = event.pageX * theSound.duration / canvas.width
+    justSetPosition = true
+    theSound.setPosition millis
+    redrawCursor()
   
   $(document).ready ->
     resizeCanvas()
     redrawCanvas()
-    $('#canvas').click (event) ->
-      millis = event.offsetX * theSound.duration / canvas.width
-      justSetPosition = true
-      theSound.setPosition millis
-      redrawCursor()
+    $('#canvas').mousedown (event) ->
+      mouseMove(event)
+      $('#canvas').bind 'mousemove', mouseMove
+    $('#canvas').mouseup (event) ->
+      $('#canvas').unbind 'mousemove', mouseMove
 
   $(window).resize ->
     resizeCanvas()
