@@ -32,7 +32,6 @@ require [
   canvas = $('#canvas')[0]
   context = canvas.getContext('2d')
   timeSeries = new timeSeries.TimeSeries
-  lastCursorX = 0
   justSetPosition = false
   whilePlaying = ->
     try
@@ -45,17 +44,19 @@ require [
         timeSeries.add position, (@peakData.left + @peakData.right) / 2
         for x in [previousX..cursorX]
           drawFakeWaveformStripe(x)
+      redrawCursor()
+      justSetPosition = false
+    catch error
+      console.log "Error in whilePlaying: #{error}"
 
-      # draw cursor
+  lastCursorX = 0
+  redrawCursor = ->
+    if theSound
+      cursorX = Math.floor(canvas.width * theSound.position / theSound.duration)
       drawFakeWaveformStripe(lastCursorX) # erase old cursor
       context.fillStyle = 'rgb(255,0,0)'
       context.fillRect cursorX, 0, 1, canvas.height
       lastCursorX = cursorX
-
-      justSetPosition = false
-  
-    catch error
-      console.log "Error in whilePlaying: #{error}"
 
   onFinish = ->
     try
@@ -101,14 +102,7 @@ require [
   redrawCanvas = ->
     for x in [0..canvas.width]
       drawFakeWaveformStripe(x)
-
-    # draw cursor
-    if theSound
-      cursorX = Math.floor(canvas.width * theSound.position / theSound.duration)
-      drawFakeWaveformStripe(lastCursorX) # erase old cursor
-      context.fillStyle = 'rgb(255,0,0)'
-      context.fillRect cursorX, 0, 1, canvas.height
-      lastCursorX = cursorX
+    redrawCursor()
 
   resizeCanvas = ->
     canvas.width = window.innerWidth - 16
@@ -121,6 +115,7 @@ require [
       millis = event.offsetX * theSound.duration / canvas.width
       justSetPosition = true
       theSound.setPosition millis
+      redrawCursor()
 
   $(window).resize ->
     resizeCanvas()
