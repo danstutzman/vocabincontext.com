@@ -7,12 +7,27 @@ require [
   'app/TimeSeries'], (jquery, soundManager, timeSeries) ->
 
   theSound = undefined
+  isPaused = true
+
+  updatePlayButtonLabel = ->
+    play = $('#play-button')
+    if isPaused
+      play.text 'Play'
+    else
+      play.text 'Pause'
   
   setupPlayButton = ->
     play = $('#play-button')
     play.attr 'disabled', false
     play.click ->
-      theSound.play()
+      if isPaused
+        theSound.play()
+        isPaused = false
+        updatePlayButtonLabel()
+      else
+        theSound.pause()
+        isPaused = true
+        updatePlayButtonLabel()
   
   canvas = $('#canvas')[0]
   context = canvas.getContext('2d')
@@ -42,6 +57,13 @@ require [
     catch error
       console.log "Error in whilePlaying: #{error}"
 
+  onFinish = ->
+    try
+      isPaused = true
+      updatePlayButtonLabel()
+    catch error
+      console.log "Error in onFinish: #{error}"
+
   hideThrobber = ->
     $('#throbber-background').hide()
     $('#throbber-foreground').hide()
@@ -62,6 +84,7 @@ require [
       useEQData: true
       usePeakData: true
       whileplaying: whilePlaying
+      onfinish: onFinish
     setupPlayButton()
     hideThrobber()
   window.soundManager = sm # Flash expects window.soundManager
