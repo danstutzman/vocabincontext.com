@@ -81,7 +81,7 @@ require [
   sm.onready ->
     theSound = sm.createSound
       id: 'theSound'
-      url: '/Eb-chord.mp3'
+      url: '/media/03.mp3'
       useEQData: true
       usePeakData: true
       whileplaying: whilePlaying
