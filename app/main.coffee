@@ -2,9 +2,9 @@
 window.SM2_DEFER = true
 
 require [
-  'lib/jquery-1.7.2.min.js',
-  'lib/soundmanagerv297a-20120513/script/soundmanager2.js',
-  'app/TimeSeries'], (jquery, soundManager, timeSeries) ->
+  '/lib/jquery-1.7.2.min.js',
+  '/lib/soundmanagerv297a-20120513/script/soundmanager2.js',
+  '/app/TimeSeries.js'], (jquery, soundManager, timeSeries) ->
 
   theSound = undefined
   isPaused = true
@@ -70,7 +70,7 @@ require [
     $('#throbber-foreground').hide()
   
   sm = new SoundManager()
-  sm.url = 'lib/soundmanagerv297a-20120513/swf'
+  sm.url = '/lib/soundmanagerv297a-20120513/swf'
   sm.debugMode = false
   sm.useFlashBlock = false
   sm.flashVersion = 9
