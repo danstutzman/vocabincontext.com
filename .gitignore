@@ -1,4 +1,5 @@
 .*.swp
 app/TimeSeries.js
+app/Player.js
 main.js
 media
