@@ -1,11 +1,11 @@
-define ['/app/TimeSeries.js'], (timeSeries) ->
+define ['cs!app/TimeSeries'], (timeSeries) ->
   TimeSeries = timeSeries.TimeSeries
 
   class Player
     constructor: ($canvas, $playButton, sm, mp3Url) ->
       @canvas = $canvas[0]
       @$playButton = $playButton
-      @context = canvas.getContext('2d')
+      @context = @canvas.getContext('2d')
       @theSound = undefined
       @isPaused = true
       @timeSeries = new TimeSeries()
@@ -43,10 +43,10 @@ define ['/app/TimeSeries.js'], (timeSeries) ->
     redrawCursor: ->
       if @theSound
         cursorX =
-          Math.floor(canvas.width * @theSound.position / @theSound.duration)
+          Math.floor(@canvas.width * @theSound.position / @theSound.duration)
         @drawFakeWaveformStripe(@lastCursorX) # erase old cursor
         @context.fillStyle = 'rgb(255,0,0)'
-        @context.fillRect cursorX, 0, 1, canvas.height
+        @context.fillRect cursorX, 0, 1, @canvas.height
         @lastCursorX = cursorX
   
     onFinish: ->
@@ -57,7 +57,7 @@ define ['/app/TimeSeries.js'], (timeSeries) ->
         console.log "Error in onFinish: #{error}"
   
     drawFakeWaveformStripe: (x) ->
-      position = x / canvas.width
+      position = x / @canvas.width
       height = @timeSeries.getClosestValue(position) * 100 + 0.25
       @context.clearRect x, 0, 1, @canvas.height
       @context.fillStyle = 'rgb(0,0,0)'
@@ -72,12 +72,12 @@ define ['/app/TimeSeries.js'], (timeSeries) ->
     whilePlaying: ->
       try
         peakData = @theSound.peakData
-        if peakData && not justSetPosition
+        if peakData && not justSetPosition && @theSound.duration
           # draw fake waveform
           position = @theSound.position / @theSound.duration
-          cursorX = Math.floor(canvas.width * position)
+          cursorX = Math.floor(@canvas.width * position)
           previousX = Math.floor(@timeSeries.getClosestKey(position) *
-            canvas.width)
+            @canvas.width)
           @timeSeries.add position, (peakData.left + peakData.right) / 2
           for x in [previousX..cursorX]
             @drawFakeWaveformStripe(x)
@@ -87,7 +87,7 @@ define ['/app/TimeSeries.js'], (timeSeries) ->
         console.log "Error in whilePlaying: #{error}"
   
     moveCursorTo: (x) ->
-      millis = x * @theSound.duration / canvas.width
+      millis = x * @theSound.duration / @canvas.width
       @justSetPosition = true
       @theSound.setPosition millis
       @redrawCursor()

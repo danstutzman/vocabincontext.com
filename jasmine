@@ -1,2 +1,2 @@
 #!/bin/sh
-jasmine-node --coffee spec
+jasmine-node --coffee www/js/spec

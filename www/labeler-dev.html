@@ -1,7 +1,22 @@
 <html>
   <head>
     <title>Labeler</title>
-    <script data-main="main.js" src="../lib/require.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="../tools/require.js"></script>
+    <script>
+      window.SM2_DEFER = true;
+      require.config({
+        baseUrl: "js",
+        paths: {
+          "jquery": "../../vendor/jquery/jquery-1.7.2",
+          "soundmanager2": "../../vendor/soundmanagerv297a-20120513/script/soundmanager2",
+          "cs": "../../tools/cs",
+          "coffee-script": "../../tools/coffee-script"
+        },
+        waitSeconds: 15
+      });
+      require(["main"], function(main) {});
+    </script>
     <style>
       #canvas {
         border: 1px black solid;

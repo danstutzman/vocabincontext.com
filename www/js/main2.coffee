@@ -1,8 +1,8 @@
-require [
-    '/lib/jquery-1.7.2.min.js',
-    '/app/SoundManager.js',
-    '/app/Player.js',
-    ], (jquery, soundManager, Player) ->
+define [
+  'jquery',
+  'cs!app/soundManager',
+  'cs!app/Player'
+  ], ($, soundManager, Player) ->
 
   soundManager.onready ->
     $('#throbber-background').hide()
@@ -12,8 +12,8 @@ require [
     $('#canvas'), $('#play-button'), soundManager, '/media/03.mp3')
 
   resizeCanvas = ->
-    canvas.width = window.innerWidth - 16
-    canvas.style.width = "#{canvas.width}px"
+    @canvas.width = window.innerWidth - 16
+    @canvas.style.width = "#{@canvas.width}px"
 
   mouseMove = (event) ->
     player.moveCursorTo(event.pageX)

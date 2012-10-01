@@ -1,11 +1,6 @@
-# don't init soundManager until beginDelayedInit() is called
-window.SM2_DEFER = true
-
-define [
-    '/lib/soundmanagerv297a-20120513/script/soundmanager2.js',
-    ], (ignored) ->
+define ['soundmanager2'], (ignored) ->
   sm = new SoundManager()
-  sm.url = '/lib/soundmanagerv297a-20120513/swf'
+  sm.url = 'swf'
   sm.debugMode = false
   sm.useFlashBlock = false
   sm.flashVersion = 9

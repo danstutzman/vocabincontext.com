@@ -4,3 +4,5 @@ app/Player.js
 app/SoundManager.js
 main.js
 media
+www-built
+www/js-compiled-from-coffee
