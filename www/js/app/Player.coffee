@@ -1,5 +1,5 @@
 define (require) ->
-  TimeSeries = require('cs!app/TimeSeries').TimeSeries
+  SoundGrid = require('cs!app/SoundGrid')
 
   class Player
     constructor: ($canvas, $playButton, $cursor, sm, mp3Url) ->
@@ -9,7 +9,6 @@ define (require) ->
       @context = @canvas.getContext('2d')
       @theSound = undefined
       @isPaused = true
-      @timeSeries = new TimeSeries()
       @justSetPosition = false
       @sm = sm
       @sm.onready =>
@@ -22,6 +21,7 @@ define (require) ->
           onfinish: => @onFinish()
         @setupPlayButton()
       @column = @context.createImageData(1, @canvas.height)
+      @soundGrid = new SoundGrid(@canvas.width, @canvas.height)
 
     updatePlayButtonLabel: ->
       if @isPaused
@@ -54,42 +54,30 @@ define (require) ->
       catch error
         console.log "Error in onFinish: #{error}"
   
-    drawFakeWaveformStripe: (x) ->
-      position = x / @canvas.width
-      height = @timeSeries.getClosestValue(position) * 100 + 0.25
-      y0 = Math.floor((@canvas.height / 2) - height/2)
-      y1 = y0 + height
-
-      # clear the column (make the background all white)
-      for i in [0...(@column.height * 4)]
-        @column.data[i] = 255
-
-      # draw a black line from y0 to y1
-      for y in [y0...y1]
-        @column.data[y*4 + 0] = 0
-        @column.data[y*4 + 1] = 0
-        @column.data[y*4 + 2] = 0
+    drawStripe: (x, stripe) ->
+      for y in [0...@column.height]
+        value = 255 - (stripe[y] * 255)
+        @column.data[y*4 + 0] = value
+        @column.data[y*4 + 1] = value
+        @column.data[y*4 + 2] = value
         @column.data[y*4 + 3] = 255
-
       @context.putImageData(@column, x, 0)
   
     redrawCanvas: ->
-      for x in [0..@canvas.width]
-        @drawFakeWaveformStripe(x)
+      stripes = @soundGrid.resize(@canvas.width, @canvas.height)
+      for own x, stripe of stripes
+        @drawStripe(x, stripe)
       @updateCursorX()
   
     whilePlaying: ->
       try
         peakData = @theSound.peakData
         if peakData && not justSetPosition && @theSound.duration
-          # draw fake waveform
           position = @theSound.position / @theSound.duration
-          cursorX = Math.floor(@canvas.width * position)
-          previousX = Math.floor(@timeSeries.getClosestKey(position) *
-            @canvas.width)
-          @timeSeries.add position, (peakData.left + peakData.right) / 2
-          for x in [previousX..cursorX]
-            @drawFakeWaveformStripe(x)
+          energy = (peakData.left + peakData.right) / 2
+          stripes = @soundGrid.addData(position, energy)
+          for own x, stripe of stripes
+            @drawStripe(x, stripe)
         @updateCursorX()
         justSetPosition = false
       catch error

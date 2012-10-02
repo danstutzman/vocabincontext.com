@@ -27,7 +27,7 @@ module.exports = function(grunt) {
     },
     jshint: {
       options: {
-        curly: true,
+        curly: false, // for CoffeeScript
         eqeqeq: true,
         immed: false, // for CoffeeScript
         latedef: true,
@@ -38,7 +38,8 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         browser: true,
-        shadow: true // for CoffeeScript
+        shadow: true, // for CoffeeScript
+        loopfunc: true // for CoffeeScript
       },
       globals: {
         jQuery: true,
@@ -49,7 +50,8 @@ module.exports = function(grunt) {
         console: true,
         describe: true,
         it: true,
-        expect: true
+        expect: true,
+        exports: true
       }
     },
     uglify: {},

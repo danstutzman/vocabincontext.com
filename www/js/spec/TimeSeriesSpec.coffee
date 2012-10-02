@@ -1,10 +1,4 @@
-requirejs = require('requirejs')
-requirejs.config({
-  baseUrl: "www/js",
-  paths: {
-    "cs": "../../tools/cs"
-  },
-})
+{ requirejs } = require('./test_helper')
 requirejs ['cs!app/TimeSeries'], (timeSeries) ->
   findClosest = timeSeries.findClosest
   TimeSeries = timeSeries.TimeSeries
