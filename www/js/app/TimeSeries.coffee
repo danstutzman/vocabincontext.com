@@ -1,4 +1,4 @@
-define ->
+define (require) ->
 
   findClosest = (needle, haystack) ->
     low = 0

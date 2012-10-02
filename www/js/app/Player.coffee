@@ -1,5 +1,5 @@
-define ['cs!app/TimeSeries'], (timeSeries) ->
-  TimeSeries = timeSeries.TimeSeries
+define (require) ->
+  TimeSeries = require('cs!app/TimeSeries').TimeSeries
 
   class Player
     constructor: ($canvas, $playButton, sm, mp3Url) ->

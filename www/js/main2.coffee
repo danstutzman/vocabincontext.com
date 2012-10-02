@@ -1,8 +1,7 @@
-define [
-  'jquery',
-  'cs!app/soundManager',
-  'cs!app/Player'
-  ], ($, soundManager, Player) ->
+define (require) ->
+  $            = require('jquery')
+  soundManager = require('cs!app/soundManager')
+  Player       = require('cs!app/Player')
 
   soundManager.onready ->
     $('#throbber-background').hide()

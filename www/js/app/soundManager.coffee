@@ -1,4 +1,6 @@
-define ['soundmanager2'], (ignored) ->
+define (require) ->
+  require('soundmanager2')
+
   sm = new SoundManager()
   sm.url = 'swf'
   sm.debugMode = false
