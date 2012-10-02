@@ -46,7 +46,10 @@ module.exports = function(grunt) {
         require: true,
         define: true,
         SoundManager: true,
-        console: true
+        console: true,
+        describe: true,
+        it: true,
+        expect: true
       }
     },
     uglify: {},
