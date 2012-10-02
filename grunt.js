@@ -60,16 +60,16 @@ module.exports = function(grunt) {
         'almond': '../../tools/almond',
         'coffee-script': '../../tools/coffee-script',
         'cs': '../../tools/cs',
-        'cs-stub': '../../tools/cs-stub',
         'jquery': '../../vendor/jquery/jquery-1.7.2.min',
         'soundmanager2': '../../vendor/soundmanagerv297a-20120513/script/soundmanager2-nodebug-jsmin'
       },
       dir: 'www-built',
+      stubModules: ['cs'],
       modules: [
         {
           name: 'main',
-          include: ['almond', 'cs-stub'],
-          exclude: ['coffee-script', 'cs', 'jquery']
+          include: ['almond'],
+          exclude: ['coffee-script', 'jquery']
         }
       ]
     }
