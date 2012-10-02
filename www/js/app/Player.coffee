@@ -20,6 +20,7 @@ define (require) ->
           whileplaying: => @whilePlaying()
           onfinish: => @onFinish()
         @setupPlayButton()
+      @column = @context.createImageData(1, @canvas.height)
 
     updatePlayButtonLabel: ->
       if @isPaused
@@ -40,7 +41,7 @@ define (require) ->
           @updatePlayButtonLabel()
     
     updateCursorX: ->
-      if @theSound
+      if @theSound && @theSound.duration
         cursorX =
           Math.floor(@canvas.width * @theSound.position / @theSound.duration)
         $('#cursor')[0].style.left = "#{cursorX + 1}px" # add 1 for border
@@ -55,10 +56,21 @@ define (require) ->
     drawFakeWaveformStripe: (x) ->
       position = x / @canvas.width
       height = @timeSeries.getClosestValue(position) * 100 + 0.25
-      @context.clearRect x, 0, 1, @canvas.height
-      @context.fillStyle = 'rgb(0,0,0)'
-      # add 0.5 to avoid the line straddling the middle
-      @context.fillRect x, @canvas.height / 2 + 0.5 - height, 1, height * 2
+      y0 = Math.floor((@canvas.height / 2) - height/2)
+      y1 = y0 + height
+
+      # clear the column (make the background all white)
+      for i in [0...(@column.height * 4)]
+        @column.data[i] = 255
+
+      # draw a black line from y0 to y1
+      for y in [y0...y1]
+        @column.data[y*4 + 0] = 0
+        @column.data[y*4 + 1] = 0
+        @column.data[y*4 + 2] = 0
+        @column.data[y*4 + 3] = 255
+
+      @context.putImageData(@column, x, 0)
   
     redrawCanvas: ->
       for x in [0..@canvas.width]
