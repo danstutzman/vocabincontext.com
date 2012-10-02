@@ -1,4 +1,4 @@
 #!/bin/sh
 cd `dirname $0`
-open http://localhost:8888/app/labeler.html
-node app/web-server.js
+open http://localhost:8888/www/labeler-dev.html
+node tools/web-server.js
