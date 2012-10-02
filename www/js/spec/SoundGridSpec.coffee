@@ -6,7 +6,7 @@ requirejs ['cs!app/SoundGrid'], (SoundGrid) ->
       grid = new SoundGrid(1, 10, 100)
       stripes = grid.resize 1, 10
       expect(stripes).toEqual
-        0 : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+        0 : null
 
     it 'should be blank except middle line for silence', ->
       grid = new SoundGrid(1, 10, 100)

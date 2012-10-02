@@ -65,6 +65,13 @@ define (require) ->
       closestKey = findClosest(key, @sortedKeys)
       @keyToValue[closestKey]
   
+    getClosestValueNotFartherThan: (key, maxDistance) ->
+      closestKey = findClosest(key, @sortedKeys)
+      if Math.abs(key - closestKey) <= maxDistance
+        @keyToValue[closestKey]
+      else
+        null
+
   return {
     'findClosest': findClosest
     'TimeSeries': TimeSeries

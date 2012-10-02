@@ -1,5 +1,6 @@
 define (require) ->
   TimeSeries = require('cs!app/TimeSeries').TimeSeries
+  DATA_CANT_REACH_FURTHER_THAN = 500 # milliseconds
 
   class SoundGrid
     constructor: (w, h, duration) ->
@@ -25,10 +26,15 @@ define (require) ->
       stripes = {}
       for x in [x0..x1]
         position = x * @duration / @w
-        height = @timeSeries.getClosestValue(position) * @h + 0.25
-        y0 = Math.floor((@h / 2) - height/2)
-        y1 = y0 + height
-        stripe = (
-          (if (y >= y0 && y < y1) then 1.0 else 0.0) for y in [0...@h])
+        value = @timeSeries.getClosestValueNotFartherThan(
+          position, DATA_CANT_REACH_FURTHER_THAN)
+        if value != null
+          height = value * @h + 0.25
+          y0 = Math.floor((@h / 2) - height/2)
+          y1 = y0 + height
+          stripe = (
+            (if (y >= y0 && y < y1) then 1.0 else 0.0) for y in [0...@h])
+        else
+          stripe = null
         stripes[x] = stripe
       stripes

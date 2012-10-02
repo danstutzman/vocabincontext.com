@@ -55,20 +55,34 @@ define (require) ->
         console.log "Error in onFinish: #{error}"
   
     drawStripe: (x, stripe) ->
-      for y in [0...@column.height]
-        value = 255 - (stripe[y] * 255)
-        @column.data[y*4 + 0] = value
-        @column.data[y*4 + 1] = value
-        @column.data[y*4 + 2] = value
-        @column.data[y*4 + 3] = 255
+      if stripe
+        for y in [0...@column.height]
+          value = 255 - (stripe[y] * 255)
+          @column.data[y*4 + 0] = value
+          @column.data[y*4 + 1] = value
+          @column.data[y*4 + 2] = value
+          @column.data[y*4 + 3] = 255
+      else
+        # draw gray background if no data
+        for y in [0...@column.height]
+          @column.data[y*4 + 0] = 192
+          @column.data[y*4 + 1] = 192
+          @column.data[y*4 + 2] = 192
+          @column.data[y*4 + 3] = 255
       @context.putImageData(@column, x, 0)
   
     redrawCanvas: ->
       if @soundGrid
         stripes = @soundGrid.resize(@canvas.width, @canvas.height)
-        for own x, stripe of stripes
-          @drawStripe(x, stripe)
-        @updateCursorX()
+      else
+        stripes = {}
+        for x in [0...@canvas.width]
+          stripes[x] = null
+
+      for own x, stripe of stripes
+        @drawStripe(x, stripe)
+
+      @updateCursorX()
   
     whilePlaying: ->
       if @theSound.duration && !@soundGrid

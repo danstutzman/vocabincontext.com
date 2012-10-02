@@ -67,3 +67,23 @@ requirejs ['cs!app/TimeSeries'], (timeSeries) ->
       expect((new TimeSeries()).add(2, 20).add(1, 10).add(1, 30).sortedKeys).toEqual([1, 2])
       expect((new TimeSeries()).add(1, 10).add(2, 20).add(2, 30).sortedKeys).toEqual([1, 2])
       expect((new TimeSeries()).add(2, 20).add(1, 10).add(2, 30).sortedKeys).toEqual([1, 2])
+
+    describe 'getClosestValueNotFartherThan', ->
+      it 'should return null if TimeSeries is empty', ->
+        ts = new TimeSeries()
+        expect(ts.getClosestValueNotFartherThan(1)).toEqual(null)
+      it 'should return value if requested exactly', ->
+        ts = (new TimeSeries()).add(5, 50)
+        expect(ts.getClosestValueNotFartherThan(5, 0)).toEqual(50)
+      it 'should return value if requested within bounds (too low)', ->
+        ts = (new TimeSeries()).add(5, 50)
+        expect(ts.getClosestValueNotFartherThan(4, 1)).toEqual(50)
+      it 'should return value if requested within bounds (too high)', ->
+        ts = (new TimeSeries()).add(5, 50)
+        expect(ts.getClosestValueNotFartherThan(6, 1)).toEqual(50)
+      it 'should return null if requested outside bounds (too low)', ->
+        ts = (new TimeSeries()).add(5, 50)
+        expect(ts.getClosestValueNotFartherThan(3, 1)).toEqual(null)
+      it 'should return null if requested outside bounds (too high)', ->
+        ts = (new TimeSeries()).add(5, 50)
+        expect(ts.getClosestValueNotFartherThan(7, 1)).toEqual(null)
