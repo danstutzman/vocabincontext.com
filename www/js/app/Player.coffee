@@ -10,7 +10,6 @@ define (require) ->
       @isPaused = true
       @timeSeries = new TimeSeries()
       @justSetPosition = false
-      @lastCursorX = 0
       @sm = sm
       @sm.onready =>
         @theSound = @sm.createSound
@@ -40,14 +39,11 @@ define (require) ->
           @isPaused = true
           @updatePlayButtonLabel()
     
-    redrawCursor: ->
+    updateCursorX: ->
       if @theSound
         cursorX =
           Math.floor(@canvas.width * @theSound.position / @theSound.duration)
-        @drawFakeWaveformStripe(@lastCursorX) # erase old cursor
-        @context.fillStyle = 'rgb(255,0,0)'
-        @context.fillRect cursorX, 0, 1, @canvas.height
-        @lastCursorX = cursorX
+        $('#cursor')[0].style.left = "#{cursorX + 1}px" # add 1 for border
   
     onFinish: ->
       try
@@ -67,7 +63,7 @@ define (require) ->
     redrawCanvas: ->
       for x in [0..@canvas.width]
         @drawFakeWaveformStripe(x)
-      @redrawCursor()
+      @updateCursorX()
   
     whilePlaying: ->
       try
@@ -81,7 +77,7 @@ define (require) ->
           @timeSeries.add position, (peakData.left + peakData.right) / 2
           for x in [previousX..cursorX]
             @drawFakeWaveformStripe(x)
-        @redrawCursor()
+        @updateCursorX()
         justSetPosition = false
       catch error
         console.log "Error in whilePlaying: #{error}"
@@ -90,4 +86,4 @@ define (require) ->
       millis = x * @theSound.duration / @canvas.width
       @justSetPosition = true
       @theSound.setPosition millis
-      @redrawCursor()
+      @updateCursorX()

@@ -15,7 +15,8 @@ define (require) ->
     @canvas.style.width = "#{@canvas.width}px"
 
   mouseMove = (event) ->
-    player.moveCursorTo(event.pageX)
+    canvasMinX = $('#canvas').offset().left
+    player.moveCursorTo(event.pageX - canvasMinX)
   
   $(document).ready ->
     resizeCanvas()
@@ -24,6 +25,8 @@ define (require) ->
       mouseMove(event)
       $('#canvas').bind 'mousemove', mouseMove
     $('#canvas').mouseup (event) ->
+      $('#canvas').unbind 'mousemove', mouseMove
+    $('#cursor').mouseup (event) ->
       $('#canvas').unbind 'mousemove', mouseMove
 
   $(window).resize ->

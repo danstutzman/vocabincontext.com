@@ -18,7 +18,7 @@
         background-color: black;
         opacity: 0.2;
         filter: alpha(opacity=20);
-       -moz-opacity: 0.2;
+        -moz-opacity: 0.2;
       }
       #throbber-foreground {
         position: relative;
@@ -32,12 +32,22 @@
         z-index: 1001;
         font-family: sans-serif;
       }
+      #cursor {
+        background-color: red;
+        width: 1px;
+        height: 100px;
+        position: absolute;
+        top: 1px;
+      }
     </style>
   </head>
   <body>
-    <canvas id='canvas' width='50' height='100'>
-      HTML5 Canvas element not supported.
-    </canvas>
+    <div id='outside-canvas' style='position:relative'>
+      <div id='cursor'></div>
+      <canvas id='canvas' width='50' height='100'>
+        HTML5 Canvas element not supported.
+      </canvas>
+    </div>
     <button id='play-button' class='clickable' disabled='disabled'>Play</button>
 
     <div id='throbber-background'>
