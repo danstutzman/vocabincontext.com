@@ -90,13 +90,13 @@ define (require) ->
           new SoundGrid(@canvas.width, @canvas.height, @theSound.duration)
       try
         peakData = @theSound.peakData
-        if peakData && not justSetPosition && @soundGrid
+        if peakData && not @justSetPosition && @soundGrid
           energy = (peakData.left + peakData.right) / 2
           stripes = @soundGrid.addData(@theSound.position, energy)
           for own x, stripe of stripes
             @drawStripe(x, stripe)
         @updateCursorX()
-        justSetPosition = false
+        @justSetPosition = false
       catch error
         console.log "Error in whilePlaying: #{error}"
   
