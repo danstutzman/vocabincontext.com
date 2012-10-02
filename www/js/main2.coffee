@@ -8,7 +8,8 @@ define (require) ->
     $('#throbber-foreground').hide()
 
   player = new Player(
-    $('#canvas'), $('#play-button'), soundManager, '/media/03.mp3')
+    $('#canvas'), $('#play-button'), $('#cursor'),
+    soundManager, '/media/03.mp3')
 
   resizeCanvas = ->
     @canvas.width = window.innerWidth - 16

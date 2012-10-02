@@ -61,7 +61,6 @@ module.exports = function(grunt) {
         'coffee-script': '../../tools/coffee-script',
         'cs': '../../tools/cs',
         'cs-stub': '../../tools/cs-stub',
-        'jquery-stub': '../../tools/jquery-stub',
         'jquery': '../../vendor/jquery/jquery-1.7.2.min',
         'soundmanager2': '../../vendor/soundmanagerv297a-20120513/script/soundmanager2-nodebug-jsmin'
       },
@@ -69,7 +68,7 @@ module.exports = function(grunt) {
       modules: [
         {
           name: 'main',
-          include: ['almond', 'cs-stub', 'jquery-stub'],
+          include: ['almond', 'cs-stub'],
           exclude: ['coffee-script', 'cs', 'jquery']
         }
       ]

@@ -2,9 +2,10 @@ define (require) ->
   TimeSeries = require('cs!app/TimeSeries').TimeSeries
 
   class Player
-    constructor: ($canvas, $playButton, sm, mp3Url) ->
+    constructor: ($canvas, $playButton, $cursor, sm, mp3Url) ->
       @canvas = $canvas[0]
       @$playButton = $playButton
+      @cursor = $cursor[0]
       @context = @canvas.getContext('2d')
       @theSound = undefined
       @isPaused = true
@@ -44,7 +45,7 @@ define (require) ->
       if @theSound && @theSound.duration
         cursorX =
           Math.floor(@canvas.width * @theSound.position / @theSound.duration)
-        $('#cursor')[0].style.left = "#{cursorX + 1}px" # add 1 for border
+        @cursor.style.left = "#{cursorX + 1}px" # add 1 for border
   
     onFinish: ->
       try
