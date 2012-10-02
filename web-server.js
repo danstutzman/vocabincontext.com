@@ -1,3 +1,4 @@
+#!/usr/local/bin/node
 var exec = require('child_process').exec,
     http = require("http"),
     url = require("url"),
