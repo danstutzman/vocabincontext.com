@@ -59,6 +59,8 @@
     <script>window.SM2_DEFER = true;</script>
     <script src="js/main.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-    <script>jQuery.noConflict();</script>
+    <script>require(["main", "jquery"], function(main, jquery) {
+      jquery.noConflict(); // remove $ global
+    });</script>
   </body>
 </html>

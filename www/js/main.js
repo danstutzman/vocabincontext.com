@@ -1,1 +1,1 @@
-require(['cs!main2'],function(main2){});
+define(['cs!main2'],function(main2){});
