@@ -2,9 +2,10 @@ define (require) ->
   TimeSeries = require('cs!app/TimeSeries').TimeSeries
 
   class SoundGrid
-    constructor: (w, h) ->
+    constructor: (w, h, duration) ->
       @w = w
       @h = h
+      @duration = duration
       @timeSeries = new TimeSeries()
       @previousX = 0
 
@@ -15,7 +16,7 @@ define (require) ->
 
     addData: (position, energy) ->
       @timeSeries.add position, energy
-      cursorX = Math.floor(@w * position)
+      cursorX = Math.floor(@w * position / @duration)
       stripes = @renderStripes(@previousX, cursorX)
       @previousX = cursorX
       stripes
@@ -23,7 +24,7 @@ define (require) ->
     renderStripes: (x0, x1) ->
       stripes = {}
       for x in [x0..x1]
-        position = x / @w
+        position = x * @duration / @w
         height = @timeSeries.getClosestValue(position) * @h + 0.25
         y0 = Math.floor((@h / 2) - height/2)
         y1 = y0 + height

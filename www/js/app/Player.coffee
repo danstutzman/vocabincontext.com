@@ -21,7 +21,7 @@ define (require) ->
           onfinish: => @onFinish()
         @setupPlayButton()
       @column = @context.createImageData(1, @canvas.height)
-      @soundGrid = new SoundGrid(@canvas.width, @canvas.height)
+      @soundGrid = null # wait until we know the sound's duration
 
     updatePlayButtonLabel: ->
       if @isPaused
@@ -64,18 +64,21 @@ define (require) ->
       @context.putImageData(@column, x, 0)
   
     redrawCanvas: ->
-      stripes = @soundGrid.resize(@canvas.width, @canvas.height)
-      for own x, stripe of stripes
-        @drawStripe(x, stripe)
-      @updateCursorX()
+      if @soundGrid
+        stripes = @soundGrid.resize(@canvas.width, @canvas.height)
+        for own x, stripe of stripes
+          @drawStripe(x, stripe)
+        @updateCursorX()
   
     whilePlaying: ->
+      if @theSound.duration && !@soundGrid
+        @soundGrid =
+          new SoundGrid(@canvas.width, @canvas.height, @theSound.duration)
       try
         peakData = @theSound.peakData
-        if peakData && not justSetPosition && @theSound.duration
-          position = @theSound.position / @theSound.duration
+        if peakData && not justSetPosition && @soundGrid
           energy = (peakData.left + peakData.right) / 2
-          stripes = @soundGrid.addData(position, energy)
+          stripes = @soundGrid.addData(@theSound.position, energy)
           for own x, stripe of stripes
             @drawStripe(x, stripe)
         @updateCursorX()
