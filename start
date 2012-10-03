@@ -1,4 +1,10 @@
 #!/bin/sh
 cd `dirname $0`
+
+# Mac
 open http://localhost:8888/www/labeler-dev.html
+
+# Ubuntu
+google-chrome http://localhost:8888/www/labeler-dev.html >/dev/null 2>/dev/null &
+
 node tools/web-server.js
