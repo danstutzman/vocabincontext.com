@@ -4,3 +4,24 @@ For Mac OS X: (Instructions adapted from http://blog.argasinski.eu/2011/09/25/sp
 - wget https://raw.github.com/npinto/homebrew/f221036962c41c95d5dd0927b24ab1f02d74204e/Library/Formula/libmp3splt.rb
 - wget https://raw.github.com/npinto/homebrew/f221036962c41c95d5dd0927b24ab1f02d74204e/Library/Formula/mp3splt.rb
 - brew install mp3splt
+
+For Ubuntu 10.04:
+- Install node.js:
+  - download it
+  - tar xvzf node-v0.8.11.tar.gz
+  - cd node-v0.8.11
+  - ./configure
+  - make
+  - sudo make install
+- npm install -g jasmine-node
+- npm install -g grunt
+- Install mp3splt:
+  - see instructions at http://mp3splt.sourceforge.net/mp3splt_page/debian_downloads.php?version=Natty&ubuntu=true
+  - Append the following to /etc/apt/sources.list
+    deb http://mp3splt.sourceforge.net/repository natty main
+  - sudo apt-get install mp3splt
+- Install Ruby:
+  - sudo apt-get install ruby1.9 irb1.9
+  - cd /usr/bin
+  - sudo ln -s ruby1.9 ruby
+  - sudo ln -s irb1.9 irb
