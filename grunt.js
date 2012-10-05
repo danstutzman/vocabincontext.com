@@ -39,7 +39,8 @@ module.exports = function(grunt) {
         eqnull: true,
         browser: true,
         shadow: true, // for CoffeeScript
-        loopfunc: true // for CoffeeScript
+        loopfunc: true, // for CoffeeScript
+        expr: true // for CoffeeScript
       },
       globals: {
         jQuery: true,
