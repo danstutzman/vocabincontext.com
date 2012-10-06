@@ -2,3 +2,5 @@
 media
 www-built
 www/js-compiled-from-coffee
+www/labeler-dev.html
+www/labeler-prod.html
