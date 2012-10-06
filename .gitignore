@@ -4,3 +4,5 @@ www-built
 www/js-compiled-from-coffee
 www/labeler-dev.html
 www/labeler-prod.html
+www/index-dev.html
+www/index-prod.html
