@@ -3,6 +3,9 @@ define (require) ->
   soundManager = require('cs!app/soundManager')
   Player       = require('cs!app/Player')
 
+  ARROW_KEY_UP   = 38
+  ARROW_KEY_DOWN = 40
+
   soundManager.onready ->
     $('#throbber-background').hide()
     $('#throbber-foreground').hide()
@@ -72,3 +75,31 @@ define (require) ->
             soundManager.play(id, href)
             false
       false
+
+  highlightedRow = 1
+  moveHighlightRow = (delta) ->
+    highlightedRow += delta
+    if highlightedRow < 1
+      highlightedRow = 1
+    if highlightedRow > $('#js-lyrics-table tr').length
+      highlightedRow = $('#js-lyrics-table tr').length
+ 
+    $('#js-lyrics-table tr').css 'backgroundColor', 'white'
+    $("#js-lyrics-table tr:nth-child(#{highlightedRow})").css 'backgroundColor', 'blue'
+
+  $(document).keydown (event) =>
+    switch event.which
+      when ARROW_KEY_UP
+        event.preventDefault()
+        false
+      when ARROW_KEY_DOWN
+        event.preventDefault()
+        false
+      else
+        true
+  $(document).keyup (event) =>
+    switch event.which
+      when ARROW_KEY_UP
+        moveHighlightRow -1
+      when ARROW_KEY_DOWN
+        moveHighlightRow 1
