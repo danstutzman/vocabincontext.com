@@ -1,6 +1,6 @@
 - if ENV['ENV'] == 'production'
   %script window.SM2_DEFER = true;
-  %script(src="js/main.js")
+  %script(src="www/js/main.js")
   %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   :javascript
     require(["main", "jquery"], function(main, jquery) {
