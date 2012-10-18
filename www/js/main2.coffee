@@ -3,8 +3,11 @@ define (require) ->
   soundManager = require('cs!app/soundManager')
   Player       = require('cs!app/Player')
 
-  ARROW_KEY_UP   = 38
-  ARROW_KEY_DOWN = 40
+  ARROW_KEY_UP    = 38
+  ARROW_KEY_DOWN  = 40
+  ARROW_KEY_LEFT  = 37
+  ARROW_KEY_RIGHT = 39
+  ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN, ARROW_KEY_LEFT, ARROW_KEY_RIGHT]
 
   soundManager.onready ->
     $('#throbber-background').hide()
@@ -76,30 +79,49 @@ define (require) ->
             false
       false
 
-  highlightedRow = 1
-  moveHighlightRow = (delta) ->
-    highlightedRow += delta
-    if highlightedRow < 1
-      highlightedRow = 1
-    if highlightedRow > $('#js-lyrics-table tr').length
-      highlightedRow = $('#js-lyrics-table tr').length
- 
-    $('#js-lyrics-table tr').css 'backgroundColor', 'white'
-    $("#js-lyrics-table tr:nth-child(#{highlightedRow})").css 'backgroundColor', 'blue'
+  highlightY = 1
+  highlightX = 1
 
+  drawHighlight = (isVisible, colNum, rowNum) ->
+    if isVisible
+      $("#js-lyrics-table tr:nth-child(#{highlightY})").addClass 'selectedRow'
+      $("#js-lyrics-table tr:nth-child(#{highlightY}) td:nth-child(#{highlightX})").addClass 'selectedCell'
+    else
+      $("#js-lyrics-table tr:nth-child(#{highlightY})").removeClass 'selectedRow'
+      $("#js-lyrics-table tr:nth-child(#{highlightY}) td:nth-child(#{highlightX})").removeClass 'selectedCell'
+
+  moveHighlight = (xDelta, yDelta) ->
+    drawHighlight false, highlightX, highlightY
+
+    highlightX += xDelta
+    if highlightX < 1
+      highlightX = 1
+    if highlightX > 3
+      highlightX = 3
+
+    highlightY += yDelta
+    if highlightY < 1
+      highlightY = 1
+    if highlightY > $('#js-lyrics-table tr').length
+      highlightY = $('#js-lyrics-table tr').length
+ 
+    drawHighlight true, highlightX, highlightY
+
+  # prevent default behavior when arrow keys are pressed
   $(document).keydown (event) =>
-    switch event.which
-      when ARROW_KEY_UP
-        event.preventDefault()
-        false
-      when ARROW_KEY_DOWN
-        event.preventDefault()
-        false
-      else
-        true
+    if ARROW_KEYS.indexOf(event.which) != -1
+      event.preventDefault()
+      false
+    else
+      true
+
   $(document).keyup (event) =>
     switch event.which
       when ARROW_KEY_UP
-        moveHighlightRow -1
+        moveHighlight 0, -1
       when ARROW_KEY_DOWN
-        moveHighlightRow 1
+        moveHighlight 0, 1
+      when ARROW_KEY_LEFT
+        moveHighlight -1, 0
+      when ARROW_KEY_RIGHT
+        moveHighlight 1, 0

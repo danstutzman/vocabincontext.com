@@ -2,10 +2,21 @@
   %head
     %title Segmenter
     %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    :css
+      tr.selectedRow {
+        background-color: blue;
+      }
+      td.selectedCell {
+        background-color: red;
+      }
   %body
     %table(id='js-lyrics-table' border='1')
       - File.read('media/lyrics-dutty-love.txt').split("\n").each do |line|
         %tr
+          %td
+            000
+          %td
+            300
           %td
             = line
     %textarea(rows='50' cols='70')
