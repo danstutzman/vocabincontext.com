@@ -80,7 +80,7 @@ define (require) ->
       false
 
   highlightY = 1
-  highlightX = 1
+  highlightX = 2
 
   drawHighlight = (isVisible, colNum, rowNum) ->
     if isVisible

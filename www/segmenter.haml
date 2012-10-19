@@ -11,15 +11,18 @@
       }
   %body
     %table(id='js-lyrics-table' border='1')
+      %tr
+        %th Start time
+        %th Lyrics line
+        %th Doesn't quite finish?
       - File.read('media/lyrics-dutty-love.txt').split("\n").each do |line|
-        %tr
-          %td
-            000
-          %td
-            300
-          %td
-            = line
-    %textarea(rows='50' cols='70')
-      = File.read('media/lyrics-dutty-love.txt')
+        - if match = line.match(/^([0-9]+) (.*)$/)
+          - start_time, lyric = match[1], match[2]
+          %tr
+            %td= start_time
+            %td= lyric
+            %td
+    -#%textarea(rows='50' cols='70')
+    -#  = File.read('media/lyrics-dutty-love.txt')
     = Haml::Engine.new(File.read('www/_loading.haml')).render
     = Haml::Engine.new(File.read('www/_js.haml')).render
