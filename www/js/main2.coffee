@@ -142,3 +142,15 @@ define (require) ->
       when ENTER_KEY
         $("#js-lyrics-table tr:nth-child(#{highlightY + 1}) td:nth-child(1)").html(player.getPosition())
         moveHighlight 0, 1
+
+  if $('#js-lyrics-table').length
+    $.ajax
+      url: "/media/lyrics-#{song}.txt"
+      success: (data, textStatus, jqXHR) ->
+        for line in data.split("\n")
+          if match = line.match(/^([0-9]+)\s+(.*)$/)
+            [start_time, lyric] = [match[1], match[2]]
+          else
+            [start_time, lyric] = ['', line]
+          newRow = "<tr><td>#{start_time}</td><td>#{lyric}</td><td></td></tr>"
+          $('#js-lyrics-table > tbody').append newRow
