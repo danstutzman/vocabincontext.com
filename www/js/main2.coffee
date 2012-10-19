@@ -8,6 +8,7 @@ define (require) ->
   ARROW_KEY_LEFT  = 37
   ARROW_KEY_RIGHT = 39
   ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN, ARROW_KEY_LEFT, ARROW_KEY_RIGHT]
+  ENTER_KEY = 13
 
   soundManager.onready ->
     $('#throbber-background').hide()
@@ -16,7 +17,7 @@ define (require) ->
   if $('#canvas').length
     player = new Player(
       $('#canvas'), $('#play-button'), $('#cursor'), $('#input'),
-      soundManager, '/media/dutty-love.mp3')
+      soundManager, '/media/cancion-del-mariachi.mp3')
 
     resizeCanvas = ->
       @canvas.width = window.innerWidth - 16
@@ -125,3 +126,6 @@ define (require) ->
         moveHighlight -1, 0
       when ARROW_KEY_RIGHT
         moveHighlight 1, 0
+      when ENTER_KEY
+        $("#js-lyrics-table tr:nth-child(#{highlightY + 1}) td:nth-child(1)").html(player.getPosition())
+        moveHighlight 0, 1

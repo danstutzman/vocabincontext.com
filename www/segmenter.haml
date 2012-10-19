@@ -10,18 +10,26 @@
         background-color: red;
       }
   %body
+    %div(id='outside-canvas' style='position:relative')
+      %div(id='cursor')
+      %canvas(id='canvas' width='50' height='100')
+        HTML5 Canvas element not supported.
+    %button(id='play-button' class='clickable' disabled='disabled') Play
+
     %table(id='js-lyrics-table' border='1')
       %tr
         %th Start time
         %th Lyrics line
         %th Doesn't quite finish?
-      - File.read('media/lyrics-dutty-love.txt').split("\n").each do |line|
+      - File.read('media/lyrics-cancion-del-mariachi.txt').split("\n").each do |line|
         - if match = line.match(/^([0-9]+) (.*)$/)
           - start_time, lyric = match[1], match[2]
-          %tr
-            %td= start_time
-            %td= lyric
-            %td
+        - else
+          - start_time, lyric = nil, line
+        %tr
+          %td= start_time
+          %td= lyric
+          %td
     -#%textarea(rows='50' cols='70')
     -#  = File.read('media/lyrics-dutty-love.txt')
     = Haml::Engine.new(File.read('www/_loading.haml')).render

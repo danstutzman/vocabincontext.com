@@ -108,3 +108,6 @@ define (require) ->
       @justSetPosition = true
       @theSound.setPosition millis
       @updateCursorX()
+
+    getPosition: ->
+      @theSound.position
