@@ -2,9 +2,9 @@
 cd `dirname $0`
 
 # Mac
-open http://localhost:8888/www/labeler-dev.html
+open http://localhost:8888/www/segmenter.html
 
 # Ubuntu
-google-chrome http://localhost:8888/www/labeler-dev.html >/dev/null 2>/dev/null &
+google-chrome http://localhost:8888/www/segmenter.html >/dev/null 2>/dev/null &
 
 node tools/web-server.js
