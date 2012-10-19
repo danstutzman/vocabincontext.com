@@ -27,7 +27,7 @@ define (require) ->
     alert 'Please specify a song parameter'
 
   if $('#canvas').length
-    mp3Link = "/media/#{song}.mp3"
+    mp3Link = "/media/whole_songs/#{song}.mp3"
     player = new Player(
       $('#canvas'), $('#play-button'), $('#cursor'), $('#input'),
       soundManager, mp3Link)
@@ -55,7 +55,7 @@ define (require) ->
       resizeCanvas()
       player.redrawCanvas()
 
-  lines = $.getJSON "/media/#{song}.json", (lines) ->
+  lines = $.getJSON "/media/lyrics_json/#{song}.json", (lines) ->
     word_to_count = {}
     for line in lines
       for word in line['lyric'].split(' ')
@@ -145,7 +145,7 @@ define (require) ->
 
   if $('#js-lyrics-table').length
     $.ajax
-      url: "/media/lyrics-#{song}.txt"
+      url: "/media/lyrics_txt/#{song}.txt"
       success: (data, textStatus, jqXHR) ->
         for line in data.split("\n")
           if match = line.match(/^([0-9]+)\s+(.*)$/)

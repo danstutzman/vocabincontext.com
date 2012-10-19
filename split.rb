@@ -1,9 +1,9 @@
 require 'json'
 
-MP3 = 'media/dutty-love.mp3'
+song = ARGV[0] or raise "First param should be song name"
 
 lines = nil
-File.open('media/lyrics_dutty_love.txt') do |file|
+File.open("media/lyrics_txt/#{song}.txt") do |file|
   file.readline # ignore first line
   lines = file.readlines
 end
@@ -18,7 +18,7 @@ end
 split_times = []
 split_time_to_lyric = {}
 lines.each { |line|
-  if match = line.match(/^([0-9]+) (.*)$/)
+  if match = line.match(/^([0-9]+)\s+(.*)$/)
     begin_millis = match[1].to_i
     lyric = match[2]
     msh = millis_to_msh(begin_millis)
@@ -36,21 +36,20 @@ mp3splt =
     raise "Don't know where to find mp3splt"
   end
 
-basename = File.basename(MP3).gsub(/\.mp3$/, '')
 command =
-  "#{mp3splt} -Q -d media -o #{basename}_@m@s@h #{MP3} #{split_times.join(' ')} 2>&1"
+  "#{mp3splt} -Q -d media/excerpts -o #{song}_@m@s@h media/whole_songs/#{song}.mp3 #{split_times.join(' ')} 2>&1"
 puts command
 system(command)
 
 to_json = []
 split_time_to_lyric.each do |split_time, lyric|
   split_time = split_time.gsub('.', '')
-  old_filename = "media/#{basename}_#{split_time}.mp3"
+  old_filename = "media/excerpts/#{song}_#{split_time}.mp3"
   if lyric.match(/^#/)
     command = "/bin/rm #{old_filename}"
   else
     lyric_escaped = lyric.gsub(/[^A-Za-z]/, '_')
-    new_filename = "media/#{basename}_#{split_time}_#{lyric_escaped}.mp3"
+    new_filename = "media/excerpts/#{song}_#{split_time}_#{lyric_escaped}.mp3"
     command = "/bin/mv #{old_filename} #{new_filename}"
     to_json.push({
       :id => split_time,
@@ -62,6 +61,6 @@ split_time_to_lyric.each do |split_time, lyric|
   system(command)
 end
 
-File.open('media/dutty-love.json', 'w') do |file|
+File.open("media/lyrics_json/#{song}.json", 'w') do |file|
   file.write(JSON.generate(to_json))
 end
