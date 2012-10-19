@@ -21,5 +21,5 @@
             = line
     %textarea(rows='50' cols='70')
       = File.read('media/lyrics-dutty-love.txt')
-    = Haml::Engine.new(File.read('www/loading.haml')).render
-    = Haml::Engine.new(File.read('www/js.haml')).render
+    = Haml::Engine.new(File.read('www/_loading.haml')).render
+    = Haml::Engine.new(File.read('www/_js.haml')).render

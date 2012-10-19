@@ -20,4 +20,5 @@
         %br
         %ul(id='lyrics')
       %li While it plays, listen for that word
-    = Haml::Engine.new(File.read('www/js.haml')).render
+    = Haml::Engine.new(File.read('www/_loading.haml')).render
+    = Haml::Engine.new(File.read('www/_js.haml')).render

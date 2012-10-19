@@ -7,5 +7,5 @@
       %canvas(id='canvas' width='50' height='100')
         HTML5 Canvas element not supported.
     %button(id='play-button' class='clickable' disabled='disabled') Play
-    = Haml::Engine.new(File.read('www/loading.haml')).render
-    = Haml::Engine.new(File.read('www/js.haml')).render
+    = Haml::Engine.new(File.read('www/_loading.haml')).render
+    = Haml::Engine.new(File.read('www/_js.haml')).render
