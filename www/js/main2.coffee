@@ -10,14 +10,27 @@ define (require) ->
   ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN, ARROW_KEY_LEFT, ARROW_KEY_RIGHT]
   ENTER_KEY = 13
 
+  getParams = ->
+    [result, re, d] = [{}, /([^&=]+)=([^&]*)/g, decodeURIComponent]
+    s = location.search
+    s = if s.match /^\?/ then s.substring(1) else s
+    while match = re.exec(s)
+      result[d(match[1])] = d match[2]
+    result
+
   soundManager.onready ->
     $('#throbber-background').hide()
     $('#throbber-foreground').hide()
 
+  song = getParams()['song']
+  if !song
+    alert 'Please specify a song parameter'
+
   if $('#canvas').length
+    mp3Link = "/media/#{song}.mp3"
     player = new Player(
       $('#canvas'), $('#play-button'), $('#cursor'), $('#input'),
-      soundManager, '/media/cancion-del-mariachi.mp3')
+      soundManager, mp3Link)
 
     resizeCanvas = ->
       @canvas.width = window.innerWidth - 16
@@ -42,7 +55,7 @@ define (require) ->
       resizeCanvas()
       player.redrawCanvas()
 
-  lines = $.getJSON '/media/dutty-love.json', (lines) ->
+  lines = $.getJSON "/media/#{song}.json", (lines) ->
     word_to_count = {}
     for line in lines
       for word in line['lyric'].split(' ')
