@@ -2,11 +2,19 @@ define (require) ->
   SoundGrid = require('cs!app/SoundGrid')
 
   class Player
-    constructor: ($canvas, $playButton, $cursor, sm, mp3Url) ->
-      @canvas = $canvas[0]
-      @$playButton = $playButton
-      @cursor = $cursor[0]
+    constructor: ($player, sm, mp3Url) ->
+      $player.append "
+        <div id='cursor'></div>
+        <canvas id='canvas' width='50' height='100'>
+          HTML5 Canvas element not supported.
+        </canvas>
+        <button id='play-button' class='clickable' disabled='disabled'>
+          Play</button>"
+      @canvas = $('#canvas')[0]
+      @$playButton = $('#play-button')
+      @cursor = $('#cursor')[0]
       @context = @canvas.getContext('2d')
+
       @theSound = undefined
       @isPaused = true
       @justSetPosition = false
