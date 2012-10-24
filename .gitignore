@@ -5,8 +5,7 @@ media/lyrics_json/*.json
 media/excerpts/*.mp3
 www-built
 www/js-compiled-from-coffee
-www/labeler-dev.html
-www/labeler-prod.html
 www/index-dev.html
 www/index-prod.html
-www/segmenter.html
+www/segmenter-dev.html
+www/segmenter-prod.html
