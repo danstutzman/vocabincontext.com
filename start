@@ -1,6 +1,9 @@
 #!/bin/sh
 cd `dirname $0`
 
+make
+if [ "$?" != "0" ]; then exit 1; fi
+
 # Mac
 open http://localhost:8888/www/segmenter.html
 
