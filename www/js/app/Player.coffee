@@ -2,7 +2,7 @@ define (require) ->
   SoundGrid = require('cs!app/SoundGrid')
 
   class Player
-    constructor: ($player, sm, mp3Url) ->
+    constructor: ($player, $, sm, mp3Url) ->
       $player.append "
         <div id='cursor'></div>
         <canvas id='canvas' width='50' height='100'>

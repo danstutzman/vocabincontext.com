@@ -20,6 +20,7 @@
       },
       waitSeconds: 5
     });
-    require(["main", "jquery"], function(main, jquery) {
+    require(["jquery"], function(jquery) {
       jquery.noConflict(); // remove $ global
     });
+    require(["main"], function(main) { });
