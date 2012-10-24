@@ -31,6 +31,29 @@ define (require) ->
       @column = @context.createImageData(1, @canvas.height)
       @soundGrid = null # wait until we know the sound's duration
 
+      resizeCanvas = =>
+        @canvas.width = window.innerWidth - 16
+        @canvas.style.width = "#{@canvas.width}px"
+  
+      mouseMove = (event) =>
+        canvasMinX = $('#canvas').offset().left
+        @moveCursorTo(event.pageX - canvasMinX)
+  
+      $(document).ready =>
+        resizeCanvas()
+        @redrawCanvas()
+        $('#canvas').mousedown (event) ->
+          mouseMove(event)
+          $('#canvas').bind 'mousemove', mouseMove
+        $('#canvas').mouseup (event) ->
+          $('#canvas').unbind 'mousemove', mouseMove
+        $('#cursor').mouseup (event) ->
+          $('#canvas').unbind 'mousemove', mouseMove
+  
+      $(window).resize =>
+        resizeCanvas()
+        @redrawCanvas()
+
     updatePlayButtonLabel: ->
       if @isPaused
         @$playButton.text 'Play'

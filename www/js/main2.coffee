@@ -33,29 +33,6 @@ define (require) ->
     mp3Link = "/media/whole_songs/#{song}.mp3"
     player = new Player($('#player'), $, soundManager, mp3Link)
 
-    resizeCanvas = ->
-      @canvas.width = window.innerWidth - 16
-      @canvas.style.width = "#{@canvas.width}px"
-
-    mouseMove = (event) ->
-      canvasMinX = $('#canvas').offset().left
-      player.moveCursorTo(event.pageX - canvasMinX)
-
-    $(document).ready ->
-      resizeCanvas()
-      player.redrawCanvas()
-      $('#canvas').mousedown (event) ->
-        mouseMove(event)
-        $('#canvas').bind 'mousemove', mouseMove
-      $('#canvas').mouseup (event) ->
-        $('#canvas').unbind 'mousemove', mouseMove
-      $('#cursor').mouseup (event) ->
-        $('#canvas').unbind 'mousemove', mouseMove
-  
-    $(window).resize ->
-      resizeCanvas()
-      player.redrawCanvas()
-
   lines = $.getJSON "/media/lyrics_json/#{song}.json", (lines) ->
     word_to_count = {}
     for line in lines
