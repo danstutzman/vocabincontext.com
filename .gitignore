@@ -1,5 +1,8 @@
 .*.swp
-media
+media/whole_songs/*.mp3
+media/lyrics_txt/*.txt
+media/lyrics_json/*.json
+media/excerpts/*.mp3
 www-built
 www/js-compiled-from-coffee
 www/labeler-dev.html
