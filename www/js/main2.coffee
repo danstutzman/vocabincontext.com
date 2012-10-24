@@ -11,7 +11,9 @@ define (require) ->
   ENTER_KEY = 13
 
   getParams = ->
-    [result, re, d] = [{}, /([^&=]+)=([^&]*)/g, decodeURIComponent]
+    result = {}
+    re = /([^&=]+)=([^&]*)/g
+    d = decodeURIComponent
     s = location.search
     s = if s.match /^\?/ then s.substring(1) else s
     while match = re.exec(s)
@@ -149,8 +151,10 @@ define (require) ->
       success: (data, textStatus, jqXHR) ->
         for line in data.split("\n")
           if match = line.match(/^([0-9]+)\s+(.*)$/)
-            [start_time, lyric] = [match[1], match[2]]
+            start_time = match[1]
+            lyric = match[2]
           else
-            [start_time, lyric] = ['', line]
+            start_time = ''
+            lyric = line
           newRow = "<tr><td>#{start_time}</td><td>#{lyric}</td><td></td></tr>"
           $('#js-lyrics-table > tbody').append newRow
