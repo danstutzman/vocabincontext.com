@@ -20,7 +20,5 @@
         %th Start time
         %th Lyrics line
         %th Doesn't quite finish?
-    -#%textarea(rows='50' cols='70')
-    -#  = File.read('media/lyrics-dutty-love.txt')
     = Haml::Engine.new(File.read('www/_loading.haml')).render
     = Haml::Engine.new(File.read('www/_js.haml')).render
