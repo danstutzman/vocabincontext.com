@@ -26,11 +26,11 @@ define (require) ->
   if !song
     alert 'Please specify a song parameter'
 
+  # add player in canvas
   if $('#canvas').length
     mp3Link = "/media/whole_songs/#{song}.mp3"
     player = new Player(
-      $('#canvas'), $('#play-button'), $('#cursor'), $('#input'),
-      soundManager, mp3Link)
+      $('#canvas'), $('#play-button'), $('#cursor'), soundManager, mp3Link)
 
     resizeCanvas = ->
       @canvas.width = window.innerWidth - 16

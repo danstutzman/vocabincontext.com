@@ -2,7 +2,7 @@ define (require) ->
   SoundGrid = require('cs!app/SoundGrid')
 
   class Player
-    constructor: ($canvas, $playButton, $cursor, $input, sm, mp3Url) ->
+    constructor: ($canvas, $playButton, $cursor, sm, mp3Url) ->
       @canvas = $canvas[0]
       @$playButton = $playButton
       @cursor = $cursor[0]
@@ -22,9 +22,6 @@ define (require) ->
         @setupPlayButton()
       @column = @context.createImageData(1, @canvas.height)
       @soundGrid = null # wait until we know the sound's duration
-      $input.keyup =>
-        if @theSound
-          console.log(@theSound.position)
 
     updatePlayButtonLabel: ->
       if @isPaused
