@@ -16,4 +16,4 @@ www/index-dev.html: www/index.haml www/_loading.haml www/_js.haml
 www/index-prod.html: www/index.haml www/_loading.haml www/_js.haml
 	ENV=production haml www/index.haml > www/index-prod.html
 www-built/js/main.js: www/js/main2.coffee www/js/main.js www/js/app/*.coffee
-	grunt release
+	node_modules/grunt/bin/grunt release
