@@ -8,17 +8,35 @@ define (require) ->
   ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN, ARROW_KEY_LEFT, ARROW_KEY_RIGHT]
   ENTER_KEY = 13
 
+  objectToXY = (object) ->
+    if object.offsetParent
+      x = 0
+      y = 0
+      while object
+        x += object.offsetLeft
+        y += object.offsetTop
+        object = object.offsetParent
+      {x:x, y:y}
+
   init = (song, player) ->
     highlightY = 1
     highlightX = 2
   
     drawHighlight = (isVisible, colNum, rowNum) ->
+      rowSelector = "#js-lyrics-table tr:nth-child(#{highlightY})"
+      colSelector = "#{rowSelector} td:nth-child(#{highlightX})"
       if isVisible
-        $("#js-lyrics-table tr:nth-child(#{highlightY})").addClass 'selectedRow'
-        $("#js-lyrics-table tr:nth-child(#{highlightY}) td:nth-child(#{highlightX})").addClass 'selectedCell'
+        $(rowSelector).addClass 'selectedRow'
+        $(colSelector).addClass 'selectedCell'
       else
-        $("#js-lyrics-table tr:nth-child(#{highlightY})").removeClass 'selectedRow'
-        $("#js-lyrics-table tr:nth-child(#{highlightY}) td:nth-child(#{highlightX})").removeClass 'selectedCell'
+        $(rowSelector).removeClass 'selectedRow'
+        $(colSelector).removeClass 'selectedCell'
+
+      {x, y} = objectToXY($(rowSelector)[0])
+      if y < window.pageYOffset
+        $('body')[0].scrollTop = y
+      if y > window.pageYOffset + (window.innerHeight - 40)
+        $('body')[0].scrollTop = y - (window.innerHeight - 40)
   
     moveHighlight = (xDelta, yDelta) ->
       drawHighlight false, highlightX, highlightY
