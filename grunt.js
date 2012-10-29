@@ -80,7 +80,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'coffee lint');
-  grunt.registerTask('release', 'coffee lint requirejs');
+  grunt.registerTask('default', 'coffee');
+  grunt.registerTask('release', 'coffee requirejs');
 
 };
