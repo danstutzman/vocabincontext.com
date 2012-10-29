@@ -13,7 +13,15 @@
         width: 100%;
         height: 130px;
       }
+      .scrollbar-measure {
+        width: 100px;
+        height: 100px;
+        overflow: scroll;
+        position: absolute;
+        top: -9999px;
+      }
   %body
+    %div.scrollbar-measure
     %div(id='player' style='position:relative')
     %table(id='js-lyrics-table' border='1')
       %tr

@@ -12,17 +12,18 @@ define (require) ->
     if object.offsetParent
       x = 0
       y = 0
-      while object
-        x += object.offsetLeft
-        y += object.offsetTop
-        object = object.offsetParent
-      {x:x, y:y}
+      parent = object
+      while parent
+        x += parent.offsetLeft
+        y += parent.offsetTop
+        parent = parent.offsetParent
+      { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   init = (song, player) ->
     highlightY = 1
     highlightX = 2
   
-    drawHighlight = (isVisible, colNum, rowNum) ->
+    drawHighlight = (isVisible) ->
       rowSelector = "#js-lyrics-table tr:nth-child(#{highlightY})"
       colSelector = "#{rowSelector} td:nth-child(#{highlightX})"
       if isVisible
@@ -32,11 +33,20 @@ define (require) ->
         $(rowSelector).removeClass 'selectedRow'
         $(colSelector).removeClass 'selectedCell'
 
-      {x, y} = objectToXY($(rowSelector)[0])
-      if y < window.pageYOffset
+    scrollToShowHighlight = ->
+      rowSelector = "#js-lyrics-table tr:nth-child(#{highlightY})"
+      {x, y, w, h} = objectToXY($(rowSelector)[0])
+
+      scrollTop = window.pageYOffset
+      if y < scrollTop
         $('body')[0].scrollTop = y
-      if y > window.pageYOffset + (window.innerHeight - 40)
-        $('body')[0].scrollTop = y - (window.innerHeight - 40)
+
+      scrollbarSize = $('.scrollbar-measure')[0].offsetWidth - \
+        $('.scrollbar-measure')[0].clientWidth
+      windowSize = window.innerHeight - scrollbarSize
+      scrollBottom = window.pageYOffset + windowSize
+      if (y + h) > scrollBottom
+        $('body')[0].scrollTop = (y + h) - windowSize
   
     moveHighlight = (xDelta, yDelta) ->
       drawHighlight false, highlightX, highlightY
@@ -54,6 +64,7 @@ define (require) ->
         highlightY = $('#js-lyrics-table tr').length
    
       drawHighlight true, highlightX, highlightY
+      scrollToShowHighlight()
   
     # prevent default behavior when arrow keys are pressed
     $(document).keydown (event) =>
