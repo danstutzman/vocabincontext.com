@@ -1,0 +1,12 @@
+%html
+  %head
+    %title Search
+  %body
+    %h1 Search
+    %form(method='post' action='/search')
+      %input(type='text' name='query')
+      %input(type='submit')
+    %hr
+    %ul
+      %li result1
+      %pre= @results
