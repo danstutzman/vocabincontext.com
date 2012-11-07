@@ -9,14 +9,6 @@
   <script type="text/javascript" src="../tools/jasmine-1.2.0/jasmine.js"></script>
   <script type="text/javascript" src="../tools/jasmine-1.2.0/jasmine-html.js"></script>
 
-  <!-- include source files here... -->
-  <script type="text/javascript" src="js/spec/SpecHelper.js"></script>
-  <script type="text/javascript" src="js/spec/PlayerSpec.js"></script>
-
-  <!-- include spec files here... -->
-  <script type="text/javascript" src="js/Player.js"></script>
-  <script type="text/javascript" src="js/Song.js"></script>
-
   <script src='../tools/require.js'></script>
 
   <script type="text/javascript">
@@ -30,7 +22,7 @@
       },
       waitSeconds: 5
     });
-    require(["main", "jquery"], function(main, $) {
+    require(["main", "jquery", "Song", "Player", "spec/SpecHelper", "spec/PlayerSpec"], function(main, $) {
       $(function() {
         var jasmineEnv = jasmine.getEnv();
         jasmineEnv.updateInterval = 1000;
