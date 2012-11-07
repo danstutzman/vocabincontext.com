@@ -1,7 +1,5 @@
 define (require) ->
-  timeSeries = require('cs!app/TimeSeries')
-  findClosest = timeSeries.findClosest
-  TimeSeries = timeSeries.TimeSeries
+  { findClosest, TimeSeries } = require('cs!app/TimeSeries')
 
   describe 'findClosest', ->
     it 'should work with 0-sized arrays', ->
