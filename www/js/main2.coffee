@@ -32,4 +32,4 @@ define (require) ->
     player = new Player($('#player'), $, soundManager, mp3Link)
 
     if $('#js-lyrics-table').length > 0
-      LyricsTable.init song, player
+      new LyricsTable(song, player).init()
