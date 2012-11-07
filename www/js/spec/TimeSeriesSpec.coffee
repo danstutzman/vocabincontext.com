@@ -1,5 +1,5 @@
-{ requirejs } = require('./test_helper')
-requirejs ['cs!app/TimeSeries'], (timeSeries) ->
+define (require) ->
+  timeSeries = require('cs!app/TimeSeries')
   findClosest = timeSeries.findClosest
   TimeSeries = timeSeries.TimeSeries
 

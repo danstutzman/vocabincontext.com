@@ -24,7 +24,7 @@
       waitSeconds: 5
     });
     var console_reporter = undefined; // global for console runner
-    require(["main", "jquery", "Song", "Player", "spec/SpecHelper", "spec/PlayerSpec"], function(main, $) {
+    require(["main", "jquery", "cs!spec/SoundGridSpec", "cs!spec/TimeSeriesSpec"], function(main, $) {
       $(function() {
         var jasmineEnv = jasmine.getEnv();
         jasmine.getEnv().updateInterval = 1000;

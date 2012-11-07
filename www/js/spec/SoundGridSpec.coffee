@@ -1,5 +1,5 @@
-{ requirejs } = require('./test_helper')
-requirejs ['cs!app/SoundGrid'], (SoundGrid) ->
+define (require) ->
+  SoundGrid = require('cs!app/SoundGrid')
   describe 'SoundGrid', ->
 
     it 'should start off blank', ->
