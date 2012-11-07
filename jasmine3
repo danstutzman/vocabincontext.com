@@ -1,8 +1,16 @@
 #!/bin/bash
 cd `dirname $0`
 
-# from browser
+# from browser (Mac)
+open www/TestRunner.html
+
+# from browser (Linux)
 google-chrome www/TestRunner.html
 
+PHANTOMJS="/usr/local/bin/phantomjs" # location on Mac
+if [ -e "$PHANTOMJS" ]; then
+  PHANTOMJS="../phantomjs-1.7.0-linux-i686/bin/phantomjs" # location for Linux
+fi
+
 # headless
-../phantomjs-1.7.0-linux-i686/bin/phantomjs tools/phantom-jasmine/run_jasmine_test.coffee www/TestRunner.html 
+$PHANTOM_JS tools/phantom-jasmine/run_jasmine_test.coffee www/TestRunner.html
