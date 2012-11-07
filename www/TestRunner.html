@@ -9,21 +9,36 @@
 
   <script type="text/javascript" src="../tools/phantom-jasmine/console-runner.js"></script>
 
-  <!-- SOURCE FILES -->
-  <script type="text/javascript" src="js/example.js"></script>
-
-  <!-- TEST FILES -->
-  <script type="text/javascript" src="js/example_spec.js"></script>
 </head>
 <body>
-
-<script type="text/javascript">
-  var console_reporter = new jasmine.ConsoleReporter()
-  jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
-  jasmine.getEnv().addReporter(console_reporter);
-  jasmine.getEnv().execute();
-</script>
-
+  <script src='../tools/require.js'></script>
+  <script type="text/javascript">
+    require.config({
+      baseUrl: "js",
+      paths: {
+        "jquery": "../../vendor/jquery/jquery-1.7.2",
+        "soundmanager2": "../../vendor/soundmanagerv297a-20120513/script/soundmanager2",
+        "cs": "../../tools/cs",
+        "coffee-script": "../../tools/coffee-script"
+      },
+      waitSeconds: 5
+    });
+    var console_reporter = undefined; // global for console runner
+    require(["main", "jquery", "Song", "Player", "spec/SpecHelper", "spec/PlayerSpec"], function(main, $) {
+      $(function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmine.getEnv().updateInterval = 1000;
+        var htmlReporter = new jasmine.HtmlReporter();
+        jasmine.getEnv().addReporter(htmlReporter);
+        jasmine.getEnv().specFilter = function(spec) {
+          return htmlReporter.specFilter(spec);
+        };
+        jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+        console_reporter = new jasmine.ConsoleReporter();
+        jasmine.getEnv().addReporter(console_reporter);
+        jasmine.getEnv().execute();
+      });
+    });
+  </script>
 </body>
 </html>
-

@@ -1,11 +1,13 @@
 #!/bin/bash
 cd `dirname $0`
 
+BROWSER_URL="http://localhost:8888/www/TestRunner.html?song=dutty-love"
+
 # from browser (Mac)
-open www/TestRunner.html
+open "$BROWSER_URL"
 
 # from browser (Linux)
-google-chrome www/TestRunner.html
+google-chrome "$BROWSER_URL"
 
 PHANTOMJS="/usr/local/bin/phantomjs" # location on Mac
 if [ -e "$PHANTOMJS" ]; then
