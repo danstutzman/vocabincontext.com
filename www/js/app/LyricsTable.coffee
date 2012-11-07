@@ -40,30 +40,32 @@ define (require) ->
           when ARROW_KEY_DOWN
             @moveHighlight 1
           when ENTER_KEY
-            $("#js-lyrics-table tr:nth-child(#{@highlightY + 1}) td:nth-child(1)").html(@player.getPosition())
+            @fillInCurrentPosition()
             @moveHighlight 1
           when S_KEY
             @toggleSkip()
     
-      if $('#js-lyrics-table').length
-        $.ajax
-          url: "/media/lyrics_txt/#{@song}.txt"
-          success: (data, textStatus, jqXHR) ->
-            for line in data.split("\n")
-              if match = line.match(/^([0-9]+)\s+(.*)$/)
-                start_time = match[1]
-                lyric = match[2]
-              else
-                start_time = ''
-                lyric = line
-  
-              newRow = ''
-              newRow += "<tr>\n"
-              newRow += "<td>#{start_time}</td>\n"
-              newRow += "<td></td>\n"
-              newRow += "<td>#{lyric}</td>\n"
-              newRow += "</tr>\n"
-              $('#js-lyrics-table > tbody').append newRow
+      $.ajax
+        url: "/media/lyrics_txt/#{@song}.txt"
+        success: (data, textStatus, jqXHR) ->
+          for line in data.split("\n")
+            if match = line.match(/^([0-9]+)\s+(.*)$/)
+              start_time = match[1]
+              lyric = match[2]
+            else
+              start_time = ''
+              lyric = line
+
+            newRow = ''
+            newRow += "<tr>\n"
+            newRow += "<td>#{start_time}</td>\n"
+            newRow += "<td></td>\n"
+            newRow += "<td>#{lyric}</td>\n"
+            newRow += "</tr>\n"
+            $('#js-lyrics-table > tbody').append newRow
+
+    fillInCurrentPosition: ->
+      $("#js-lyrics-table tr:nth-child(#{@highlightY + 1}) td:nth-child(1)").html(@player.getPosition())
   
     drawHighlight: (isVisible) ->
       rowSelector = "#js-lyrics-table tr:nth-child(#{@highlightY})"
