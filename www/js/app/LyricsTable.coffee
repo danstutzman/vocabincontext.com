@@ -1,5 +1,5 @@
 define (require) ->
-  $ = require('jquery')
+  $            = require('jquery')
 
   ARROW_KEY_UP    = 38
   ARROW_KEY_DOWN  = 40
@@ -19,12 +19,11 @@ define (require) ->
       { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   class LyricsTable
-    constructor: (song, player) ->
-      @song = song
+    constructor: (player) ->
       @player = player
       @highlightY = 1
 
-    init: ->
+    init: (song) ->
       # prevent default behavior when arrow keys are pressed
       $(document).keydown (event) =>
         if ARROW_KEYS.indexOf(event.which) != -1
@@ -45,24 +44,14 @@ define (require) ->
           when S_KEY
             @toggleSkip()
     
-      $.ajax
-        url: "/media/lyrics_txt/#{@song}.txt"
-        success: (data, textStatus, jqXHR) ->
-          for line in data.split("\n")
-            if match = line.match(/^([0-9]+)\s+(.*)$/)
-              start_time = match[1]
-              lyric = match[2]
-            else
-              start_time = ''
-              lyric = line
-
-            newRow = ''
-            newRow += "<tr>\n"
-            newRow += "<td>#{start_time}</td>\n"
-            newRow += "<td></td>\n"
-            newRow += "<td>#{lyric}</td>\n"
-            newRow += "</tr>\n"
-            $('#js-lyrics-table > tbody').append newRow
+    loadLyricsLine: (start_time, lyric) ->
+      newRow = ''
+      newRow += "<tr>\n"
+      newRow += "<td>#{start_time}</td>\n"
+      newRow += "<td></td>\n"
+      newRow += "<td>#{lyric}</td>\n"
+      newRow += "</tr>\n"
+      $('#js-lyrics-table > tbody').append newRow
 
     fillInCurrentPosition: ->
       $("#js-lyrics-table tr:nth-child(#{@highlightY + 1}) td:nth-child(1)").html(@player.getPosition())

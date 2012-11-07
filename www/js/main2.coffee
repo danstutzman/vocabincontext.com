@@ -4,6 +4,7 @@ define (require) ->
   Player       = require('cs!app/Player')
   WordLinks    = require('cs!app/WordLinks')
   LyricsTable  = require('cs!app/LyricsTable')
+  LyricsLoader = require('cs!app/LyricsLoader')
 
   getParams = ->
     result = {}
@@ -32,4 +33,6 @@ define (require) ->
     player = new Player($('#player'), $, soundManager, mp3Link)
 
     if $('#js-lyrics-table').length > 0
-      new LyricsTable(song, player).init()
+      table = new LyricsTable(player)
+      table.init()
+      new LyricsLoader().load(song, table.loadLyricsLine)
