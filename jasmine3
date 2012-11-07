@@ -1,3 +1,8 @@
 #!/bin/bash
 cd `dirname $0`
-../phantomjs-1.7.0-linux-i686/bin/phantomjs phantom-jasmine/lib/run_jasmine_test.coffee phantom-jasmine/examples/TestRunner.html 
+
+# from browser
+google-chrome www/TestRunner.html
+
+# headless
+../phantomjs-1.7.0-linux-i686/bin/phantomjs tools/phantom-jasmine/run_jasmine_test.coffee www/TestRunner.html 
