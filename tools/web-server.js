@@ -27,6 +27,8 @@ function serveFilename(filename, response) {
         mimeType = "text/html";
       else if (filename.match(/\.js$/))
         mimeType = "application/javascript";
+      else if (filename.match(/\.css$/))
+        mimeType = "text/css";
       else
         mimeType = "text/plain";
   
