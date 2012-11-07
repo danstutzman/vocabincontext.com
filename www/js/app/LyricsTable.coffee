@@ -5,6 +5,7 @@ define (require) ->
   ARROW_KEY_DOWN  = 40
   ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN]
   ENTER_KEY = 13
+  S_KEY = 83
 
   objectToXY = (object) ->
     if object.offsetParent
@@ -53,6 +54,14 @@ define (require) ->
    
       drawHighlight true
       scrollToShowHighlight()
+
+    toggleSkip = () ->
+      selector = "#js-lyrics-table tr:nth-child(#{highlightY}) td:nth-child(2)"
+      existingSkip = $(selector).html()
+      if existingSkip == '#'
+        $(selector).html('')
+      else
+        $(selector).html('#')
   
     # prevent default behavior when arrow keys are pressed
     $(document).keydown (event) =>
@@ -71,6 +80,8 @@ define (require) ->
         when ENTER_KEY
           $("#js-lyrics-table tr:nth-child(#{highlightY + 1}) td:nth-child(1)").html(player.getPosition())
           moveHighlight 1
+        when S_KEY
+          toggleSkip()
   
     if $('#js-lyrics-table').length
       $.ajax
@@ -83,7 +94,13 @@ define (require) ->
             else
               start_time = ''
               lyric = line
-            newRow = "<tr><td>#{start_time}</td><td>#{lyric}</td><td></td></tr>"
+
+            newRow = ''
+            newRow += "<tr>\n"
+            newRow += "<td>#{start_time}</td>\n"
+            newRow += "<td></td>\n"
+            newRow += "<td>#{lyric}</td>\n"
+            newRow += "</tr>\n"
             $('#js-lyrics-table > tbody').append newRow
   
   { init: init }

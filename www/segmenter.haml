@@ -26,7 +26,7 @@
     %table(id='js-lyrics-table' border='1')
       %tr
         %th Start time
+        %th Skip?
         %th Lyrics line
-        %th Doesn't quite finish?
     = Haml::Engine.new(File.read('www/_loading.haml')).render
     = Haml::Engine.new(File.read('www/_js.haml')).render
