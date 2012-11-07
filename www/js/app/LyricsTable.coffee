@@ -3,9 +3,7 @@ define (require) ->
 
   ARROW_KEY_UP    = 38
   ARROW_KEY_DOWN  = 40
-  ARROW_KEY_LEFT  = 37
-  ARROW_KEY_RIGHT = 39
-  ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN, ARROW_KEY_LEFT, ARROW_KEY_RIGHT]
+  ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN]
   ENTER_KEY = 13
 
   objectToXY = (object) ->
@@ -21,17 +19,13 @@ define (require) ->
 
   init = (song, player) ->
     highlightY = 1
-    highlightX = 2
   
     drawHighlight = (isVisible) ->
       rowSelector = "#js-lyrics-table tr:nth-child(#{highlightY})"
-      colSelector = "#{rowSelector} td:nth-child(#{highlightX})"
       if isVisible
         $(rowSelector).addClass 'selectedRow'
-        $(colSelector).addClass 'selectedCell'
       else
         $(rowSelector).removeClass 'selectedRow'
-        $(colSelector).removeClass 'selectedCell'
 
     scrollToShowHighlight = ->
       rowSelector = "#js-lyrics-table tr:nth-child(#{highlightY})"
@@ -48,14 +42,8 @@ define (require) ->
       if (y + h) > scrollBottom
         $('body')[0].scrollTop = (y + h) - windowSize
   
-    moveHighlight = (xDelta, yDelta) ->
-      drawHighlight false, highlightX, highlightY
-  
-      highlightX += xDelta
-      if highlightX < 1
-        highlightX = 1
-      if highlightX > 3
-        highlightX = 3
+    moveHighlight = (yDelta) ->
+      drawHighlight false
   
       highlightY += yDelta
       if highlightY < 1
@@ -63,7 +51,7 @@ define (require) ->
       if highlightY > $('#js-lyrics-table tr').length
         highlightY = $('#js-lyrics-table tr').length
    
-      drawHighlight true, highlightX, highlightY
+      drawHighlight true
       scrollToShowHighlight()
   
     # prevent default behavior when arrow keys are pressed
@@ -77,16 +65,12 @@ define (require) ->
     $(document).keyup (event) =>
       switch event.which
         when ARROW_KEY_UP
-          moveHighlight 0, -1
+          moveHighlight -1
         when ARROW_KEY_DOWN
-          moveHighlight 0, 1
-        when ARROW_KEY_LEFT
-          moveHighlight -1, 0
-        when ARROW_KEY_RIGHT
-          moveHighlight 1, 0
+          moveHighlight 1
         when ENTER_KEY
           $("#js-lyrics-table tr:nth-child(#{highlightY + 1}) td:nth-child(1)").html(player.getPosition())
-          moveHighlight 0, 1
+          moveHighlight 1
   
     if $('#js-lyrics-table').length
       $.ajax
