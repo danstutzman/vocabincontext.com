@@ -73,9 +73,11 @@ define (require) ->
           @updatePlayButtonLabel()
     
     updateCursorX: ->
+      #console.log 'updateCursorX', @theSound.duration
       if @theSound && @theSound.duration
         cursorX =
           Math.floor(@canvas.width * @theSound.position / @theSound.duration)
+        #console.log 'cursor is now at', "#{cursorX + 1}px"
         @cursor.style.left = "#{cursorX + 1}px" # add 1 for border
   
     onFinish: ->
@@ -116,6 +118,7 @@ define (require) ->
       @updateCursorX()
   
     whilePlaying: ->
+      # console.log 'whilePlaying', @theSound.position, @theSound.duration, @theSound.peakData.left, @theSound.peakData.right
       if @theSound.duration && !@soundGrid
         @soundGrid =
           new SoundGrid(@canvas.width, @canvas.height, @theSound.duration)

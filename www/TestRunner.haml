@@ -4,6 +4,8 @@
     %title Jasmine Test Runner
     %link(href="../tools/jasmine-1.2.0/jasmine.css" rel="stylesheet" type="text/css")
   %body
+    %div(id='player' style='position:relative')
+
     %script(src="../tools/jasmine-1.2.0/jasmine.js")
     %script(src="../tools/jasmine-1.2.0/jasmine-html.js")
     %script(src="../tools/phantom-jasmine/console-runner.js")
@@ -12,16 +14,17 @@
     = Haml::Engine.new(File.read('www/_js.haml')).render
     :javascript
       var console_reporter = undefined; // global for console runner
-      require(["jquery",
-          "cs!spec/SoundGridSpec", "cs!spec/TimeSeriesSpec"], function($) {
-        $(function() {
+      require(["cs!main2", "cs!app/fakeSoundManager",
+          "cs!spec/SoundGridSpec", "cs!spec/TimeSeriesSpec",
+          "cs!spec/UiSpec"], function(main, soundManager) {
+        main.go(soundManager);
+        soundManager.onready(function() {
           jasmine.getEnv().updateInterval = 1000;
           var htmlReporter = new jasmine.HtmlReporter();
           jasmine.getEnv().addReporter(htmlReporter);
           jasmine.getEnv().specFilter = function(spec) {
             return htmlReporter.specFilter(spec);
           };
-          jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
           console_reporter = new jasmine.ConsoleReporter();
           jasmine.getEnv().addReporter(console_reporter);
           jasmine.getEnv().execute();
