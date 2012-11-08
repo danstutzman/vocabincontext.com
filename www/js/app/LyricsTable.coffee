@@ -1,11 +1,5 @@
 define (require) ->
-  $            = require('jquery')
-
-  ARROW_KEY_UP    = 38
-  ARROW_KEY_DOWN  = 40
-  ARROW_KEYS = [ARROW_KEY_UP, ARROW_KEY_DOWN]
-  ENTER_KEY = 13
-  S_KEY = 83
+  $ = require('jquery')
 
   objectToXY = (object) ->
     if object.offsetParent
@@ -19,6 +13,12 @@ define (require) ->
       { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   class LyricsTable
+    @ARROW_KEY_UP: 38
+    @ARROW_KEY_DOWN: 40
+    @ENTER_KEY: 13
+    @S_KEY: 83
+    @ARROW_KEYS: [@ARROW_KEY_UP, @ARROW_KEY_DOWN]
+
     constructor: (player) ->
       @player = player
       @highlightY = 1
@@ -26,7 +26,7 @@ define (require) ->
     init: (song) ->
       # prevent default behavior when arrow keys are pressed
       $(document).keydown (event) =>
-        if ARROW_KEYS.indexOf(event.which) != -1
+        if @constructor.ARROW_KEYS.indexOf(event.which) != -1
           event.preventDefault()
           false
         else
@@ -34,14 +34,14 @@ define (require) ->
     
       $(document).keyup (event) =>
         switch event.which
-          when ARROW_KEY_UP
+          when @constructor.ARROW_KEY_UP
             @moveHighlight -1
-          when ARROW_KEY_DOWN
+          when @constructor.ARROW_KEY_DOWN
             @moveHighlight 1
-          when ENTER_KEY
+          when @constructor.ENTER_KEY
             @fillInCurrentPosition()
             @moveHighlight 1
-          when S_KEY
+          when @constructor.S_KEY
             @toggleSkip()
     
     loadLyricsLine: (start_time, lyric) ->

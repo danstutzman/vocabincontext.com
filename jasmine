@@ -19,5 +19,4 @@ if [ ! -e "$PHANTOMJS" ]; then
 fi
 
 # headless
-$PHANTOMJS tools/phantom-jasmine/run_jasmine_test.coffee \
-  "www/TestRunner.html?$PARAMS"
+$PHANTOMJS tools/phantom-jasmine/run_jasmine_test.coffee "$BROWSER_URL"
