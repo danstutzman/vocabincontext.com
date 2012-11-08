@@ -6,17 +6,18 @@ SOUND_MANAGER=fakeSoundManager
 PARAMS="soundManager=$SOUND_MANAGER"
 BROWSER_URL="http://localhost:8888/www/TestRunner.html?$PARAMS"
 
-# from browser (Mac)
-open "$BROWSER_URL"
-
-# from browser (Linux)
-google-chrome "$BROWSER_URL"
+BROWSER=/usr/bin/google-chrome # location for Linux
+if [ -e "$BROWSER" ]; then
+  $BROWSER "$BROWSER_URL"
+else
+  open "$BROWSER_URL" # for Mac
+fi
 
 PHANTOMJS="/usr/local/bin/phantomjs" # location on Mac
-if [ -e "$PHANTOMJS" ]; then
+if [ ! -e "$PHANTOMJS" ]; then
   PHANTOMJS="../phantomjs-1.7.0-linux-i686/bin/phantomjs" # location for Linux
 fi
 
 # headless
-$PHANTOM_JS tools/phantom-jasmine/run_jasmine_test.coffee \
+$PHANTOMJS tools/phantom-jasmine/run_jasmine_test.coffee \
   "www/TestRunner.html?$PARAMS"
