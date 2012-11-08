@@ -3,7 +3,8 @@ define (require) ->
   soundManager = require('cs!app/soundManager')
 
   init = (song) -> # returns Deferred
-    $.getJSON "/media/lyrics_json/#{song}.json", (lines) ->
+    deferred = $.getJSON "/media/lyrics_json/#{song}.json"
+    deferred.success (lines) ->
       word_to_count = {}
       for line in lines
         for word in line['lyric'].split(' ')
@@ -40,5 +41,10 @@ define (require) ->
               soundManager.play(id, href)
               false
         false
+
+    deferred.error (jqXHR, textStatus, errorThrown) ->
+      throw "Error in WordLinks.init's getJSON: #{errorThrown}"
+
+    deferred
 
   { init: init }

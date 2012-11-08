@@ -9,7 +9,7 @@ define (require) ->
           for line in data.split("\n")
             @interpretDataLine line, newLineCallback
         error: (jqXHR, textStatus, errorThrown) ->
-          throw errorThrown
+          throw "Error in LyricsLoader.load's ajax: #{errorThrown}"
 
     interpretDataLine: (line, newLineCallback) ->
       if match = line.match(/^([0-9]+)\s+(.*)$/)
