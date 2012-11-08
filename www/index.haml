@@ -25,5 +25,10 @@
     :javascript
       require(["cs!main2", "cs!app/soundManager"],
           function(main, soundManager) {
-        main.go(soundManager);
+        var song = main.getParams()['song'];
+        if (!song) {
+          alert('Please specify a song parameter');
+        } else {
+          main.go(song, soundManager);
+        }
       });

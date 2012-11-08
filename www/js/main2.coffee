@@ -5,7 +5,7 @@ define (require) ->
   LyricsTable  = require('cs!app/LyricsTable')
   LyricsLoader = require('cs!app/LyricsLoader')
 
-  getParams = ->
+  getParams: ->
     result = {}
     re = /([^&=]+)=([^&]*)/g
     d = decodeURIComponent
@@ -15,14 +15,10 @@ define (require) ->
       result[d(match[1])] = d match[2]
     result
 
-  go = (soundManager) ->
+  go: (song, soundManager) ->
     soundManager.onready ->
       $('#throbber-background').hide()
       $('#throbber-foreground').hide()
-
-    song = getParams()['song']
-    if !song
-      alert 'Please specify a song parameter'
 
     if $('#words').length > 0 && $('#lyrics').length > 0
       WordLinks.init song
@@ -36,5 +32,3 @@ define (require) ->
         table = new LyricsTable(player)
         table.init()
         new LyricsLoader().load(song, table.loadLyricsLine)
-
-  { go: go }

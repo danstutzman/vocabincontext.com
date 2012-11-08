@@ -17,7 +17,7 @@
       require(["cs!main2", "cs!app/fakeSoundManager",
           "cs!spec/SoundGridSpec", "cs!spec/TimeSeriesSpec",
           "cs!spec/UiSpec"], function(main, soundManager) {
-        main.go(soundManager);
+        main.go('testing', soundManager);
         soundManager.onready(function() {
           jasmine.getEnv().updateInterval = 1000;
           var htmlReporter = new jasmine.HtmlReporter();

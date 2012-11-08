@@ -5,7 +5,7 @@ define (require) ->
     constructor: (params) ->
       @params = params
     play: ->
-      @duration = 287477
+      @duration = 6000
       @peakData = { left: 0, right: 0 }
       for position in [0...6000] by 500
         @position = position
