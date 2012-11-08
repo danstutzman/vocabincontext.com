@@ -5,7 +5,7 @@ dev: www/segmenter-dev.html \
 prod: www/segmenter-prod.html \
      www/index-prod.html \
      www/js/main2.coffee www/js/main.js www/js/app/*.coffee
-	node_modules/grunt/bin/grunt release
+	node tools/r.js -o tools/rjs-build-config.js
 clean:
 	rm -f www/segmenter-dev.html www/segmenter-prod.html
 	rm -f www/index-dev.html   www/index-prod.html
