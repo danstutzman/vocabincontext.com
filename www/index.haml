@@ -23,12 +23,4 @@
     = Haml::Engine.new(File.read('www/_loading.haml')).render
     = Haml::Engine.new(File.read('www/_js.haml')).render
     :javascript
-      require(["cs!main2", "cs!app/soundManager"],
-          function(main, soundManager) {
-        var song = main.getParams()['song'];
-        if (!song) {
-          alert('Please specify a song parameter');
-        } else {
-          main.go(song, soundManager);
-        }
-      });
+      require(["cs!main2"], function(main) { main.setupFromRequestParams(); });

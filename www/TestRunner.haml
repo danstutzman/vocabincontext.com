@@ -14,11 +14,12 @@
     = Haml::Engine.new(File.read('www/_js.haml')).render
     :javascript
       var console_reporter = undefined; // global for console runner
-      require(["cs!main2", "cs!app/fakeSoundManager",
-          "cs!spec/SoundGridSpec", "cs!spec/TimeSeriesSpec",
-          "cs!spec/UiSpec"], function(main, soundManager) {
-        main.go('testing', soundManager);
-        soundManager.onready(function() {
+      require(["cs!main2",
+          "cs!spec/SoundGridSpec",
+          "cs!spec/TimeSeriesSpec",
+          "cs!spec/UiSpec"
+          ], function(main) {
+        main.setupForTestingAndThen(function() {
           jasmine.getEnv().updateInterval = 1000;
           var htmlReporter = new jasmine.HtmlReporter();
           jasmine.getEnv().addReporter(htmlReporter);

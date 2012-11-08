@@ -1,7 +1,10 @@
 #!/bin/bash
 cd `dirname $0`
 
-BROWSER_URL="http://localhost:8888/www/TestRunner.html"
+SOUND_MANAGER=fakeSoundManager
+#SOUND_MANAGER=realSoundManager
+PARAMS="soundManager=$SOUND_MANAGER"
+BROWSER_URL="http://localhost:8888/www/TestRunner.html?$PARAMS"
 
 # from browser (Mac)
 open "$BROWSER_URL"
@@ -15,4 +18,5 @@ if [ -e "$PHANTOMJS" ]; then
 fi
 
 # headless
-$PHANTOM_JS tools/phantom-jasmine/run_jasmine_test.coffee www/TestRunner.html
+$PHANTOM_JS tools/phantom-jasmine/run_jasmine_test.coffee \
+  "www/TestRunner.html?$PARAMS"

@@ -52,8 +52,7 @@ module.exports = function(grunt) {
         describe: true,
         it: true,
         expect: true,
-        exports: true,
-        alert: true
+        exports: true
       }
     },
     uglify: {},
