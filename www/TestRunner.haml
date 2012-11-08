@@ -5,7 +5,13 @@
     %link(href="../tools/jasmine-1.2.0/jasmine.css" rel="stylesheet" type="text/css")
     %link(href="application.css" rel="stylesheet" type="text/css")
   %body
+    %div.scrollbar-measure
     %div(id='player' style='position:relative')
+    %table(id='js-lyrics-table' border='1')
+      %tr
+        %th Start time
+        %th Skip?
+        %th Lyrics line
 
     %script(src="../tools/jasmine-1.2.0/jasmine.js")
     %script(src="../tools/jasmine-1.2.0/jasmine-html.js")
