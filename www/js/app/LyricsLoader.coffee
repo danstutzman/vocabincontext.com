@@ -2,7 +2,7 @@ define (require) ->
   $ = require('jquery')
 
   class LyricsLoader
-    load: (song, newLineCallback) ->
+    load: (song, newLineCallback) -> # returns Deferred
       $.ajax
         url: "/media/lyrics_txt/#{song}.txt"
         success: (data, textStatus, jqXHR) =>

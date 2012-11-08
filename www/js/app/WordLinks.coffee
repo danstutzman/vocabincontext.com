@@ -2,8 +2,8 @@ define (require) ->
   $ = require('jquery')
   soundManager = require('cs!app/soundManager')
 
-  init = (song) ->
-    lines = $.getJSON "/media/lyrics_json/#{song}.json", (lines) ->
+  init = (song) -> # returns Deferred
+    $.getJSON "/media/lyrics_json/#{song}.json", (lines) ->
       word_to_count = {}
       for line in lines
         for word in line['lyric'].split(' ')
