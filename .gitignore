@@ -13,3 +13,5 @@ www/TestRunner.html
 .DS_Store
 bible
 backend/db.sqlite3
+song_lyrics
+song_names
