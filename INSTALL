@@ -5,8 +5,12 @@ For Mac OS X: (Instructions adapted from http://blog.argasinski.eu/2011/09/25/sp
 - wget https://raw.github.com/npinto/homebrew/f221036962c41c95d5dd0927b24ab1f02d74204e/Library/Formula/mp3splt.rb
 - brew install mp3splt
 - brew update && brew install phantomjs
+- sqlite3 comes pre-installed on Leopard and later
+- Start the backend server with:
+  - cd backend
+  - shotgun
 
-For Ubuntu 10.04:
+For Ubuntu 10.04 LTS:
 - Install node.js:
   - download it
   - tar xvzf node-v0.8.11.tar.gz
@@ -27,3 +31,7 @@ For Ubuntu 10.04:
   - sudo ln -s ruby1.9 ruby
   - sudo ln -s irb1.9 irb
 - Get phantomjs from http://phantomjs.org/download.html and unzip into ~/Documents/phantomjs-1.7.0-linux-i686
+- sudo apt-get install libsqlite3-dev sqlite3
+- Start the backend server with:
+  - cd backend
+  - bundle exec shotgun
