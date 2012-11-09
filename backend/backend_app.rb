@@ -14,6 +14,9 @@ DataMapper.auto_upgrade!
 DataMapper::Model.raise_on_save_failure = true
 DataMapper.finalize
 
+song = Song.new({ :created_at => DateTime.now })
+song.save!
+
 QUERY_REGEX = /^\w+$/
 
 class BackendApp < Sinatra::Base
