@@ -1,6 +1,5 @@
 define (require) ->
   $ = require('jquery')
-  main = require('main')
   LyricsTable = require('cs!app/LyricsTable')
 
   simulateKeyUp = (which) ->

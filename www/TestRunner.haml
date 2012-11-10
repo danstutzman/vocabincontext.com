@@ -19,6 +19,7 @@
     %script(src="../tools/jasmine-1.2.0/jasmine-html.js")
     %script(src="../tools/phantom-jasmine/console-runner.js")
     %script(src="../tools/require.js")
+    %script(src="js/jscover_report.js")
     = Haml::Engine.new(File.read('www/_loading.haml')).render
     = Haml::Engine.new(File.read('www/_js.haml')).render
     :javascript
@@ -37,6 +38,12 @@
           };
           console_reporter = new jasmine.ConsoleReporter();
           jasmine.getEnv().addReporter(console_reporter);
+          jasmine.getEnv().addReporter({
+            reportRunnerResults: function() {
+              var report = run_jscover_report();
+              jQuery('body').append(report);
+            }
+          });
           jasmine.getEnv().execute();
         });
       });

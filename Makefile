@@ -24,3 +24,6 @@ www/index-prod.html: www/index.haml www/_loading.haml www/_js.haml
 
 www/TestRunner.html: www/TestRunner.haml
 	haml www/TestRunner.haml > www/TestRunner.html
+www/TestRunner-prod.html: www/TestRunner.haml
+	ENV=production haml www/TestRunner.haml > www/TestRunner-prod.html
+
