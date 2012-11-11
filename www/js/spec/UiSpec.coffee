@@ -1,6 +1,6 @@
 define (require) ->
   $ = require('jquery')
-  LyricsTable = require('cs!app/LyricsTable')
+  LyricsTableView = require('cs!app/LyricsTableView')
 
   simulateKeyUp = (which) ->
     keyup = $.Event('keyup', { which: which })
@@ -17,9 +17,9 @@ define (require) ->
       runs ->
         $('#play-button').click() # stop playing
 
-  describe 'LyricsTable', ->
+  describe 'LyricsTableView', ->
     it 'should advance cursor downward when down arrow key is pressed', ->
-      simulateKeyUp LyricsTable.ARROW_KEY_DOWN
+      simulateKeyUp LyricsTableView.ARROW_KEY_DOWN
       # make sure highlight is on second row
       class_ = $('#js-lyrics-table tr:nth-child(2)').attr('class')
       expect(class_).toEqual("selectedRow")

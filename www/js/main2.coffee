@@ -4,7 +4,8 @@ define (require) ->
   realSoundManager = require('cs!app/soundManager')
   Player           = require('cs!app/Player')
   WordLinks        = require('cs!app/WordLinks')
-  LyricsTable      = require('cs!app/LyricsTable')
+  LyricsTableData  = require('cs!app/LyricsTableData')
+  LyricsTableView  = require('cs!app/LyricsTableView')
   LyricsLoader     = require('cs!app/LyricsLoader')
 
   getRequestParams = ->
@@ -33,9 +34,11 @@ define (require) ->
       waitForAll = waitForAll.pipe -> waitForSoundManager
 
       if $('#js-lyrics-table').length > 0
-        table = new LyricsTable(player)
+        data = new LyricsTableData()
+        table = new LyricsTableView(player, data)
         table.init()
-        waitForAjax = new LyricsLoader().load(song, table.loadLyricsLine)
+        waitForAjax = new LyricsLoader().load(song, ->
+          table.loadLyricsLine.apply table, arguments)
         waitForAll = waitForAll.pipe -> waitForAjax
 
     waitForAll.done ->

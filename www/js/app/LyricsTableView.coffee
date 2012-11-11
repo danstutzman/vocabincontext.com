@@ -1,5 +1,6 @@
 define (require) ->
   $ = require('jquery')
+  LyricsTableData = require('cs!app/LyricsTableData')
 
   objectToXY = (object) ->
     if object.offsetParent
@@ -12,18 +13,22 @@ define (require) ->
         parent = parent.offsetParent
       { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
-  class LyricsTable
+  class LyricsTableView
     @ARROW_KEY_UP: 38
     @ARROW_KEY_DOWN: 40
     @ENTER_KEY: 13
     @S_KEY: 83
     @ARROW_KEYS: [@ARROW_KEY_UP, @ARROW_KEY_DOWN]
+    @COL_NAME_TO_COL_NUM:
+      start_time: 0
+      skip: 1
+      lyric: 2
 
-    constructor: (player) ->
-      @player = player
-      @highlightY = 1
+    constructor: (player, data) ->
+      @_player = player
+      @_data = data
 
-    init: (song) ->
+    init: ->
       # prevent default behavior when arrow keys are pressed
       $(document).keydown (event) =>
         if @constructor.ARROW_KEYS.indexOf(event.which) != -1
@@ -35,16 +40,26 @@ define (require) ->
       $(document).keyup (event) =>
         switch event.which
           when @constructor.ARROW_KEY_UP
-            @moveHighlight -1
+            @_drawHighlight false
+            @_data.moveHighlight -1
+            @_drawHighlight true
+            @_scrollToShowHighlight()
           when @constructor.ARROW_KEY_DOWN
-            @moveHighlight 1
+            @_drawHighlight false
+            @_data.moveHighlight 1
+            @_drawHighlight true
+            @_scrollToShowHighlight()
           when @constructor.ENTER_KEY
+            @_drawHighlight false
+            @_data.moveHighlight 1
             @fillInCurrentPosition()
-            @moveHighlight 1
+            @_drawHighlight true
+            @_scrollToShowHighlight()
           when @constructor.S_KEY
             @toggleSkip()
     
     loadLyricsLine: (start_time, lyric) ->
+      @_data.loadLyricsLine start_time, lyric
       newRow = ''
       newRow += "<tr>\n"
       newRow += "<td>#{start_time}</td>\n"
@@ -53,18 +68,37 @@ define (require) ->
       newRow += "</tr>\n"
       $('#js-lyrics-table > tbody').append newRow
 
+    _highlightedRowSelector: ->
+      "#js-lyrics-table tr:nth-child(#{@_data.highlightY() + 1})"
+
+    _dataSkipToHtml: (data_skip) ->
+      if data_skip then "#" else ""
+
+    _highlightedRowForColSelector: (col_num) ->
+
+    _reloadHighlightedDataForCol: (col_name) ->
+      new_data = @_data.highlightedRow()[col_name]
+      if col_name == 'skip'
+        new_data = @_dataSkipToHtml(new_data)
+      
+      col_num = @constructor.COL_NAME_TO_COL_NUM[col_name]
+      selector = "#{@_highlightedRowSelector()} td:nth-child(#{col_num + 1})"
+      $(selector).html(new_data)
+
     fillInCurrentPosition: ->
-      $("#js-lyrics-table tr:nth-child(#{@highlightY + 1}) td:nth-child(1)").html(@player.getPosition())
+      time = @_player.getPosition()
+      @_data.setStartTime time
+      @_reloadHighlightedDataForCol('start_time')
   
-    drawHighlight: (isVisible) ->
-      rowSelector = "#js-lyrics-table tr:nth-child(#{@highlightY})"
+    _drawHighlight: (isVisible) ->
+      rowSelector = @_highlightedRowSelector()
       if isVisible
         $(rowSelector).addClass 'selectedRow'
       else
         $(rowSelector).removeClass 'selectedRow'
 
-    scrollToShowHighlight: ->
-      rowSelector = "#js-lyrics-table tr:nth-child(#{@highlightY})"
+    _scrollToShowHighlight: ->
+      rowSelector = @_highlightedRowSelector()
       {x, y, w, h} = objectToXY($(rowSelector)[0])
 
       scrollTop = window.pageYOffset
@@ -78,22 +112,7 @@ define (require) ->
       if (y + h) > scrollBottom
         $('body')[0].scrollTop = (y + h) - windowSize
   
-    moveHighlight: (yDelta) ->
-      @drawHighlight false
-  
-      @highlightY += yDelta
-      if @highlightY < 1
-        @highlightY = 1
-      if @highlightY > $('#js-lyrics-table tr').length
-        @highlightY = $('#js-lyrics-table tr').length
-   
-      @drawHighlight true
-      @scrollToShowHighlight()
-
     toggleSkip: ->
-      selector = "#js-lyrics-table tr:nth-child(#{@highlightY}) td:nth-child(2)"
-      existingSkip = $(selector).html()
-      if existingSkip == '#'
-        $(selector).html('')
-      else
-        $(selector).html('#')
+      existingSkip = @_data.highlightedRow()['skip']
+      @_data.toggleSkipOnHighlightedRow()
+      @_reloadHighlightedDataForCol('skip')
