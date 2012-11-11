@@ -38,12 +38,14 @@
           };
           console_reporter = new jasmine.ConsoleReporter();
           jasmine.getEnv().addReporter(console_reporter);
-          jasmine.getEnv().addReporter({
-            reportRunnerResults: function() {
-              var report = run_jscover_report();
-              jQuery('body').append(report);
-            }
-          });
+          if (typeof(top._$jscoverage) !== 'undefined') {
+            jasmine.getEnv().addReporter({
+              reportRunnerResults: function() {
+                var report = run_jscover_report();
+                jQuery('body').append(report);
+              }
+            });
+          }
           jasmine.getEnv().execute();
         });
       });
