@@ -26,7 +26,13 @@ define (require) ->
       for word in sorted_words
         count = word_to_count[word]
   
-        $('#words').append('<li><a class="js-word-link" data-word="' + word + '" href="#">' + word + '(' + count + ')' + '</a></li>')
+        li = ''
+        li += '<li>'
+        li += "<a class='js-word-link' data-word='#{word}' href='#'>"
+        li += "#{word}(#{count})"
+        li += '</a>'
+        li += '</li>'
+        $('#words').append(li)
   
       $('.js-word-link').click (event) =>
         word = event.target.getAttribute('data-word')
@@ -34,7 +40,15 @@ define (require) ->
         $('#lyrics').empty()
         for line in lines
           if line['lyric'].indexOf(word) != -1
-            $('#lyrics').append('<li><a id="' + line['id'] + '" class="js-sound-link" href="/' + line['filename'] + '">' + line['lyric'] + '</a></li>')
+            href = "/#{line['filename']}"
+            li = ''
+            li += '<li>'
+            li += "<a id='#{line['id']}' class='js-sound-link' href='#{href}'>"
+            li += line['lyric']
+            li += '</a>'
+            li += '</li>'
+            $('#lyrics').append(li)
+
             $('.js-sound-link').click (event) =>
               id = event.target.id
               href = event.target.href

@@ -118,7 +118,8 @@ define (require) ->
       @updateCursorX()
   
     whilePlaying: ->
-      # console.log 'whilePlaying', @theSound.position, @theSound.duration, @theSound.peakData.left, @theSound.peakData.right
+      # console.log 'whilePlaying', @theSound.position, @theSound.duration, \
+      #   @theSound.peakData.left, @theSound.peakData.right
       if @theSound.duration && !@soundGrid
         @soundGrid =
           new SoundGrid(@canvas.width, @canvas.height, @theSound.duration)
