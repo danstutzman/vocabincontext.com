@@ -28,13 +28,14 @@ define (require) ->
       else if typeof(start_time) == 'string' && start_time.match(/^[0-9]+$/)
         parseInt(start_time)
       else
-        throw "Invalid start_time argument: #{start_time} #{typeof(start_time)}"
+        throw new Error(\
+          "Invalid start_time argument: #{start_time} #{typeof(start_time)}")
 
     _convertLyric: (lyric) ->
       if typeof(lyric) == 'string'
         lyric
       else
-        throw "Invalid lyric argument: #{lyric}"
+        throw new Error("Invalid lyric argument: #{lyric}")
 
     loadLyricsLine: (start_time, lyric) ->
       start_time = @_convertStartTime(start_time)
@@ -47,7 +48,8 @@ define (require) ->
 
     moveHighlight: (yDelta) ->
       if yDelta != -1 && yDelta != 1
-        throw "Invalid argument #{yDelta} to moveHighlight: must be -1 or 1"
+        throw new Error(\
+          "Invalid argument #{yDelta} to moveHighlight: must be -1 or 1")
 
       @_highlightY += yDelta
 

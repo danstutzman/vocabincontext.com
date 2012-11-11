@@ -57,7 +57,7 @@ define (require) ->
         false
 
     deferred.error (jqXHR, textStatus, errorThrown) ->
-      throw "Error in WordLinks.init's getJSON: #{errorThrown}"
+      throw new Error("Error in WordLinks.init's getJSON: #{errorThrown}")
 
     deferred
 
