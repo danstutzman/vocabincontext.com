@@ -1,10 +1,12 @@
 .PHONY: dev prod clean lint
 dev: www/segmenter-dev.html \
      www/index-dev.html \
-     www/TestRunner.html
+     www/TestRunner.html \
+     lint
 prod: www/segmenter-prod.html \
      www/index-prod.html \
-     www/js/main2.coffee www/js/main.js www/js/app/*.coffee
+     www/js/main2.coffee www/js/main.js www/js/app/*.coffee \
+     lint
 	node tools/r.js -o tools/rjs-build-config.js
 clean:
 	rm -f www/segmenter-dev.html www/segmenter-prod.html
