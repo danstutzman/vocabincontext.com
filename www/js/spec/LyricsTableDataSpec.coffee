@@ -59,6 +59,12 @@ define (require) ->
       data.moveHighlight 1
       expect(data.highlightedRow().start_time).toEqual 234
       expect(data.highlightedRow().lyric).toEqual 'lyrics line 2'
+    it 'lets you change the start time for a row', ->
+      data = new LyricsTableData()
+      data.loadLyricsLine 123, 'lyrics line 1'
+      data.loadLyricsLine 234, 'lyrics line 2'
+      data.setStartTime 345
+      expect(data.highlightedRow().start_time).toEqual 345
     it 'lets you toggle skip', ->
       data = new LyricsTableData()
       data.loadLyricsLine 123, 'lyrics line 1'
