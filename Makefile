@@ -1,4 +1,4 @@
-.PHONY: dev prod clean grunt-release
+.PHONY: dev prod clean lint
 dev: www/segmenter-dev.html \
      www/index-dev.html \
      www/TestRunner.html
@@ -11,6 +11,8 @@ clean:
 	rm -f www/index-dev.html   www/index-prod.html
 	rm -f www/TestRunner.html
 	rm -rf www-built
+lint:
+	find www/js -name "*.coffee" | xargs node_modules/coffeelint/bin/coffeelint
 
 www/segmenter-dev.html: www/segmenter.haml www/_loading.haml www/_js.haml
 	haml www/segmenter.haml > www/segmenter-dev.html
