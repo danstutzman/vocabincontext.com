@@ -1,4 +1,6 @@
 #!/bin/sh
-ROWS=`echo 'select count(*) from songs;' | sqlite3 db.sqlite3`
-echo "$ROWS song(s):"
-echo 'select * from songs;' | sqlite3 -header db.sqlite3
+cd `dirname $0`
+for TABLE in artists songs song_lines; do
+  echo "Listing $TABLE table"
+  echo "select * from $TABLE;" | sqlite3 -header db.sqlite3
+done
