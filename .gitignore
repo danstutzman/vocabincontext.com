@@ -1,8 +1,10 @@
 .*.swp
+
 media/whole_songs/*.mp3
 media/lyrics_txt/*.txt
 media/lyrics_json/*.json
 media/excerpts/*.mp3
+
 www-built
 www/js-compiled-from-coffee
 www/index-dev.html
@@ -11,9 +13,14 @@ www/segmenter-dev.html
 www/segmenter-prod.html
 www/TestRunner.html
 www/TestRunner-prod.html
+
 .DS_Store
-bible
+
 backend/db.sqlite3
+
+bible
+artist_names
 song_lyrics
 song_names
+
 www-coverage
