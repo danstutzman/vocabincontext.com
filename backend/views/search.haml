@@ -7,6 +7,9 @@
       %input(type='text' name='query')
       %input(type='submit')
     %hr
-    %ul
-      %li result1
-      %pre= @results
+    - if @results.size == 0
+      No results
+    - else
+      %ul
+        - @results.each do |result|
+          %li= result

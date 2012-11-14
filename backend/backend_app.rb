@@ -16,7 +16,13 @@ class BackendApp < Sinatra::Base
   post '/search' do
     query = params['query']
     raise "Query doesn't pass white list" if !query.match(QUERY_REGEX)
-    @results = `grep -ri "#{query}" ../song_lyrics`
+    @results = []
+    with_ferret_index do |index|
+      index.search_each("lyrics:#{query}") do |id, score|
+        doc = index[id]
+        @results << "song_id='#{doc[:song_id]}' lyrics='#{doc[:lyrics]}'"
+      end
+    end
     haml :search
   end
 end
