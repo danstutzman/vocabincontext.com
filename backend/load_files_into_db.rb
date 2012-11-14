@@ -18,7 +18,7 @@ Dir.foreach(artist_names_path) do |artist_id|
               :name => artist_name,
               :created_at => DateTime.now,
             })
-            artist.save or raise artist.errors.inspect
+            artist.save rescue raise artist.errors.inspect
           end
         end
       end
@@ -45,7 +45,7 @@ Dir.entries(song_names_path).each do |artist_id|
               :name => song_name,
               :created_at => DateTime.now,
             })
-            song.save or raise song.errors.inspect
+            song.save rescue raise song.errors.inspect
           end
         end
       end
@@ -69,7 +69,7 @@ Dir.entries(song_lyrics_path).each do |artist_id|
             :lyric => lyric,
             :created_at => DateTime.now,
           })
-          song_line.save
+          song_line.save rescue raise song_line.errors.inspect
         end
       end
     end
