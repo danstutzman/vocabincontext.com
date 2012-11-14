@@ -17,6 +17,7 @@ www/TestRunner-prod.html
 .DS_Store
 
 backend/db.sqlite3
+backend/index
 
 bible
 artist_names
