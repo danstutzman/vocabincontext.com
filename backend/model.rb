@@ -44,6 +44,15 @@ require 'ferret'
 
 def with_ferret_index(&block)
   index_path = File.expand_path('../index', __FILE__)
+
+  # for some reason it helps to open and close the index first
+  index = Ferret::Index::Index.new({
+    :default_input_field => nil,
+    :id_field => :song_id,
+    :path => index_path,
+  })
+  index.close
+
   index_already_existed = File.exists?(index_path)
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
@@ -64,4 +73,6 @@ def with_ferret_index(&block)
   end
   
   block.call(index)
+
+  index.close
 end
