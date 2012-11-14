@@ -8,5 +8,6 @@ with_ferret_index do |index|
       :lyrics  => song.lyrics,
     }
     p to_add
+    index << to_add
   end
 end
