@@ -1,6 +1,6 @@
 require 'data_mapper'
 
-DataMapper::Logger.new(STDERR, :debug)
+#DataMapper::Logger.new(STDERR, :debug)
 db_path = File.expand_path('../db.sqlite3', __FILE__)
 DataMapper.setup :default, "sqlite3:#{db_path}"
 
