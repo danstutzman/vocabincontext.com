@@ -24,54 +24,32 @@ class BackendApp < Sinatra::Base
 
   def serve_search
     query = params['query']
-    raise "Query doesn't pass white list" if query && !query.match(QUERY_REGEX)
 
     if query
       @results = []
-      with_ferret_index do |index|
-        index.search_each("lyrics:#{query}") do |doc_id, score|
-          doc = index[doc_id]
-          song_id = doc[:song_id]
+      searcher = Ferret::Search::Searcher.new('index')
+      analyzer = MyAnalyzer.new
+      if query.split(' ').size > 1
+        ferret_query = Ferret::Search::PhraseQuery.new(:lyrics)
+        token_stream = analyzer.token_stream(:lyrics, query)
+        while token = token_stream.next
+          ferret_query << token.text
+        end
+      else
+        term = analyzer.token_stream(:lyrics, query).next.text
+        ferret_query = Ferret::Search::TermQuery.new(:lyrics, term)
+      end
 
-          term_vector = index.term_vector(doc_id, :lyrics)
-          term = term_vector.terms.find { |term| term.text == query }
-          ranges = term.positions.map { |position|
-            term_vector.offsets[position].start...\
-            term_vector.offsets[position].end
-          }
+      searcher.search_each(ferret_query) do |doc_id, score|
+        doc = searcher[doc_id]
+        song_id = doc[:song_id]
 
-          line_start = 0
-          lines = doc[:lyrics].split("\n")
-          next_range = ranges.shift
-          next_line = lines.shift
-          line_start = 0
-          line_end = next_line.size
-          #@results << "#{line_start}-#{line_end} #{next_line}"
-          adjustments_for_this_line = 0
-          while next_line != nil
-            if next_range &&
-               next_range.begin >= line_start &&
-               next_range.begin < line_end
-
-              pos = next_range.begin - line_start + adjustments_for_this_line
-              next_line[pos...pos] = '*'
-              adjustments_for_this_line += 1
-
-              pos2 = next_range.end - line_start + adjustments_for_this_line
-              next_line[pos2...pos2] = '*'
-              adjustments_for_this_line += 1
-
-              @results << "#{song_id}: #{next_line}"
-
-              next_range = ranges.shift
-            else
-              next_line = lines.shift
-              adjustments_for_this_line = 0
-              break if next_line.nil?
-              line_start = line_end + 1
-              line_end = line_start + next_line.size
-              #@results << "#{line_start}-#{line_end} #{next_line}"
-            end
+        lyrics = searcher.highlight(
+          ferret_query, doc_id, :lyrics, :excerpt_length => :all,
+          :pre_tag => '{', :post_tag => '}')
+        lyrics.join.split("\n").each do |line|
+          if line.include?('{')
+            @results << "#{song_id} #{line}"
           end
         end
       end

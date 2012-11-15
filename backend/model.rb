@@ -1,4 +1,5 @@
 require 'data_mapper'
+require './analyzer'
 
 #DataMapper::Logger.new(STDERR, :debug)
 db_path = File.expand_path('../db.sqlite3', __FILE__)
@@ -44,12 +45,14 @@ require 'ferret'
 
 def with_ferret_index(&block)
   index_path = File.expand_path('../index', __FILE__)
+  analyzer = MyAnalyzer.new
 
   # for some reason it helps to open and close the index first
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
     :id_field => :song_id,
     :path => index_path,
+    :analyzer => analyzer,
   })
   index.close
 
@@ -58,6 +61,7 @@ def with_ferret_index(&block)
     :default_input_field => nil,
     :id_field => :song_id,
     :path => index_path,
+    :analyzer => analyzer,
   })
   
   if !index_already_existed
@@ -68,7 +72,7 @@ def with_ferret_index(&block)
       :store => :yes, :index => :no, :term_vector => :no
     }
     index.field_infos.add_field :lyrics, {
-      :store => :no, :index => :yes, :term_vector => :yes
+      :store => :no, :index => :yes, :term_vector => :no
     }
   end
   

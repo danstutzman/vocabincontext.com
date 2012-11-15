@@ -7,16 +7,16 @@ class MyAnalyzer
   def token_stream(field, str)
     ts = Ferret::Analysis::StandardTokenizer.new(str)
     ts = Ferret::Analysis::LowerCaseFilter.new(ts)
-    ts = Ferret::Analysis::StopFilter.new(ts,
-       Ferret::Analysis::FULL_SPANISH_STOP_WORDS)
+#    ts = Ferret::Analysis::StopFilter.new(ts,
+#       Ferret::Analysis::FULL_SPANISH_STOP_WORDS)
     ts = Ferret::Analysis::HyphenFilter.new(ts)
     ts = Ferret::Analysis::StemFilter.new(ts, "spanish")
     ts
   end
 end
 
-analyzer = MyAnalyzer.new
-token_stream = analyzer.token_stream(:lyrics, text)
-while token = token_stream.next
-  puts token.text
-end
+#analyzer = MyAnalyzer.new
+#token_stream = analyzer.token_stream(:lyrics, text)
+#while token = token_stream.next
+#  puts token.text
+#end
