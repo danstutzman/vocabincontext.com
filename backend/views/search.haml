@@ -19,4 +19,7 @@
     - else
       %ul
         - @results.each do |result|
-          %li= result
+          %li
+            - result.split("\n").each do |line|
+              = line
+              %br
