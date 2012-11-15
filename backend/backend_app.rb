@@ -29,9 +29,50 @@ class BackendApp < Sinatra::Base
     if query
       @results = []
       with_ferret_index do |index|
-        index.search_each("lyrics:#{query}") do |id, score|
-          doc = index[id]
-          @results << "song_id='#{doc[:song_id]}' lyrics='#{doc[:lyrics]}'"
+        index.search_each("lyrics:#{query}") do |doc_id, score|
+          doc = index[doc_id]
+          song_id = doc[:song_id]
+
+          term_vector = index.term_vector(doc_id, :lyrics)
+          term = term_vector.terms.find { |term| term.text == query }
+          ranges = term.positions.map { |position|
+            term_vector.offsets[position].start...\
+            term_vector.offsets[position].end
+          }
+
+          line_start = 0
+          lines = doc[:lyrics].split("\n")
+          next_range = ranges.shift
+          next_line = lines.shift
+          line_start = 0
+          line_end = next_line.size
+          #@results << "#{line_start}-#{line_end} #{next_line}"
+          adjustments_for_this_line = 0
+          while next_line != nil
+            if next_range &&
+               next_range.begin >= line_start &&
+               next_range.begin < line_end
+
+              pos = next_range.begin - line_start + adjustments_for_this_line
+              next_line[pos...pos] = '*'
+              adjustments_for_this_line += 1
+
+              pos2 = next_range.end - line_start + adjustments_for_this_line
+              next_line[pos2...pos2] = '*'
+              adjustments_for_this_line += 1
+
+              @results << "#{song_id}: #{next_line}"
+
+              next_range = ranges.shift
+            else
+              next_line = lines.shift
+              adjustments_for_this_line = 0
+              break if next_line.nil?
+              line_start = line_end + 1
+              line_end = line_start + next_line.size
+              #@results << "#{line_start}-#{line_end} #{next_line}"
+            end
+          end
         end
       end
     end
