@@ -6,6 +6,10 @@ require './model'
 QUERY_REGEX = /^\w+$/
 
 class BackendApp < Sinatra::Base
+  configure do
+    set :haml, {:format => :html5, :escape_html => true}
+  end
+
   def get_term_counts
     reader = Ferret::Index::IndexReader.new('index')
     @term_counts = []
