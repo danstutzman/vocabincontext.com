@@ -10,9 +10,8 @@
       Suggested searches:
       - @term_counts.each do |term_count|
         - term, count = term_count
-        %li
-          %a{:href => "?query=#{term}"}= term
-          = "(#{count})"
+        %a{:href => "?query=#{term}"}= term
+        = "(#{count})"
     %hr
     - if @results.nil?
     - elsif @results.size == 0

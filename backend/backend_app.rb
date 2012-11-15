@@ -10,8 +10,12 @@ class BackendApp < Sinatra::Base
     reader = Ferret::Index::IndexReader.new('index')
     @term_counts = []
     reader.terms(:lyrics).each do |term, doc_freq|
-      @term_counts << [term, doc_freq]
+      if doc_freq > 100
+        @term_counts << [term, doc_freq]
+      end
     end
+    @term_counts = @term_counts.sort_by { |term_count| -term_count[1] }
+    @term_counts = @term_counts[0..100]
   end
 
   def serve_search
