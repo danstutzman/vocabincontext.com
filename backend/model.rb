@@ -45,7 +45,7 @@ require 'ferret'
 
 def with_ferret_index(&block)
   index_path = File.expand_path('../index', __FILE__)
-  analyzer = MyAnalyzer.new
+  analyzer = MyAnalyzer.new(true)
 
   # for some reason it helps to open and close the index first
   index = Ferret::Index::Index.new({

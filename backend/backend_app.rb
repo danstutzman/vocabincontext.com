@@ -2,8 +2,7 @@ require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sinatra/base'
 require 'haml'
 require './model'
-
-QUERY_REGEX = /^\w+$/
+require 'json'
 
 class BackendApp < Sinatra::Base
   configure do
@@ -11,15 +10,10 @@ class BackendApp < Sinatra::Base
   end
 
   def get_term_counts
-    reader = Ferret::Index::IndexReader.new('index')
-    @term_counts = []
-    reader.terms(:lyrics).each do |term, doc_freq|
-      if doc_freq > 100
-        @term_counts << [term, doc_freq]
-      end
-    end
-    @term_counts = @term_counts.sort_by { |term_count| -term_count[1] }
-    @term_counts = @term_counts[0..100]
+    @term_counts = JSON.load(File.read('./best_words.json'))
+    @term_counts = @term_counts.map { |hash|
+      [hash['word'], hash['count']]
+    }
   end
 
   def serve_search
@@ -28,7 +22,7 @@ class BackendApp < Sinatra::Base
     if query
       @results = []
       searcher = Ferret::Search::Searcher.new('index')
-      analyzer = MyAnalyzer.new
+      analyzer = MyAnalyzer.new(true)
       if query.split(' ').size > 1
         ferret_query = Ferret::Search::PhraseQuery.new(:lyrics)
         token_stream = analyzer.token_stream(:lyrics, query)
@@ -46,8 +40,8 @@ class BackendApp < Sinatra::Base
 
         lyrics = searcher.highlight(
           ferret_query, doc_id, :lyrics, :excerpt_length => :all,
-          :pre_tag => '{', :post_tag => '}')
-        lyrics.join.split("\n").each do |line|
+          :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
+        lyrics.split("\n").each do |line|
           if line.include?('{')
             @results << "#{song_id} #{line}"
           end
