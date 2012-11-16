@@ -7,7 +7,9 @@ non_stem_analyzer = MyAnalyzer.new(false)
 stemmed_to_word_to_count = {}
 stemmed_to_count = {}
 
+puts 'Opening index...'
 with_ferret_index do |index|
+  puts 'Listing songs...'
   Song.all.each do |song|
     puts song.id
     to_add = {
