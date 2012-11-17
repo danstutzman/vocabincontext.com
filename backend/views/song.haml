@@ -23,6 +23,15 @@
               "ytapiplayer", "425", "356", "8", null, null, params, atts);
             // player.getCurrentTime():Number
             // Returns the elapsed time in seconds since the video started playing.
+            window.setInterval(function() {
+              var player = document.getElementById('myytplayer');
+              var IS_PLAYING = 1;
+              if (player.getPlayerState() == IS_PLAYING) {
+                console.log('getCurrentTime()', player.getCurrentTime());
+              } else {
+                console.log('getCurrentTime()', null);
+              }
+            }, 2000);
           });
 
       %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
