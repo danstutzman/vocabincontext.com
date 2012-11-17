@@ -20,6 +20,8 @@
       %ul
         - @results.each do |result|
           %li
-            - result.split("\n").each do |line|
-              = line
-              %br
+            %a{ :href => "/song/#{result[:song_id]}" }
+              = result[:artist_name]
+              = '-'
+              = result[:song_name] + ':'
+              = "\"#{result[:line]}\""

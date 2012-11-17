@@ -13,6 +13,7 @@ class Artist
   property :id, Serial, :required => true
   property :name, String, :required => true
   property :created_at, DateTime, :required => true
+  has n, :songs
 end
 
 class Song
@@ -22,6 +23,7 @@ class Song
   property :name, String, :required => true
   property :lyrics, Text, :required => true
   property :created_at, DateTime, :required => true
+  belongs_to :artist
 end
 
 class SongLine
