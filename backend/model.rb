@@ -23,6 +23,7 @@ class Song
   property :name, String, :required => true
   property :lyrics, Text, :required => true
   property :created_at, DateTime, :required => true
+  property :youtube_video_id, String, :required => false
   belongs_to :artist
 end
 

@@ -62,6 +62,14 @@ class BackendApp < Sinatra::Base
     haml :search
   end
 
+  def youtube_video_link_to_video_id(link)
+    if match = link.match(/v=(.{11})/)
+      match[1]
+    else
+      raise "Couldn't find 11-character video ID in YouTube link: #{link}"
+    end
+  end
+
   get '/' do
     redirect '/search'
   end
@@ -77,6 +85,18 @@ class BackendApp < Sinatra::Base
   get '/song/:song_id' do
     song_id = params['song_id']
     @song = Song.first(:id => song_id)
+    haml :song
+  end
+
+  post '/song/:song_id' do
+    song_id = params['song_id']
+    link = params['youtube_video_link']
+
+    @song = Song.first(:id => song_id)
+    if link
+      @song.youtube_video_id = youtube_video_link_to_video_id(link)
+      @song.save rescue raise @song.errors.inspect
+    end
     haml :song
   end
 end

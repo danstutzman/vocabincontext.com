@@ -4,8 +4,27 @@
   %body
     %h1= @song.name
     %h2= "by #{@song.artist.name}"
-    %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}" }
-      Find this song on YouTube
+
+    %div(style='border:1px black solid;float:right')
+      - if @song.youtube_video_id
+        %iframe{ :width=>"420", :height=>"315", :src=>"https://www.youtube-nocookie.com/embed/#{@song.youtube_video_id}", :frameborder=>"0", :allowfullscreen=>'allowfullscreen' }
+        %br(clear='all')
+
+      %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
+        - if @song.youtube_video_id
+          Find a different recording of this song on YouTube
+        - else
+          Find this song on YouTube
+      %form{ :method => 'post' }
+        - if @song.youtube_video_id
+          To change the video, copy the link to it and paste it below:
+        - else
+          Once you find a video, copy the link to it and paste it below:
+        %br
+        %input(type='text' name='youtube_video_link' size='70')
+        %br
+        %input(type='submit')
+
     %table(id='js-lyrics-table' border='1')
       %tr
         %th Start time
