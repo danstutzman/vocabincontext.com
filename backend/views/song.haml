@@ -1,0 +1,21 @@
+%html
+  %head
+    %title= @song.name
+  %body
+    %h1= @song.name
+    %h2= "by #{@song.artist.name}"
+    %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}" }
+      Find this song on YouTube
+    %table(id='js-lyrics-table' border='1')
+      %tr
+        %th Start time
+        %th Skip?
+        %th Lyrics line
+      - @song.lyrics.split("\n").each_with_index do |line, line_num|
+        %tr
+          %td
+          %td
+          %td
+            %a{ :name => "line#{line_num}" }
+              = line
+            %br

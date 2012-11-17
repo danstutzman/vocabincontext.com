@@ -20,7 +20,7 @@
       %ul
         - @results.each do |result|
           %li
-            %a{ :href => "/song/#{result[:song_id]}" }
+            %a{ :href => "/song/#{result[:song_id]}#line#{result[:line_num]}" }
               = result[:artist_name]
               = '-'
               = result[:song_name] + ':'

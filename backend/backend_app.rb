@@ -44,13 +44,14 @@ class BackendApp < Sinatra::Base
         lyrics = searcher.highlight(
           ferret_query, doc_id, :lyrics, :excerpt_length => :all,
           :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
-        lyrics.split("\n").each do |line|
+        lyrics.split("\n").each_with_index do |line, line_num|
           if line.include?('{')
             @results << {
               :artist_name => artist_name,
               :song_name   => song_name,
               :song_id     => song_id,
               :line        => line,
+              :line_num    => line_num,
             }
           end
         end
@@ -71,5 +72,11 @@ class BackendApp < Sinatra::Base
 
   post '/search' do
     serve_search
+  end
+
+  get '/song/:song_id' do
+    song_id = params['song_id']
+    @song = Song.first(:id => song_id)
+    haml :song
   end
 end
