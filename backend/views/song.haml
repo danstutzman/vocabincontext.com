@@ -7,8 +7,23 @@
 
     %div(style='border:1px black solid;float:right')
       - if @song.youtube_video_id
-        %iframe{ :width=>"420", :height=>"315", :src=>"https://www.youtube-nocookie.com/embed/#{@song.youtube_video_id}", :frameborder=>"0", :allowfullscreen=>'allowfullscreen' }
-        %br(clear='all')
+
+        %script= "var videoId = '#{@song.youtube_video_id}';"
+        %script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
+        %script(src='/js/swfobject.js')
+        %p(id="content-container")
+          #ytapiplayer
+            You need Flash player 8+ and JavaScript enabled to view this video.
+        :javascript
+          $(function() {
+            var params = { allowScriptAccess: "always" };
+            var atts = { id: "myytplayer" };
+            swfobject.embedSWF("http://www.youtube.com/v/" + videoId +
+              "?enablejsapi=1&playerapiid=ytplayer&version=3",
+              "ytapiplayer", "425", "356", "8", null, null, params, atts);
+            // player.getCurrentTime():Number
+            // Returns the elapsed time in seconds since the video started playing.
+          });
 
       %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
         - if @song.youtube_video_id

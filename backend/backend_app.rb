@@ -7,6 +7,8 @@ require 'json'
 class BackendApp < Sinatra::Base
   configure do
     set :haml, {:format => :html5, :escape_html => true}
+    set :static, true
+    set :public_folder, '/Users/dstutzman/Documents/dev/mp3_player/www'
   end
 
   def get_term_counts
