@@ -26,3 +26,5 @@ song_lyrics
 song_names
 
 www-coverage
+
+backend/public/js/main-compiled.js

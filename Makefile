@@ -13,6 +13,7 @@ clean:
 	rm -f www/index-dev.html   www/index-prod.html
 	rm -f www/TestRunner.html
 	rm -rf www-built
+	rm -f backend/public/js/main-compiled.js
 lint:
 	find www/js -name "*.coffee" | xargs node_modules/coffeelint/bin/coffeelint
 
@@ -31,8 +32,8 @@ www/TestRunner.html: www/TestRunner.haml
 www/TestRunner-prod.html: www/TestRunner.haml
 	ENV=production haml www/TestRunner.haml > www/TestRunner-prod.html
 
-backend/public/js/main.js: www/js/main2.coffee \
-                           www/js/main.js www/js/app/*.coffee
+backend/public/js/main-compiled.js: www/js/main2.coffee \
+                                    www/js/main.js www/js/app/*.coffee
 	node tools/r.js -o tools/rjs-build-config.js
-	cp backend/public-building/js4dev/main.js backend/public/js/main.js
+	cp backend/public-building/js/main.js backend/public/js/main-compiled.js
 	rm -rf backend/public-building

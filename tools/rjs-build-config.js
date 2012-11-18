@@ -1,6 +1,6 @@
 {
   appDir: '../backend/public',
-  baseUrl: 'js4dev',
+  baseUrl: 'js',
   dir: '../backend/public-building',
   stubModules: ['cs'],
   modules: [
