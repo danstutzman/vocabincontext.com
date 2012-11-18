@@ -25,3 +25,7 @@
               = '-'
               = result[:song_name] + ':'
               = "\"#{result[:line]}\""
+    != haml :_js
+    != haml :_loading
+    :javascript
+      require(["cs!main2"], function(main) { main.setupFromRequestParams(); });

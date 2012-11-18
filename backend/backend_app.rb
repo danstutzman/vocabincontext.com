@@ -4,11 +4,13 @@ require 'haml'
 require './model'
 require 'json'
 
+ROOT_DIR = File.expand_path('../../', __FILE__)
+
 class BackendApp < Sinatra::Base
   configure do
     set :haml, {:format => :html5, :escape_html => true}
     set :static, true
-    set :public_folder, '/Users/dstutzman/Documents/dev/mp3_player/www'
+    set :public_folder, File.join(ROOT_DIR, 'backend', 'public')
   end
 
   def get_term_counts
