@@ -8,4 +8,4 @@ open "http://localhost:9393"
 google-chrome "http://localhost:9393" >/dev/null 2>/dev/null &
 
 cd backend
-shotgun
+bundle exec rerun -- rackup --port 9393 config.ru
