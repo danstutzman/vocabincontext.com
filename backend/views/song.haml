@@ -1,7 +1,9 @@
 %html
   %head
     %title= @song.name
+    %link(href="/css/application.css" rel="stylesheet" type="text/css")
   %body
+    %div.scrollbar-measure
     %h1= @song.name
     %h2= "by #{@song.artist.name}"
 
@@ -21,17 +23,6 @@
             swfobject.embedSWF("http://www.youtube.com/v/" + videoId +
               "?enablejsapi=1&playerapiid=ytplayer&version=3",
               "ytapiplayer", "425", "356", "8", null, null, params, atts);
-            // player.getCurrentTime():Number
-            // Returns the elapsed time in seconds since the video started playing.
-            window.setInterval(function() {
-              var player = document.getElementById('myytplayer');
-              var IS_PLAYING = 1;
-              if (player.getPlayerState() == IS_PLAYING) {
-                console.log('getCurrentTime()', player.getCurrentTime());
-              } else {
-                console.log('getCurrentTime()', null);
-              }
-            }, 2000);
           });
 
       %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
@@ -62,3 +53,8 @@
             %a{ :name => "line#{line_num}" }
               = line
             %br
+
+    != haml :_loading
+    != haml :_js
+    :javascript
+      require(["cs!app/app"], function(app) { app.setupFromRequestParams(); });

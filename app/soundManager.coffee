@@ -2,7 +2,7 @@ define (require) ->
   require('soundmanager2')
 
   sm = new SoundManager()
-  sm.url = 'swf'
+  sm.url = '/swf'
   sm.debugMode = false
   sm.useFlashBlock = false
   sm.flashVersion = 9
