@@ -1,7 +1,7 @@
 %html
   %head
     %title Index
-    %link(href="application.css" rel="stylesheet" type="text/css")
+    %link(href="/css/application.css" rel="stylesheet" type="text/css")
   %body
     %h2 Instructions
     %ol
@@ -15,7 +15,7 @@
         %br
         %ul(id='lyrics')
       %li While it plays, listen for that word
-    = Haml::Engine.new(File.read('www/_loading.haml')).render
-    = Haml::Engine.new(File.read('www/_js.haml')).render
+    != haml :_loading
+    != haml :_js
     :javascript
       require(["cs!main2"], function(main) { main.setupFromRequestParams(); });

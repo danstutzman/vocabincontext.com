@@ -1,1 +1,1 @@
-../../../www/js/main.js
+define(['cs!main2'],function(main2){});

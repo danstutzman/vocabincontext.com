@@ -78,6 +78,14 @@ class BackendApp < Sinatra::Base
     redirect '/search'
   end
 
+  get '/index' do
+    haml :index
+  end
+
+  get '/segmenter' do
+    haml :segmenter
+  end
+
   get '/search' do
     serve_search
   end
@@ -106,11 +114,5 @@ class BackendApp < Sinatra::Base
 
   get '/TestRunner' do
     haml :TestRunner
-  end
-  get '/media/lyrics_json/testing.json' do
-    send_file File.join(ROOT_DIR, 'media', 'lyrics_json', 'testing.json')
-  end
-  get '/media/lyrics_txt/testing.txt' do
-    send_file File.join(ROOT_DIR, 'media', 'lyrics_txt', 'testing.txt')
   end
 end

@@ -1,1 +1,0 @@
-../../vendor/swfobject_2_2/swfobject.js

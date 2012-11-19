@@ -2,7 +2,7 @@
   %head
     %title Segmenter
     %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
-    %link(href="application.css" rel="stylesheet" type="text/css")
+    %link(href="/css/application.css" rel="stylesheet" type="text/css")
   %body
     %div.scrollbar-measure
     %div(id='player' style='position:relative')
@@ -11,7 +11,7 @@
         %th Start time
         %th Skip?
         %th Lyrics line
-    = Haml::Engine.new(File.read('www/_loading.haml')).render
-    = Haml::Engine.new(File.read('www/_js.haml')).render
+    != haml :_loading
+    != haml :_js
     :javascript
       require(["cs!main2"], function(main) { main.setupFromRequestParams(); });
