@@ -11,6 +11,7 @@ class BackendApp < Sinatra::Base
     set :haml, {:format => :html5, :escape_html => true}
     set :static, true
     set :public_folder, File.join(ROOT_DIR, 'backend', 'public')
+    set :static_cache_control, [:public, :no_cache]
   end
 
   def get_term_counts
