@@ -14,6 +14,7 @@ clean:
 	rm -f www/TestRunner.html
 	rm -rf www-built
 	rm -f backend/public/js/main-compiled.js
+	rm -f backend/public/js/main-compiled-for-coverage.js
 lint:
 	find www/js -name "*.coffee" | xargs node_modules/coffeelint/bin/coffeelint
 
@@ -37,3 +38,8 @@ backend/public/js/main-compiled.js: www/js/main2.coffee \
 	node tools/r.js -o tools/rjs-build-config.js
 	cp backend/public-building/js/main.js backend/public/js/main-compiled.js
 	rm -rf backend/public-building
+backend/public/js/main-compiled-for-coverage.js:
+	node tools/r.js -o tools/rjs-build-config.js optimize=none
+	java -jar ../JSCover/target/dist/JSCover-all.jar -fs backend/public-building backend/public-coverage
+	cat backend/public/js/almond.js backend/public-coverage/js/main_with_tests.js > backend/public/js/main-compiled-for-coverage.js
+	rm -rf backend/public-building backend/public-coverage

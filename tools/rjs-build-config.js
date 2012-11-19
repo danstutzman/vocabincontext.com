@@ -8,6 +8,10 @@
       name: 'main',
       include: ['almond'],
       exclude: ['coffee-script', 'jquery']
+    },
+    {
+      name: 'main_with_tests',
+      exclude: ['coffee-script', 'jquery']
     }
   ]
 }

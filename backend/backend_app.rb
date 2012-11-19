@@ -103,4 +103,14 @@ class BackendApp < Sinatra::Base
     end
     haml :song
   end
+
+  get '/TestRunner' do
+    haml :TestRunner
+  end
+  get '/media/lyrics_json/testing.json' do
+    send_file File.join(ROOT_DIR, 'media', 'lyrics_json', 'testing.json')
+  end
+  get '/media/lyrics_txt/testing.txt' do
+    send_file File.join(ROOT_DIR, 'media', 'lyrics_txt', 'testing.txt')
+  end
 end

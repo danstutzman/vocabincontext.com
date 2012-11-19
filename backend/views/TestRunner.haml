@@ -1,0 +1,54 @@
+!!!
+%html
+  %head
+    %title Jasmine Test Runner
+    %link(href="/css/jasmine.css" rel="stylesheet" type="text/css")
+    %link(href="/css/application.css" rel="stylesheet" type="text/css")
+  %body
+    %div.scrollbar-measure
+    %div(id='player' style='position:relative')
+    %table(id='js-lyrics-table' border='1')
+      %tr
+        %th Start time
+        %th Skip?
+        %th Lyrics line
+    %ul(id='words')
+    %ul(id='lyrics')
+
+    %script(src="/js/jasmine.js")
+    %script(src="/js/jasmine-html.js")
+    %script(src="/js/phantom-jasmine-console-runner.js")
+    %script(src="/js/jscover_report.js")
+    != haml :_loading
+
+    %script(src="/js/main-compiled-for-coverage.js")
+    %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+
+    :javascript
+      var console_reporter = undefined; // global for console runner
+      require(["cs!main2",
+          "cs!spec/SoundGridSpec",
+          "cs!spec/TimeSeriesSpec",
+          "cs!spec/UiSpec",
+          "cs!spec/LyricsTableDataSpec"
+          ], function(main) {
+        main.setupForTestingAndThen(function() {
+          jasmine.getEnv().updateInterval = 1000;
+          var htmlReporter = new jasmine.HtmlReporter();
+          jasmine.getEnv().addReporter(htmlReporter);
+          jasmine.getEnv().specFilter = function(spec) {
+            return htmlReporter.specFilter(spec);
+          };
+          console_reporter = new jasmine.ConsoleReporter();
+          jasmine.getEnv().addReporter(console_reporter);
+          if (typeof(top._$jscoverage) !== 'undefined') {
+            jasmine.getEnv().addReporter({
+              reportRunnerResults: function() {
+                var report = run_jscover_report();
+                jQuery('body').append(report);
+              }
+            });
+          }
+          jasmine.getEnv().execute();
+        });
+      });
