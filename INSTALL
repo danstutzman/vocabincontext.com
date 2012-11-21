@@ -6,6 +6,8 @@ For Mac OS X: (Instructions adapted from http://blog.argasinski.eu/2011/09/25/sp
 - brew install mp3splt
 - brew update && brew install phantomjs
 - sqlite3 comes pre-installed on Leopard and later
+- Install postgres locally with:
+  brew install postgres
 - Start the backend server with:
   - cd backend
   - shotgun
@@ -34,6 +36,8 @@ For Ubuntu 10.04 LTS:
 - sudo apt-get install libsqlite3-dev sqlite3
 - Install libxml2 for Nokogirl for Fog gem:
   sudo apt-get install libxslt-dev libxml2-dev
+- Install postgres locally with:
+  sudo apt-get install postgresql
 - Start the backend server with:
   - cd backend
   - bundle exec shotgun

@@ -5,6 +5,9 @@
 worker_processes 2
 working_directory "<%= Rubber.root %>/backend"
 
+# so that the app knows to use postgres not sqlite3
+ENV['ENV'] = 'production'
+
 # This loads the application in the master process before forking
 # worker processes
 # Read more about it here:

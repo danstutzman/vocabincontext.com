@@ -2,8 +2,18 @@ require 'data_mapper'
 require './analyzer'
 
 #DataMapper::Logger.new(STDERR, :debug)
-db_path = File.expand_path('../db.sqlite3', __FILE__)
-DataMapper.setup :default, "sqlite3:#{db_path}"
+
+if ENV['ENV'] == 'production'
+  DataMapper.setup :default, {
+    :adapter  => 'postgres',
+    :host     => 'localhost',
+    :database => 'your_app_name_production',
+    :user     => 'your_app_name',
+  }
+else
+  db_path = File.expand_path('../db.sqlite3', __FILE__)
+  DataMapper.setup :default, "sqlite3:#{db_path}"
+end
 
 # set all String properties to have a default length of 255
 DataMapper::Property::String.length(255)
