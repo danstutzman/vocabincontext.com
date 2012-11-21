@@ -34,6 +34,9 @@
   - !ruby/object:Rubber::Configuration::RoleItem
     name: unicorn
     options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: node
+    options: {}
   instance_id: i-8f26b4f0
   image_type: m1.small
   image_id: ami-3b4ff252
