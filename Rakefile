@@ -4,7 +4,7 @@
 #
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
  
 env = ENV['RUBBER_ENV'] ||= (ENV['RAILS_ENV'] || 'development')
 root = File.dirname(__FILE__)
