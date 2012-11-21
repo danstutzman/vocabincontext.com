@@ -19,3 +19,5 @@ gem 'open4'
 gem 'unicorn'
 
 gem 'airbrake'
+
+gem 'rb-inotify'

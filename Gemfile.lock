@@ -72,6 +72,7 @@ GEM
     fastercsv (1.5.5)
     ferret (0.11.8.4)
       rake
+    ffi (1.2.0)
     fog (1.7.0)
       builder
       excon (~> 0.14)
@@ -112,6 +113,8 @@ GEM
     raindrops (0.10.0)
     rake (10.0.0)
     rb-fsevent (0.9.2)
+    rb-inotify (0.8.8)
+      ffi (>= 0.5.0)
     rerun (0.7.1)
       listen
     rubber (2.1.2)
@@ -153,6 +156,7 @@ DEPENDENCIES
   open4
   pg
   rb-fsevent (~> 0.9.1)
+  rb-inotify
   rerun
   rubber
   sinatra
