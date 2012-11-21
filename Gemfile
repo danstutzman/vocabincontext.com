@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source "http://rubygems.org"
 
 gem "haml"
 
@@ -13,3 +13,4 @@ gem 'sqlite3'
 gem 'ferret'
 
 gem 'rubber'
+gem 'open4'

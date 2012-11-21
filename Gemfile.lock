@@ -1,5 +1,5 @@
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     addressable (2.2.8)
     bcrypt-ruby (3.0.1)
@@ -126,6 +126,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   ferret
   haml
+  open4
   rb-fsevent (~> 0.9.1)
   rerun
   rubber
