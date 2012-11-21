@@ -4,8 +4,6 @@ require 'haml'
 require './model'
 require 'json'
 
-ROOT_DIR = File.expand_path('../../', __FILE__)
-
 class BackendApp < Sinatra::Base
   configure do
     set :haml, {:format => :html5, :escape_html => true}
@@ -25,7 +23,7 @@ class BackendApp < Sinatra::Base
 
     if query
       @results = []
-      searcher = Ferret::Search::Searcher.new('index')
+      searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
       analyzer = MyAnalyzer.new(true)
       if query.split(' ').size > 1
         ferret_query = Ferret::Search::PhraseQuery.new(:lyrics)

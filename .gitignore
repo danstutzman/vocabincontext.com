@@ -8,7 +8,7 @@ media/excerpts/*.mp3
 .DS_Store
 
 backend/db.sqlite3
-backend/index
+backend/ferret_index
 
 bible
 artist_names

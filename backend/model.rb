@@ -1,6 +1,9 @@
 require 'data_mapper'
 require './analyzer'
 
+ROOT_DIR = File.expand_path('../../', __FILE__)
+FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')
+
 #DataMapper::Logger.new(STDERR, :debug)
 
 if ENV['ENV'] == 'production'
@@ -65,26 +68,25 @@ DataMapper::Model.raise_on_save_failure = true
 require 'ferret'
 
 def with_ferret_index(&block)
-  index_path = File.expand_path('../index', __FILE__)
   analyzer = MyAnalyzer.new(true)
 
   # for some reason it helps to open and close the index first
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
     :id_field => :song_id,
-    :path => index_path,
+    :path => FERRET_INDEX_DIR,
     :analyzer => analyzer,
   })
   index.close
 
-  index_already_existed = File.exists?(index_path)
+  index_already_existed = File.exists?(FERRET_INDEX_DIR)
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
     :id_field => :song_id,
-    :path => index_path,
+    :path => FERRET_INDEX_DIR,
     :analyzer => analyzer,
   })
-  
+
   if !index_already_existed
     index.field_infos.add_field :song_id, {
       :store => :yes, :index => :no, :term_vector => :no
