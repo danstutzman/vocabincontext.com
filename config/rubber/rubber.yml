@@ -14,7 +14,7 @@ admin_email: "root@#{full_host}"
 # web_tools_password: sekret
 
 # REQUIRED: The timezone the server should be in
-timezone: US/Eastern
+timezone: US/Mountain
 
 # REQUIRED: the domain all the instances should be associated with
 #
@@ -28,7 +28,7 @@ domain: foo.com
 # OPTIONAL: Additional rubber file to pull config from if it exists.  This file will
 # also be pushed to remote host at Rubber.root/config/rubber/rubber-secret.yml
 #
-# rubber_secret: "#{File.expand_path('~') + '/.ec2' + (Rubber.env == 'production' ? '' : '_dev') + '/rubber-secret.yml' rescue ''}"
+rubber_secret: "#{File.expand_path('~') + '/.ec2' + (Rubber.env == 'production' ? '' : '_dev') + '/rubber-secret.yml' rescue ''}"
 
 # REQUIRED All known cloud providers with the settings needed to configure them
 # There's only one working cloud provider right now - Amazon Web Services
@@ -50,9 +50,9 @@ cloud_providers:
     
     # REQUIRED The amazon keys and account ID (digits only, no dashes) used to access the AWS API
     #
-    access_key: XXX
-    secret_access_key: YYY
-    account: ZZZ
+    # access_key: XXX
+    # secret_access_key: YYY
+    # account: ZZZ
 
     # REQUIRED:  The name of the amazon keypair and location of its private key
     #
