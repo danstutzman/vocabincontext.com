@@ -3,7 +3,7 @@
   current_path = "/mnt/#{rubber_env.app_name}-#{Rubber.env}/current"
 %>
 worker_processes 2
-working_directory "<%= Rubber.root %>"
+working_directory "<%= Rubber.root %>/backend"
 
 # This loads the application in the master process before forking
 # worker processes
