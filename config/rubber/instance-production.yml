@@ -1,0 +1,52 @@
+---
+- !ruby/object:Rubber::Configuration::InstanceItem
+  name: web01
+  domain: foo.com
+  roles:
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: web
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: collectd
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: monit
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: app
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: unicorn_nginx
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: db
+    options:
+      primary: true
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: postgresql
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: postgresql_master
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: nginx
+    options: {}
+  - !ruby/object:Rubber::Configuration::RoleItem
+    name: unicorn
+    options: {}
+  instance_id: i-8f26b4f0
+  image_type: m1.small
+  image_id: ami-3b4ff252
+  security_groups:
+  - your_app_name_production_default
+  - your_app_name_production_web01
+  - your_app_name_production_web
+  external_host: ec2-107-20-38-186.compute-1.amazonaws.com
+  external_ip: 107.20.38.186
+  internal_host: domU-12-31-39-02-5D-C3.compute-1.internal
+  internal_ip: 10.248.98.49
+  zone: us-east-1b
+  platform: linux
+  root_device_type: ebs
+- volumes: {}
+  static_ips: {}
