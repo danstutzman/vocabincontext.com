@@ -1,5 +1,6 @@
 require 'data_mapper'
 require './analyzer'
+require './airbrake'
 
 ROOT_DIR = File.expand_path('../../', __FILE__)
 FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')

@@ -17,3 +17,5 @@ gem 'ferret'
 gem 'rubber'
 gem 'open4'
 gem 'unicorn'
+
+gem 'airbrake'
