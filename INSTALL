@@ -7,7 +7,7 @@ For Mac OS X: (Instructions adapted from http://blog.argasinski.eu/2011/09/25/sp
 - brew update && brew install phantomjs
 - sqlite3 comes pre-installed on Leopard and later
 - Install postgres locally with:
-  brew install postgres
+  brew install postgres libpq-dev
 - Start the backend server with:
   - cd backend
   - shotgun
