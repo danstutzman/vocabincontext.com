@@ -2,6 +2,18 @@ require './model'
 require './analyzer'
 require 'json'
 
+if false
+  best_words = JSON.load(File.read('best_words.json'))
+  best_words.each do |best_word|
+    p best_word
+    BestWord.create({
+      :word => best_word['word'],
+      :count => best_word['count'],
+      :created_at => DateTime.now,
+    })
+  end
+end
+
 stem_analyzer = MyAnalyzer.new(true)
 non_stem_analyzer = MyAnalyzer.new(false)
 stemmed_to_word_to_count = {}
@@ -43,10 +55,9 @@ best_stemmed =
 best_words = best_stemmed.map { |stemmed|
   word_to_count = stemmed_to_word_to_count[stemmed]
   best_word = word_to_count.keys.sort_by { |word| -word_to_count[word] }.first
-  { :word => best_word, :count => word_to_count[best_word] }
+  BestWord.create({
+    :word => best_word,
+    :count => word_to_count[best_word],
+    :created_at => DateTime.now,
+  })
 }
-
-puts 'Dumping out best_words.json...'
-File.open('best_words.json', 'w') do |file|
-  file.write JSON.dump(best_words)
-end

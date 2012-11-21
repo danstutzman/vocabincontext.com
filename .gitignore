@@ -9,7 +9,6 @@ media/excerpts/*.mp3
 
 backend/db.sqlite3
 backend/index
-backend/best_words.json
 
 bible
 artist_names

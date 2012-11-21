@@ -15,9 +15,8 @@ class BackendApp < Sinatra::Base
   end
 
   def get_term_counts
-    @term_counts = JSON.load(File.read('./best_words.json'))
-    @term_counts = @term_counts.map { |hash|
-      [hash['word'], hash['count']]
+    @term_counts = BestWord.all.map { |best_word|
+      [best_word.word, best_word.count]
     }
   end
 

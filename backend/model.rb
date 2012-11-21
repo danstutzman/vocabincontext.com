@@ -46,6 +46,14 @@ class SongLine
   property :created_at, DateTime, :required => true
 end
 
+class BestWord
+  include DataMapper::Resource
+  property :id, Serial, :required => true
+  property :word, String, :required => true
+  property :count, Integer, :required => true
+  property :created_at, DateTime, :required => true
+end
+
 DataMapper.auto_upgrade!
 DataMapper.finalize
 
