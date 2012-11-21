@@ -5,6 +5,9 @@ require './model'
 require 'json'
 
 class BackendApp < Sinatra::Base
+  use Airbrake::Rack
+  enable :raise_errors
+
   configure do
     set :haml, {:format => :html5, :escape_html => true}
     set :static, true
