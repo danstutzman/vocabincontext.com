@@ -20,8 +20,8 @@ Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
 load 'config/deploy'
 
 task :build_js do
-  run "cd #{current_path} && make lint"
-  run "cd #{current_path} && make backend/public/js/main-compiled.js"
+  run "cd #{release_path} && make lint"
+  run "cd #{release_path} && make backend/public/js/main-compiled.js"
 end
 after "deploy:update_code", "build_js"
 
