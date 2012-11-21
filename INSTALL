@@ -41,3 +41,14 @@ For Ubuntu 10.04 LTS:
 - Start the backend server with:
   - cd backend
   - bundle exec shotgun
+
+For both platforms:
+- Setup agent forwarding with https://help.github.com/articles/using-ssh-agent-forwarding
+  - Change ~/.ssh/config to:
+    Host web01.foo.com
+    ForwardAgent yes
+  - Run ssh-add locally before running cap deploy, because the key has to be
+    loaded into the local ssh agent before it can be forwarded to the EC2 box's
+    ssh agent.
+  - On Mac, run ssh-add -K locally so you won't need to run ssh-add every
+    reboot.

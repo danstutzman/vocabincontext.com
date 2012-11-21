@@ -9,11 +9,18 @@ on :load do
   set :copy_exclude, [".git/*", ".bundle/*", "log/*", ".rvmrc"]
 end
 
-# Use a simple directory tree copy here to make demo easier.
-# You probably want to use your own repository for a real app
-set :scm, :none
-set :repository, "."
-set :deploy_via, :copy
+set :scm, "git"
+set :repository, "git@github.com:danielstutzman/mp3_player.git"
+set :branch, "master"
+
+# keep git repo locally and only fetch changes since last deploy
+set :deploy_via, :remote_cache
+
+# If you're using your own private keys for git, you want to tell Capistrano
+# to use agent forwarding with this command. Agent forwarding can make key
+# management much simpler as it uses your local keys instead of keys
+# installed on the server.
+ssh_options[:forward_agent] = true
 
 # Easier to do system level config as root - probably should do it through
 # sudo in the future.  We use ssh keys for access, so no passwd needed
