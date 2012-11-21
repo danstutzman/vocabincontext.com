@@ -11,3 +11,5 @@ gem 'dm-sqlite-adapter'
 gem 'sqlite3'
 
 gem 'ferret'
+
+gem 'rubber'

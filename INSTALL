@@ -32,6 +32,8 @@ For Ubuntu 10.04 LTS:
   - sudo ln -s irb1.9 irb
 - Get phantomjs from http://phantomjs.org/download.html and unzip into ~/Documents/phantomjs-1.7.0-linux-i686
 - sudo apt-get install libsqlite3-dev sqlite3
+- Install libxml2 for Nokogirl for Fog gem:
+  sudo apt-get install libxslt-dev libxml2-dev
 - Start the backend server with:
   - cd backend
   - bundle exec shotgun
