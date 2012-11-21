@@ -18,6 +18,13 @@ require 'rubber/capistrano'
 
 Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
 load 'config/deploy'
+
+task :build_js do
+  run "cd #{current_path} && make lint"
+  run "cd #{current_path} && make backend/public/js/main-compiled.js"
+end
+after "deploy:update_code", "build_js"
+
 namespace :ferret_index do
   desc 'Create ferret_index dir and sets proper upload permissions'
   task :create_dir, :except => { :no_release => true } do
