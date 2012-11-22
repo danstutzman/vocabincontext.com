@@ -115,12 +115,12 @@ class BackendApp < Sinatra::Base
       @song.save rescue raise @song.errors.inspect
 
       unless Task.first({ :action => 'download_mp3', :song_id => song_id })
-        task = Task.create({
+        task = Task.new({
           :action => 'download_mp3',
           :song_id => song_id,
           :created_at => DateTime.now,
         })
-        task.save rescue raise @song.errors.inspect
+        task.save rescue raise task.errors.inspect
       end
     end
 
