@@ -64,6 +64,8 @@ class Task
   property :id, Serial, :required => true
   property :action, String, :required => true
   property :song_id, Integer, :required => true, :index => true
+  property :start_time, Integer
+  property :end_time, Integer
   property :created_at, DateTime, :required => true
 
   property :command_line, String

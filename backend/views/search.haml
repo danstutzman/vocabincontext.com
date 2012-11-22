@@ -25,6 +25,9 @@
               = '-'
               = result[:song_name] + ':'
               = "\"#{result[:line]}\""
+            - if result[:start_time] && result[:end_time]
+              %a{ :href => "/split_mp3s/#{result[:youtube_video_id]}.#{result[:start_time]}.#{result[:end_time]}.mp3", :target => '_blank' }
+                = "(play #{result[:start_time]} to #{result[:end_time]})"
     != haml :_js
     != haml :_loading
     :javascript

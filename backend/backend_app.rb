@@ -47,18 +47,25 @@ class BackendApp < Sinatra::Base
         song = Song.first(:id => song_id)
         song_name = song && song.name
         artist_name = song && song.artist && song.artist.name
+        start_times = (song && song.start_times_json) ?
+          JSON.load(song.start_times_json) : []
 
         lyrics = searcher.highlight(
           ferret_query, doc_id, :lyrics, :excerpt_length => :all,
           :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
         lyrics.split("\n").each_with_index do |line, line_num|
           if line.include?('{')
+            start_time = start_times[line_num]
+            end_time = start_times[line_num + 1]
             @results << {
-              :artist_name => artist_name,
-              :song_name   => song_name,
-              :song_id     => song_id,
-              :line        => line,
-              :line_num    => line_num,
+              :youtube_video_id => song.youtube_video_id,
+              :artist_name      => artist_name,
+              :song_name        => song_name,
+              :song_id          => song_id,
+              :line             => line,
+              :line_num         => line_num,
+              :start_time       => start_time,
+              :end_time         => end_time,
             }
           end
         end
@@ -138,13 +145,25 @@ class BackendApp < Sinatra::Base
     @song.save rescue raise @song.errors.inspect
 
     if (@song.start_times_json || '[]') != '[]'
-      unless Task.first({ :action => 'split_mp3', :song_id => song_id })
-        task = Task.create({
-          :action => 'split_mp3',
-          :song_id => song_id,
-          :created_at => DateTime.now,
-        })
-        task.save rescue raise @song.errors.inspect
+      existing_tasks = Task.all({ :action => 'split_mp3', :song_id => song_id })
+      start_times.each_with_index do |start_time, line_num|
+        end_time = start_times[line_num + 1]
+        if Integer === start_time && Integer === end_time
+          existing = existing_tasks.find do |task|
+            task.start_time == start_time &&
+            task.end_time == end_time
+          end
+          unless existing
+            task = Task.new({
+              :action => 'split_mp3',
+              :song_id => song_id,
+              :start_time => start_time,
+              :end_time => end_time,
+              :created_at => DateTime.now,
+            })
+            task.save rescue raise task.errors.inspect
+          end
+        end
       end
     end
 
@@ -153,5 +172,9 @@ class BackendApp < Sinatra::Base
 
   get '/TestRunner' do
     haml :TestRunner
+  end
+
+  get '/split_mp3s/:filename' do |filename|
+    send_file "#{ROOT_DIR}/backend/youtube_downloads/#{filename}"
   end
 end
