@@ -117,7 +117,7 @@ class BackendApp < Sinatra::Base
 
     start_times = []
     num_lines = @song.lyrics.split("\n").size
-    [num_lines, 500].min.times do |line_num|
+    [num_lines, 500].min.times do |line_num| # limit to 500 to avoid DOS attack
       start_time = params["start_time_line_#{line_num}"]
       start_time = start_time.match(/^[0-9]+$/) ? start_time.to_i : ''
       start_times.push start_time
