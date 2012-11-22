@@ -113,6 +113,15 @@ class BackendApp < Sinatra::Base
     if link && link != ''
       @song.youtube_video_id = youtube_video_link_to_video_id(link)
       @song.save rescue raise @song.errors.inspect
+
+      unless Task.first({ :action => 'download_mp3', :song_id => song_id })
+        task = Task.create({
+          :action => 'download_mp3',
+          :song_id => song_id,
+          :created_at => DateTime.now,
+        })
+        task.save rescue raise @song.errors.inspect
+      end
     end
 
     start_times = []
@@ -127,6 +136,17 @@ class BackendApp < Sinatra::Base
     end
     @song.start_times_json = JSON.dump(start_times)
     @song.save rescue raise @song.errors.inspect
+
+    if (@song.start_times_json || '[]') != '[]'
+      unless Task.first({ :action => 'split_mp3', :song_id => song_id })
+        task = Task.create({
+          :action => 'split_mp3',
+          :song_id => song_id,
+          :created_at => DateTime.now,
+        })
+        task.save rescue raise @song.errors.inspect
+      end
+    end
 
     redirect "/song/#{song_id}"
   end

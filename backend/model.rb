@@ -59,6 +59,23 @@ class BestWord
   property :created_at, DateTime, :required => true
 end
 
+class Task
+  include DataMapper::Resource
+  property :id, Serial, :required => true
+  property :action, String, :required => true
+  property :song_id, Integer, :required => true, :index => true
+  property :created_at, DateTime, :required => true
+
+  property :command_line, String
+  property :started_at, DateTime
+  property :completed_at, DateTime
+  property :stdout, Text
+  property :stderr, Text
+  property :exit_status, Integer
+
+  belongs_to :song
+end
+
 DataMapper.auto_upgrade!
 DataMapper.finalize
 
