@@ -100,6 +100,8 @@ class BackendApp < Sinatra::Base
   get '/song/:song_id' do
     song_id = params['song_id']
     @song = Song.first(:id => song_id)
+    @lyrics_lines = @song.lyrics.split("\n")
+    @start_times = JSON.load(@song.start_times_json || '[]')
     haml :song
   end
 
@@ -108,11 +110,25 @@ class BackendApp < Sinatra::Base
     link = params['youtube_video_link']
 
     @song = Song.first(:id => song_id)
-    if link
+    if link && link != ''
       @song.youtube_video_id = youtube_video_link_to_video_id(link)
       @song.save rescue raise @song.errors.inspect
     end
-    haml :song
+
+    start_times = []
+    num_lines = @song.lyrics.split("\n").size
+    [num_lines, 500].min.times do |line_num|
+      start_time = params["start_time_line_#{line_num}"]
+      start_time = start_time.match(/^[0-9]+$/) ? start_time.to_i : ''
+      start_times.push start_time
+    end
+    while start_times.last == ''
+      start_times.pop
+    end
+    @song.start_times_json = JSON.dump(start_times)
+    @song.save rescue raise @song.errors.inspect
+
+    redirect "/song/#{song_id}"
   end
 
   get '/TestRunner' do

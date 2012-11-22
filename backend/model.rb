@@ -38,6 +38,7 @@ class Song
   property :lyrics, Text, :required => true
   property :created_at, DateTime, :required => true
   property :youtube_video_id, String, :required => false
+  property :start_times_json, Text, :required => false
   belongs_to :artist
 end
 

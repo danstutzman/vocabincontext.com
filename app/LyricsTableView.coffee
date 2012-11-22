@@ -83,7 +83,11 @@ define (require) ->
       
       col_num = @constructor.COL_NAME_TO_COL_NUM[col_name]
       selector = "#{@_highlightedRowSelector()} td:nth-child(#{col_num + 1})"
-      $(selector).html(new_data)
+      if col_name == 'start_time'
+        selector += " input"
+        $(selector).attr 'value', new_data
+      else
+        $(selector).html(new_data)
 
     fillInCurrentPosition: ->
       time = @_player.getPosition()

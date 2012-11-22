@@ -7,52 +7,56 @@
     %h1= @song.name
     %h2= "by #{@song.artist.name}"
 
-    %div(style='border:1px black solid;float:right')
-      - if @song.youtube_video_id
-
-        %script= "var videoId = '#{@song.youtube_video_id}';"
-        %script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
-        %script(src='/js/swfobject.js')
-        %p(id="content-container")
-          #ytapiplayer
-            You need Flash player 8+ and JavaScript enabled to view this video.
-        :javascript
-          $(function() {
-            var params = { allowScriptAccess: "always" };
-            var atts = { id: "myytplayer" };
-            swfobject.embedSWF("http://www.youtube.com/v/" + videoId +
-              "?enablejsapi=1&playerapiid=ytplayer&version=3",
-              "ytapiplayer", "425", "356", "8", null, null, params, atts);
-          });
-
-      %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
+    %form{ :method => 'post' }
+      %input#save-button(type='submit' name='submit') Save
+      %div(style='border:1px black solid;float:right')
         - if @song.youtube_video_id
-          Find a different recording of this song on YouTube
-        - else
-          Find this song on YouTube
-      %form{ :method => 'post' }
-        - if @song.youtube_video_id
-          To change the video, copy the link to it and paste it below:
-        - else
-          Once you find a video, copy the link to it and paste it below:
-        %br
-        %input(type='text' name='youtube_video_link' size='70')
-        %br
-        %input(type='submit')
 
-    %table(id='js-lyrics-table' border='1')
-      %tr
-        %th Start time
-        %th Skip?
-        %th Lyrics line
-      - @song.lyrics.split("\n").each_with_index do |line, line_num|
+          %script= "var videoId = '#{@song.youtube_video_id}';"
+          %script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
+          %script(src='/js/swfobject.js')
+          %p(id="content-container")
+            #ytapiplayer
+              You need Flash player 8+ and JavaScript enabled to view this video.
+          :javascript
+            $(function() {
+              var params = { allowScriptAccess: "always" };
+              var atts = { id: "myytplayer" };
+              swfobject.embedSWF("http://www.youtube.com/v/" + videoId +
+                "?enablejsapi=1&playerapiid=ytplayer&version=3",
+                "ytapiplayer", "425", "356", "8", null, null, params, atts);
+            });
+
+        %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
+          - if @song.youtube_video_id
+            Find a different recording of this song on YouTube
+          - else
+            Find this song on YouTube
+
+          - if @song.youtube_video_id
+            To change the video, copy the link to it and paste it below:
+          - else
+            Once you find a video, copy the link to it and paste it below:
+          %br
+          %input(type='text' name='youtube_video_link' size='70')
+          %br
+          %input(type='submit')
+
+      %table(id='js-lyrics-table' border='1')
         %tr
-          %td
-          %td
-          %td
-            %a{ :name => "line#{line_num}" }
-              = line
-            %br
+          %th Start time
+          %th Skip?
+          %th Lyrics line
+        - @lyrics_lines.each_with_index do |line, line_num|
+          %tr
+            %td
+              %input{ :type => 'text', :name => "start_time_line_#{line_num}",
+                      :value => @start_times[line_num] }
+            %td
+            %td
+              %a{ :name => "line#{line_num}" }
+                = line
+              %br
 
     != haml :_loading
     != haml :_js
