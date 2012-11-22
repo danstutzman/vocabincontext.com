@@ -66,6 +66,7 @@ end
 puts 'Sorting best_words...'
 best_stemmed =
   stemmed_to_count.keys.sort_by { |stemmed| -stemmed_to_count[stemmed] }[0..100]
+BestWord.all.destroy!
 best_words = best_stemmed.map { |stemmed|
   word_to_count = stemmed_to_word_to_count[stemmed]
   best_word = word_to_count.keys.sort_by { |word| -word_to_count[word] }.first
