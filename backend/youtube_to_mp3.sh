@@ -22,8 +22,8 @@ fi
 # -vn ignores the video, just looks at audio
 # -acodec copy keeps the same audio codec
 # -y overwrites without asking
-#ffmpeg -i -y "/tmp/$VIDEO_ID.flv" -vn -acodec copy "/tmp/$VIDEO_ID.mp4"
-ffmpeg -i -y "$VIDEO_ID.flv" -vn -acodec mp3 "$VIDEO_ID.mp3"
+#ffmpeg -y -i "/tmp/$VIDEO_ID.flv" -vn -acodec copy "/tmp/$VIDEO_ID.mp4"
+ffmpeg -y -i "$VIDEO_ID.flv" -vn -acodec mp3 "$VIDEO_ID.mp3"
 
 if [ "$?" != "0" ]; then exit 1; fi
 
