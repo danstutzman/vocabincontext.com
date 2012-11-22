@@ -4,6 +4,8 @@ require 'haml'
 require './model'
 require 'json'
 
+MAX_NUM_EXCERPTS_TO_RETURN = 10
+
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
     use Airbrake::Rack
@@ -41,7 +43,8 @@ class BackendApp < Sinatra::Base
         ferret_query = Ferret::Search::TermQuery.new(:lyrics, term)
       end
 
-      searcher.search_each(ferret_query) do |doc_id, score|
+      num_excerpts_returned = 0
+      searcher.search_each(ferret_query, options) do |doc_id, score|
         doc = searcher[doc_id]
         song_id = doc[:song_id]
         song = Song.first(:id => song_id)
@@ -67,12 +70,16 @@ class BackendApp < Sinatra::Base
               :start_time       => start_time,
               :end_time         => end_time,
             }
+            num_excerpts_returned += 1
+            break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
           end
         end
+        break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
       end
     end
 
     get_term_counts
+
     haml :search
   end
 
