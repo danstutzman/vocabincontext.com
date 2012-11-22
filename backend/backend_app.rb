@@ -27,6 +27,8 @@ class BackendApp < Sinatra::Base
 
   def serve_search
     query = params['query']
+    doc_offset = params['doc_offset'].to_i
+    excerpt_offset = params['excerpt_offset'].to_i
 
     if query
       @results = []
@@ -43,8 +45,30 @@ class BackendApp < Sinatra::Base
         ferret_query = Ferret::Search::TermQuery.new(:lyrics, term)
       end
 
+      options = {
+        :sort => [
+          Ferret::Search::SortField.new(:has_start_times,
+            { :type => :integer, :reverse => true }),
+          Ferret::Search::SortField::SCORE
+        ],
+        :limit => :all,
+      }
+
       num_excerpts_returned = 0
+      @next_doc_offset = doc_offset
+      @next_excerpt_offset = excerpt_offset
+
+      doc_num = 0
       searcher.search_each(ferret_query, options) do |doc_id, score|
+        if doc_offset > 0
+          doc_offset -= 1
+          next
+        end
+        if doc_num > 0
+          @next_excerpt_offset = 0
+          @next_doc_offset += 1
+        end
+
         doc = searcher[doc_id]
         song_id = doc[:song_id]
         song = Song.first(:id => song_id)
@@ -57,10 +81,16 @@ class BackendApp < Sinatra::Base
           ferret_query, doc_id, :lyrics, :excerpt_length => :all,
           :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
         lyrics.split("\n").each_with_index do |line, line_num|
+          if excerpt_offset > 0
+            excerpt_offset -= 1
+            next
+          end
+
           if line.include?('{')
             start_time = start_times[line_num]
             end_time = start_times[line_num + 1]
             @results << {
+              :has_start_times  => doc[:has_start_times],
               :youtube_video_id => song.youtube_video_id,
               :artist_name      => artist_name,
               :song_name        => song_name,
@@ -71,11 +101,15 @@ class BackendApp < Sinatra::Base
               :end_time         => end_time,
             }
             num_excerpts_returned += 1
+
+            @next_excerpt_offset += 1
             break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
           end
-        end
+          doc_num += 1
+        end # next lyric line
+
         break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
-      end
+      end # next doc
     end
 
     get_term_counts

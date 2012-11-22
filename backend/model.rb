@@ -118,6 +118,9 @@ def with_ferret_index(&block)
     index.field_infos.add_field :lyrics, {
       :store => :no, :index => :yes, :term_vector => :no
     }
+    index.field_infos.add_field :has_start_times, {
+      :store => :yes, :index => :no, :term_vector => :no
+    }
   end
   
   block.call(index)

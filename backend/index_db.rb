@@ -25,9 +25,10 @@ with_ferret_index do |index|
   Song.all.each do |song|
     puts song.id
     to_add = {
-      :song_id => song.id,
-      :name    => song.name,
-      :lyrics  => song.lyrics,
+      :song_id         => song.id,
+      :name            => song.name,
+      :lyrics          => song.lyrics,
+      :has_start_times => ((song.start_times_json || '[]') != '[]') ? 1 : 0,
     }
     index << to_add
 

@@ -20,6 +20,7 @@
       %ul
         - @results.each do |result|
           %li
+            = result[:has_start_times]
             %a{ :href => "/song/#{result[:song_id]}#line#{result[:line_num]}" }
               = result[:artist_name]
               = '-'
@@ -28,6 +29,9 @@
             - if result[:start_time] && result[:end_time]
               %a{ :href => "/split_mp3s/#{result[:youtube_video_id]}.#{result[:start_time]}.#{result[:end_time]}.mp3", :target => '_blank' }
                 = "(play #{result[:start_time]} to #{result[:end_time]})"
+    %hr
+    %a{ :href => "/search?query=#{params['query']}&doc_offset=#{@next_doc_offset}&excerpt_offset=#{@next_excerpt_offset}" }
+      Next page
     != haml :_js
     != haml :_loading
     :javascript
