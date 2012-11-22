@@ -42,7 +42,7 @@
                 = "\"#{result[:line]}\""
 
       %hr
-    %a{ :href => "/search?query=#{params['query']}&offset=#{offset + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
+    %a{ :href => "/search?query=#{params['query']}&offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
       Next page
     != haml :_js
     != haml :_loading
