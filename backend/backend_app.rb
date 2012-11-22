@@ -5,8 +5,10 @@ require './model'
 require 'json'
 
 class BackendApp < Sinatra::Base
-  use Airbrake::Rack
-  enable :raise_errors
+  if ENV['ENV'] == 'production'
+    use Airbrake::Rack
+    enable :raise_errors
+  end
 
   configure do
     set :haml, {:format => :html5, :escape_html => true}
