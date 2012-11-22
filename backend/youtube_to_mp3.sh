@@ -14,8 +14,10 @@ if [ -e "$ROOT_DIR/backend/youtube_downloads/$VIDEO_ID.mp3" ]; then
 fi
 
 cd "$ROOT_DIR/backend/youtube_downloads"
-python "$ROOT_DIR/tools/youtube-dl.py" --continue "http://www.youtube.com/watch?v=$VIDEO_ID"
-if [ "$?" != "0" ]; then exit 1; fi
+if [ ! -e "$VIDEO_ID.flv" ]; then
+  python "$ROOT_DIR/tools/youtube-dl.py" --continue "http://www.youtube.com/watch?v=$VIDEO_ID"
+  if [ "$?" != "0" ]; then exit 1; fi
+fi
 
 # -vn ignores the video, just looks at audio
 # -acodec copy keeps the same audio codec
