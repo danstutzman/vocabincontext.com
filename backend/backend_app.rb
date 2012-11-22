@@ -3,8 +3,7 @@ require 'sinatra/base'
 require 'haml'
 require './model'
 require 'json'
-
-MAX_NUM_EXCERPTS_TO_RETURN = 10
+require './ferret_search'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -27,89 +26,13 @@ class BackendApp < Sinatra::Base
 
   def serve_search
     query = params['query']
-    doc_offset = params['doc_offset'].to_i
-    excerpt_offset = params['excerpt_offset'].to_i
+    offset = params['offset'].to_i
 
     if query
-      @results = []
-      searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
-      analyzer = MyAnalyzer.new(true)
-      if query.split(' ').size > 1
-        ferret_query = Ferret::Search::PhraseQuery.new(:lyrics)
-        token_stream = analyzer.token_stream(:lyrics, query)
-        while token = token_stream.next
-          ferret_query << token.text
-        end
-      else
-        term = analyzer.token_stream(:lyrics, query).next.text
-        ferret_query = Ferret::Search::TermQuery.new(:lyrics, term)
-      end
-
-      options = {
-        :sort => [
-          Ferret::Search::SortField.new(:has_start_times,
-            { :type => :integer, :reverse => true }),
-          Ferret::Search::SortField::SCORE
-        ],
-        :limit => :all,
+      excerpts = FerretSearch.search_for(query, offset)
+      @labeled_excerpts, @unlabeled_excerpts = excerpts.partition { |excerpt|
+        excerpt[:start_time] && excerpt[:end_time]
       }
-
-      num_excerpts_returned = 0
-      @next_doc_offset = doc_offset
-      @next_excerpt_offset = excerpt_offset
-
-      doc_num = 0
-      searcher.search_each(ferret_query, options) do |doc_id, score|
-        if doc_offset > 0
-          doc_offset -= 1
-          next
-        end
-        if doc_num > 0
-          @next_excerpt_offset = 0
-          @next_doc_offset += 1
-        end
-
-        doc = searcher[doc_id]
-        song_id = doc[:song_id]
-        song = Song.first(:id => song_id)
-        song_name = song && song.name
-        artist_name = song && song.artist && song.artist.name
-        start_times = (song && song.start_times_json) ?
-          JSON.load(song.start_times_json) : []
-
-        lyrics = searcher.highlight(
-          ferret_query, doc_id, :lyrics, :excerpt_length => :all,
-          :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
-        lyrics.split("\n").each_with_index do |line, line_num|
-          if excerpt_offset > 0
-            excerpt_offset -= 1
-            next
-          end
-
-          if line.include?('{')
-            start_time = start_times[line_num]
-            end_time = start_times[line_num + 1]
-            @results << {
-              :has_start_times  => doc[:has_start_times],
-              :youtube_video_id => song.youtube_video_id,
-              :artist_name      => artist_name,
-              :song_name        => song_name,
-              :song_id          => song_id,
-              :line             => line,
-              :line_num         => line_num,
-              :start_time       => start_time,
-              :end_time         => end_time,
-            }
-            num_excerpts_returned += 1
-
-            @next_excerpt_offset += 1
-            break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
-          end
-          doc_num += 1
-        end # next lyric line
-
-        break if num_excerpts_returned >= MAX_NUM_EXCERPTS_TO_RETURN
-      end # next doc
     end
 
     get_term_counts

@@ -24,11 +24,24 @@ with_ferret_index do |index|
   puts 'Listing songs...'
   Song.all.each do |song|
     puts song.id
+
+    metadata = {}
+    metadata[:song_id] = song.id
+    metadata[:song_name] = song.name
+    if song.artist && song.artist.name
+      metadata[:artist_name] = song.artist.name
+    end
+    if (song.start_times_json || '[]') != '[]'
+      metadata[:start_times] = JSON.load(song.start_times_json)
+    end
+    if song.youtube_video_id
+      metadata[:youtube_video_id] = song.youtube_video_id
+    end
+
     to_add = {
-      :song_id         => song.id,
-      :name            => song.name,
       :lyrics          => song.lyrics,
       :has_start_times => ((song.start_times_json || '[]') != '[]') ? 1 : 0,
+      :metadata        => JSON.dump(metadata),
     }
     index << to_add
 

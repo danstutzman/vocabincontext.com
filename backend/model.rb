@@ -109,16 +109,13 @@ def with_ferret_index(&block)
   })
 
   if !index_already_existed
-    index.field_infos.add_field :song_id, {
-      :store => :yes, :index => :no, :term_vector => :no
-    }
-    index.field_infos.add_field :title, {
-      :store => :yes, :index => :no, :term_vector => :no
-    }
     index.field_infos.add_field :lyrics, {
       :store => :no, :index => :yes, :term_vector => :no
     }
     index.field_infos.add_field :has_start_times, {
+      :store => :yes, :index => :no, :term_vector => :no
+    }
+    index.field_infos.add_field :metadata, {
       :store => :yes, :index => :no, :term_vector => :no
     }
   end
