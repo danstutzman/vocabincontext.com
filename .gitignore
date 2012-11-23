@@ -1,10 +1,5 @@
 .*.swp
 
-media/whole_songs/*.mp3
-media/lyrics_txt/*.txt
-media/lyrics_json/*.json
-media/excerpts/*.mp3
-
 .DS_Store
 
 backend/db.sqlite3
