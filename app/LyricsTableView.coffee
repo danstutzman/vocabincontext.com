@@ -29,6 +29,8 @@ define (require) ->
       @_data = data
 
     init: ->
+      @_drawHighlight true
+
       # prevent default behavior when arrow keys are pressed
       $(document).keydown (event) =>
         if @constructor.ARROW_KEYS.indexOf(event.which) != -1
