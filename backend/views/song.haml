@@ -45,8 +45,8 @@
       %table(id='js-lyrics-table' border='1')
         %tr
           %th Start time
-          %th Skip?
           %th Lyrics line
+          %th Finish time
         - @lyrics_lines.each_with_index do |line, line_num|
           %tr
             %td
@@ -56,7 +56,9 @@
             %td
               %a{ :name => "line#{line_num}" }
                 = line
-              %br
+            %td
+              %input{ :type => 'text', :name => "finish_time_line_#{line_num}",
+                      :value => @finish_times[line_num] }
 
     != haml :_loading
     != haml :_js

@@ -6,12 +6,11 @@
     %link(href="/css/application.css" rel="stylesheet" type="text/css")
   %body
     %div.scrollbar-measure
-    %div(id='player' style='position:relative')
     %table(id='js-lyrics-table' border='1')
       %tr
         %th Start time
-        %th Skip?
         %th Lyrics line
+        %th Finish time
     %ul(id='words')
     %ul(id='lyrics')
 
@@ -20,14 +19,18 @@
     %script(src="/js/phantom-jasmine-console-runner.js")
     %script(src="/js/jscover_report.js")
     != haml :_loading
+    != haml :_js
 
-    %script(src="/js/main-compiled-for-coverage.js")
+    -#%script(src="/js/main-compiled-for-coverage.js")
     %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
 
     :javascript
       var console_reporter = undefined; // global for console runner
-      require(["main_with_tests"], function(main) {
-        main.setupForTestingAndThen(function() {
+      require(["jquery", "cs!spec/LyricsEditorModelSpec"], function($) {
+        $(function() {
+          $('#throbber-background').hide();
+          $('#throbber-foreground').hide();
+
           jasmine.getEnv().updateInterval = 1000;
           var htmlReporter = new jasmine.HtmlReporter();
           jasmine.getEnv().addReporter(htmlReporter);

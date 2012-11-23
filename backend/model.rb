@@ -24,15 +24,29 @@ DataMapper::Property::String.length(255)
 
 class Song
   include DataMapper::Resource
-  property :id, Serial, :required => true
-  property :artist_id, Integer, :required => true
-  property :artist_name, String, :required => true
-  property :song_name, String, :required => true
-  property :lyrics, Text, :required => true
-  property :created_at, DateTime, :required => true
+
+  property :id,          Serial,   :required => true
+  property :artist_id,   Integer,  :required => true
+  property :artist_name, String,   :required => true
+  property :song_name,   String,   :required => true
+  property :lyrics,      Text,     :required => true
+  property :created_at,  DateTime, :required => true
 
   property :youtube_video_id, String, :required => false
-  property :start_times_json, Text, :required => false
+
+  has n, :alignments
+end
+
+class Alignment
+  include DataMapper::Resource
+
+  property :id,         Serial,  :required => true
+  property :song_id,    Integer, :required => true
+  property :line_num,   Integer, :required => true
+  property :start_time, Integer, :required => true
+  property :end_time,   Integer, :required => true
+
+  belongs_to :song
 end
 
 class BestWord
