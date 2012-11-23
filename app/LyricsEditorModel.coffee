@@ -60,16 +60,19 @@ define (require) ->
       else
         throw new Error("Invalid lyric argument: #{lyric}")
 
-    loadLyricsLine: (start_centis, lyric, finish_centis) ->
-      start_centis  = @_convertCentis('start_centis', start_centis)
-      finish_centis = @_convertCentis('finish_centis', finish_centis)
-      lyric       = @_convertLyric(lyric)
-      @_rows.push({
-        start_centis: start_centis
-        lyric: lyric
-        finish_centis: finish_centis
-        skip: false
-      })
+    _trimLastNewline: (string) ->
+      if string.charAt(string.length - 1) == "\n"
+        string.substring 0, string.length - 1
+      else
+        string
+
+    loadLyrics: (lyrics) ->
+      if @_rows.length > 0
+        throw new Error("Lyrics already loaded")
+
+      for lyric in @_trimLastNewline(lyrics).split("\n")
+        lyric = @_convertLyric(lyric)
+        @_rows.push({ lyric: lyric })
 
     moveHighlight: (yDelta) ->
       if yDelta != -1 && yDelta != 1
