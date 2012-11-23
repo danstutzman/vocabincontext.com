@@ -18,6 +18,10 @@ class BackendApp < Sinatra::Base
     set :static_cache_control, [:public, :no_cache]
   end
 
+  not_found do
+    '404 Your page cannot be found'
+  end
+
   def get_term_counts
     @term_counts = BestWord.all.map { |best_word|
       [best_word.word, best_word.count]
@@ -48,6 +52,28 @@ class BackendApp < Sinatra::Base
     end
   end
 
+  def find_song_in_db_or_ferret(song_id)
+    song = Song.first(:id => song_id)
+    if song.nil?
+      doc = FerretSearch.find_song_by_id(song_id)
+      return nil if doc.nil?
+
+      lyrics = doc[:lyrics].force_encoding('UTF-8')
+      metadata = JSON.load(doc[:metadata] || '{}')
+      artist_id = doc[:artist_id]
+
+      song = Song.new({
+        :id => song_id,
+        :song_name => metadata['song_name'],
+        :artist_id => artist_id,
+        :artist_name => metadata['artist_name'],
+        :lyrics => lyrics,
+        :created_at => DateTime.now,
+      })
+    end
+    song
+  end
+
   get '/' do
     redirect '/search'
   end
@@ -70,7 +96,7 @@ class BackendApp < Sinatra::Base
 
   get '/song/:song_id' do
     song_id = params['song_id']
-    @song = Song.first(:id => song_id)
+    @song = find_song_in_db_or_ferret(song_id) or halt 404
     @lyrics_lines = @song.lyrics.split("\n")
     @start_times = JSON.load(@song.start_times_json || '[]')
     haml :song
@@ -80,7 +106,7 @@ class BackendApp < Sinatra::Base
     song_id = params['song_id']
     link = params['youtube_video_link']
 
-    @song = Song.first(:id => song_id)
+    @song = find_song_in_db_or_ferret(song_id) or halt 404
     if link && link != ''
       @song.youtube_video_id = youtube_video_link_to_video_id(link)
       @song.save rescue raise @song.errors.inspect
@@ -129,6 +155,15 @@ class BackendApp < Sinatra::Base
           end
         end
       end
+    end
+
+    unless Task.first({ :action => 'update_index', :song_id => song_id })
+      task = Task.new({
+        :action => 'update_index',
+        :song_id => song_id,
+        :created_at => DateTime.now,
+      })
+      task.save rescue raise task.errors.inspect
     end
 
     redirect "/song/#{song_id}"

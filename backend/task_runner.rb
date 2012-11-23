@@ -2,6 +2,7 @@ require 'rubygems' if RUBY_VERSION < '1.9'
 require './model'
 require 'open3'
 require 'json'
+require './ferret_search'
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 
@@ -77,7 +78,7 @@ mp3splt =
   end
 
 task = Task.first({
-  :action => %w[download_mp3 split_mp3],
+  :action => %w[download_mp3 split_mp3 update_index],
   :started_at => nil,
   :order => [:id]
 })
@@ -104,6 +105,9 @@ if task
     command_line += " #{millis_to_msh(task.start_time)}"
     command_line += " #{millis_to_msh(task.end_time)}"
     execute_command command_line, task
+  elsif task.action == 'update_index'
+    FerretSearch.update_index_from_db(task.song_id)
+    task.exit_status = 0 # simulate running command-line utility successfully
   end
 
   if task.exit_status == 0

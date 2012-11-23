@@ -1,11 +1,11 @@
 %html
   %head
-    %title= @song.name
+    %title= @song.song_name
     %link(href="/css/application.css" rel="stylesheet" type="text/css")
   %body
     %div.scrollbar-measure
-    %h1= @song.name
-    %h2= "by #{@song.artist.name}"
+    %h1= @song.song_name
+    %h2= "by #{@song.artist_name}"
 
     %form{ :method => 'post' }
       %input#save-button(type='submit' name='submit') Save
@@ -27,7 +27,7 @@
                 "ytapiplayer", "425", "356", "8", null, null, params, atts);
             });
 
-        %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist.name)}+#{CGI.escape(@song.name)}", :target => 'new' }
+        %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
           - if @song.youtube_video_id
             Find a different recording of this song on YouTube
           - else

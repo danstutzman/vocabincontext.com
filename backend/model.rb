@@ -22,33 +22,17 @@ end
 # set all String properties to have a default length of 255
 DataMapper::Property::String.length(255)
 
-class Artist
-  include DataMapper::Resource
-  property :id, Serial, :required => true
-  property :name, String, :required => true
-  property :created_at, DateTime, :required => true
-  has n, :songs
-end
-
 class Song
   include DataMapper::Resource
   property :id, Serial, :required => true
   property :artist_id, Integer, :required => true
-  property :name, String, :required => true
+  property :artist_name, String, :required => true
+  property :song_name, String, :required => true
   property :lyrics, Text, :required => true
   property :created_at, DateTime, :required => true
+
   property :youtube_video_id, String, :required => false
   property :start_times_json, Text, :required => false
-  belongs_to :artist
-end
-
-class SongLine
-  include DataMapper::Resource
-  property :id, Serial, :required => true
-  property :artist_id, Integer, :required => true
-  property :song_id, Integer, :required => true
-  property :lyric, String, :required => true
-  property :created_at, DateTime, :required => true
 end
 
 class BestWord
@@ -109,6 +93,9 @@ def with_ferret_index(&block)
   })
 
   if !index_already_existed
+    index.field_infos.add_field :song_id, {
+      :store => :yes, :index => :untokenized, :term_vector => :no
+    }
     index.field_infos.add_field :lyrics, {
       :store => :no, :index => :yes, :term_vector => :no
     }

@@ -39,6 +39,7 @@ module FerretSearch
       metadata        = JSON.load(doc[:metadata] || '{}')
       lyrics          = doc[:lyrics]
       has_start_times = (doc[:has_start_times] == '1')
+      song_id         = doc[:song_id]
 
       lyrics = searcher.highlight(
         ferret_query, doc_id, :lyrics, :excerpt_length => :all,
@@ -55,7 +56,7 @@ module FerretSearch
             :youtube_video_id => metadata['youtube_video_id'],
             :artist_name      => metadata['artist_name'],
             :song_name        => metadata['song_name'],
-            :song_id          => metadata['song_id'],
+            :song_id          => song_id,
             :line             => line,
             :line_num         => line_num,
             :start_time       => start_time,
@@ -79,5 +80,38 @@ module FerretSearch
     end
 
     all_excerpts[offset..-1]
+  end
+
+  def self.find_song_by_id(song_id)
+    ferret_query = Ferret::Search::TermQuery.new(:song_id, song_id)
+    searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
+    doc = nil
+    searcher.search_each(ferret_query) do |doc_id, score|
+      doc = searcher[doc_id]
+      break
+    end
+    searcher.close
+    doc
+  end
+
+  def self.update_index_from_db(song_id)
+    with_ferret_index do |index|
+      song = Song.first(:id => song_id)
+      metadata = {}
+      metadata[:song_name] = song.song_name
+      metadata[:artist_name] = song.artist_name
+      if (song.start_times_json || '[]') != '[]'
+        metadata[:start_times] = JSON.load(song.start_times_json || '[]')
+      end
+      if song.youtube_video_id
+        metadata[:youtube_video_id] = song.youtube_video_id
+      end
+      to_update = {
+        :lyrics          => song.lyrics,
+        :has_start_times => (song.start_times_json || '[]') != '[]' ? 1 : 0,
+        :metadata        => JSON.dump(metadata),
+      }
+      index.query_update "song_id:#{song.id}", to_update
+    end
   end
 end
