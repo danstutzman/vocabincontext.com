@@ -43,25 +43,21 @@ define (require) ->
       model.moveHighlight 1
       expect(model.highlightY()).toEqual 2
 
-#    it 'gives you access to the highlighted row', ->
-#      model = new LyricsEditorModel()
-#      model.loadLyricsLine  30, 'lyrics line 1',  70
-#      model.loadLyricsLine 130, 'lyrics line 2', 170
-#      expect(model.highlightedRow().start_centis).toEqual 30
-#      expect(model.highlightedRow().lyric).toEqual 'lyrics line 1'
-#      expect(model.highlightedRow().finish_centis).toEqual 70
-#      model.moveHighlight 1
-#      expect(model.highlightedRow().start_centis).toEqual 130
-#      expect(model.highlightedRow().lyric).toEqual 'lyrics line 2'
-#      expect(model.highlightedRow().finish_centis).toEqual 170
-#
-#    it 'doesn\'t accept null lyric', ->
-#      model = new LyricsEditorModel()
-#      expect(-> model.loadLyricsLine 123, null).toThrow()
-#
-#    it 'doesn\'t allow cursor movement other than 1 up or 1 down', ->
-#      model = new LyricsEditorModel()
-#      expect(-> model.moveHighlight 0).toThrow()
-#      expect(-> model.moveHighlight -2).toThrow()
-#      expect(-> model.moveHighlight 2).toThrow()
-#      expect(-> model.moveHighlight null).toThrow()
+    it 'gives you access to the highlighted row', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+      expect(model.highlightedRow().lyric).toEqual 'line 1'
+      model.moveHighlight 1
+      expect(model.highlightedRow().lyric).toEqual 'line 2'
+
+    it 'doesn\'t allow cursor movement other than 1 up or 1 down', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+      expect(-> model.moveHighlight 0).toThrow()
+      expect(-> model.moveHighlight -2).toThrow()
+      expect(-> model.moveHighlight 2).toThrow()
+      expect(-> model.moveHighlight null).toThrow()
