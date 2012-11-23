@@ -10,8 +10,8 @@ $stemmed_to_count = {}
 def add_unlabeled_song(
     index, song_id, song_name, artist_id, artist_name, lyrics)
   metadata = {}
-  metadata[:song_name] = song_name
-  metadata[:artist_name] = artist_name
+  metadata['song_name'] = song_name
+  metadata['artist_name'] = artist_name
   to_add = {
     :song_id         => song_id,
     :artist_id       => artist_id,

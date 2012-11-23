@@ -98,13 +98,13 @@ module FerretSearch
     with_ferret_index do |index|
       song = Song.first(:id => song_id)
       metadata = {}
-      metadata[:song_name] = song.song_name
-      metadata[:artist_name] = song.artist_name
+      metadata['song_name'] = song.song_name
+      metadata['artist_name'] = song.artist_name
       if (song.start_times_json || '[]') != '[]'
-        metadata[:start_times] = JSON.load(song.start_times_json || '[]')
+        metadata['start_times'] = JSON.load(song.start_times_json || '[]')
       end
       if song.youtube_video_id
-        metadata[:youtube_video_id] = song.youtube_video_id
+        metadata['youtube_video_id'] = song.youtube_video_id
       end
       to_update = {
         :lyrics          => song.lyrics,
