@@ -1,4 +1,6 @@
 define (require) ->
+  EventTarget = require('cs!app/EventTarget')
+
   clone = (obj) ->
     if obj == null || typeof(obj) != 'object'
       return obj
@@ -7,8 +9,10 @@ define (require) ->
       temp[key] = clone(obj[key])
     temp
 
-  class LyricsEditorModel
+  class LyricsEditorModel extends EventTarget
     constructor: (rows) ->
+      super()
+
       # 0   means starting before the first line of text
       # n-1 means starting before the last line of text
       # n   means starting after the last line of text
@@ -34,6 +38,9 @@ define (require) ->
       @_highlightSize = 0
 
       @_rows = clone(rows)
+
+      @addListener 'change', ->
+        console.log 'change'
 
     # getters
     highlightY: -> @_highlightY
@@ -78,6 +85,9 @@ define (require) ->
       if @_highlightY > @_rows.length
         @_highlightY = @_rows.length
    
-    setStartCentis: (new_centis) ->
+    labelStartCentis: (new_centis) ->
       new_centis = @_convertCentis('start_centis', new_centis)
-      @_rows[@_highlightY].start_centis = new_centis
+      if @_highlightSize == 0 && @_highlightY < @_rows.length
+        @_rows[@_highlightY].start_centis = new_centis
+        # current row hadn't started yet; now it has
+        @fire 'change'

@@ -67,26 +67,22 @@ define (require) ->
         { lyric: 'line 1' },
         { lyric: 'line 2' }
       ])
-      model.setStartCentis 123
+      model.labelStartCentis 123
       expect(model.rows()[0].start_centis).toEqual 123
       expect(model.rows()[1].start_centis).toEqual null
 
       model.moveHighlight 1
-      model.setStartCentis 234
+      model.labelStartCentis 234
       expect(model.rows()[0].start_centis).toEqual 123
       expect(model.rows()[1].start_centis).toEqual 234
 
-    it 'lets you set start_centis in reverse order', ->
+    it 'fires an event when start_centis is labeled', ->
       model = new LyricsEditorModel([
         { lyric: 'line 1' },
         { lyric: 'line 2' }
       ])
-      model.moveHighlight 1
-      model.setStartCentis 234
-      expect(model.rows()[0].start_centis).toEqual null
-      expect(model.rows()[1].start_centis).toEqual 234
-
-      model.moveHighlight -1
-      model.setStartCentis 123
-      expect(model.rows()[0].start_centis).toEqual 123
-      expect(model.rows()[1].start_centis).toEqual 234
+      eventWasFired = false
+      model.addListener 'change', ->
+        eventWasFired = true
+      model.labelStartCentis 123
+      expect(eventWasFired).toEqual true
