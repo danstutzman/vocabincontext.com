@@ -12,19 +12,19 @@ define (require) ->
       data = new LyricsEditorModel()
       data.loadLyricsLine 30, 'the lyrics', 70
       expect(data.rows().length).toEqual 1
-      expect(data.rows()[0].start_time).toEqual 30
+      expect(data.rows()[0].start_centis).toEqual 30
       expect(data.rows()[0].lyric).toEqual 'the lyrics'
-      expect(data.rows()[0].finish_time).toEqual 70
+      expect(data.rows()[0].finish_centis).toEqual 70
     it 'adds second lyrics below the first', ->
       data = new LyricsEditorModel()
       data.loadLyricsLine  30, 'lyrics line 1',  70
       data.loadLyricsLine 130, 'lyrics line 2', 170
-      expect(data.rows()[0].start_time).toEqual 30
+      expect(data.rows()[0].start_centis).toEqual 30
       expect(data.rows()[0].lyric).toEqual 'lyrics line 1'
-      expect(data.rows()[0].finish_time).toEqual 70
-      expect(data.rows()[1].start_time).toEqual 130
+      expect(data.rows()[0].finish_centis).toEqual 70
+      expect(data.rows()[1].start_centis).toEqual 130
       expect(data.rows()[1].lyric).toEqual 'lyrics line 2'
-      expect(data.rows()[1].finish_time).toEqual 170
+      expect(data.rows()[1].finish_centis).toEqual 170
     it 'lets you move the highlight down and up', ->
       data = new LyricsEditorModel()
       data.loadLyricsLine  30, 'lyrics line 1',  70
@@ -53,13 +53,13 @@ define (require) ->
       data = new LyricsEditorModel()
       data.loadLyricsLine  30, 'lyrics line 1',  70
       data.loadLyricsLine 130, 'lyrics line 2', 170
-      expect(data.highlightedRow().start_time).toEqual 30
+      expect(data.highlightedRow().start_centis).toEqual 30
       expect(data.highlightedRow().lyric).toEqual 'lyrics line 1'
-      expect(data.highlightedRow().finish_time).toEqual 70
+      expect(data.highlightedRow().finish_centis).toEqual 70
       data.moveHighlight 1
-      expect(data.highlightedRow().start_time).toEqual 130
+      expect(data.highlightedRow().start_centis).toEqual 130
       expect(data.highlightedRow().lyric).toEqual 'lyrics line 2'
-      expect(data.highlightedRow().finish_time).toEqual 170
+      expect(data.highlightedRow().finish_centis).toEqual 170
 
     it 'doesn\'t accept null lyric', ->
       data = new LyricsEditorModel()

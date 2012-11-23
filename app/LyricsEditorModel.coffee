@@ -41,18 +41,18 @@ define (require) ->
     rows: -> clone(@_rows)
     highlightedRow: -> clone(@_rows[@_highlightY])
 
-    _convertTime: (field_name, time) ->
-      if typeof(time) == 'number'
-        time
-      else if time == null
+    _convertCentis: (field_name, centis) ->
+      if typeof(centis) == 'number'
+        centis
+      else if centis == null
         null
-      else if time == ''
+      else if centis == ''
         null
-      else if typeof(time) == 'string' && time.match(/^[0-9]+$/)
-        parseInt(time)
+      else if typeof(centis) == 'string' && centis.match(/^[0-9]+$/)
+        parseInt(centis)
       else
         throw new Error(\
-          "Invalid #{field_name} argument: #{time} #{typeof(time)}")
+          "Invalid #{field_name} argument: #{centis} #{typeof(centis)}")
 
     _convertLyric: (lyric) ->
       if typeof(lyric) == 'string'
@@ -60,14 +60,14 @@ define (require) ->
       else
         throw new Error("Invalid lyric argument: #{lyric}")
 
-    loadLyricsLine: (start_time, lyric, finish_time) ->
-      start_time  = @_convertTime('start_time', start_time)
-      finish_time = @_convertTime('finish_time', finish_time)
+    loadLyricsLine: (start_centis, lyric, finish_centis) ->
+      start_centis  = @_convertCentis('start_centis', start_centis)
+      finish_centis = @_convertCentis('finish_centis', finish_centis)
       lyric       = @_convertLyric(lyric)
       @_rows.push({
-        start_time: start_time
+        start_centis: start_centis
         lyric: lyric
-        finish_time: finish_time
+        finish_centis: finish_centis
         skip: false
       })
 
@@ -83,6 +83,6 @@ define (require) ->
       if @_highlightY > @_rows.length
         @_highlightY = @_rows.length
    
-#    setStartTime: (new_time) ->
-#      new_time = @_convertStartTime(new_time)
-#      @_rows[@_highlightY]['start_time'] = new_time
+#    setStartCentis: (new_centis) ->
+#      new_centis = @_convertStartCentis(new_centis)
+#      @_rows[@_highlightY]['start_centis'] = new_centis

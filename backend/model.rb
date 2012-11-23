@@ -40,11 +40,11 @@ end
 class Alignment
   include DataMapper::Resource
 
-  property :id,         Serial,  :required => true
-  property :song_id,    Integer, :required => true
-  property :line_num,   Integer, :required => true
-  property :start_time, Integer, :required => true
-  property :end_time,   Integer, :required => true
+  property :id,            Serial,  :required => true
+  property :song_id,       Integer, :required => true
+  property :line_num,      Integer, :required => true
+  property :start_centis,  Integer, :required => true
+  property :finish_centis, Integer, :required => true
 
   belongs_to :song
 end
