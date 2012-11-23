@@ -46,7 +46,6 @@ module FerretSearch
         :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
 
       start_times = metadata['start_times'] || []
-      end_times   = metadata['end_times'] || []
       lyrics.split("\n").each_with_index do |line, line_num|
         if line.include?('{')
           start_time = start_times[line_num]
