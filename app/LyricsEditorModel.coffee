@@ -39,9 +39,6 @@ define (require) ->
 
       @_rows = clone(rows)
 
-      @addListener 'change', ->
-        console.log 'change'
-
     # getters
     highlightY: -> @_highlightY
     highlightSize: -> @_highlightSize
@@ -85,9 +82,32 @@ define (require) ->
       if @_highlightY > @_rows.length
         @_highlightY = @_rows.length
    
+      @fire 'updateHighlight'
+
     labelStartCentis: (new_centis) ->
       new_centis = @_convertCentis('start_centis', new_centis)
+
       if @_highlightSize == 0 && @_highlightY < @_rows.length
-        @_rows[@_highlightY].start_centis = new_centis
         # current row hadn't started yet; now it has
-        @fire 'change'
+
+        @_highlightSize = 1
+        @fire 'updateHighlight'
+
+        @_rows[@_highlightY].start_centis = new_centis
+        @fire 'updateCurrentRow'
+
+      else if @_highlightSize == 1 && @_highlightY < @_rows.length - 1
+        @moveHighlight 1
+
+        @_rows[@_highlightY].start_centis = new_centis
+        @fire 'updateCurrentRow'
+
+    labelFinishCentis: (new_centis) ->
+      new_centis = @_convertCentis('start_centis', new_centis)
+
+      if @_highlightSize == 1
+        @_rows[@_highlightY].finish_centis = new_centis
+        @fire 'updateCurrentRow'
+
+        @_highlightSize = 0
+        @moveHighlight 1

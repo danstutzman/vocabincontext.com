@@ -71,18 +71,91 @@ define (require) ->
       expect(model.rows()[0].start_centis).toEqual 123
       expect(model.rows()[1].start_centis).toEqual null
 
-      model.moveHighlight 1
       model.labelStartCentis 234
       expect(model.rows()[0].start_centis).toEqual 123
       expect(model.rows()[1].start_centis).toEqual 234
 
-    it 'fires an event when start_centis is labeled', ->
+    it 'fires updateHighlight when cursor is moved down', ->
       model = new LyricsEditorModel([
         { lyric: 'line 1' },
         { lyric: 'line 2' }
       ])
-      eventWasFired = false
-      model.addListener 'change', ->
-        eventWasFired = true
+
+      numFirings = 0
+      model.addListener 'updateHighlight', -> numFirings += 1
+      model.moveHighlight 1
+      expect(numFirings).toEqual 1
+
+    it 'fires updateHighlight when cursor is moved up', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+
+      model.moveHighlight 1
+
+      numFirings = 0
+      model.addListener 'updateHighlight', -> numFirings += 1
+      model.moveHighlight -1
+      expect(numFirings).toEqual 1
+
+    it 'ignores labelStartCentis when already on last line', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
       model.labelStartCentis 123
-      expect(eventWasFired).toEqual true
+      model.labelStartCentis 234
+      model.labelStartCentis 345
+
+      expect(model.rows().length).toEqual 2
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[1].start_centis).toEqual 234
+
+    it 'lets you set finish_centis too', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+      model.labelStartCentis 123
+      model.labelFinishCentis 234
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[0].finish_centis).toEqual 234
+      expect(model.rows()[1].start_centis).toEqual null
+      expect(model.rows()[1].finish_centis).toEqual null
+
+      model.labelStartCentis 345
+      model.labelFinishCentis 456
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[0].finish_centis).toEqual 234
+      expect(model.rows()[1].start_centis).toEqual 345
+      expect(model.rows()[1].finish_centis).toEqual 456
+
+    it 'ignores finish_centis if never started', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+
+      numFirings = 0
+      model.addListener 'updateHighlight', -> numFirings += 1
+      model.addListener 'updateCurrentRow', -> numFirings += 1
+
+      model.labelFinishCentis 123
+      expect(numFirings).toEqual 0
+
+    it 'ignores finish_centis if already finished', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+
+      model.labelStartCentis 123
+      model.labelFinishCentis 234
+
+      numFirings = 0
+      model.addListener 'updateHighlight', -> numFirings += 1
+      model.addListener 'updateCurrentRow', -> numFirings += 1
+
+      model.labelFinishCentis 345
+      expect(numFirings).toEqual 0
