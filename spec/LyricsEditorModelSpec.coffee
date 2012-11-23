@@ -2,32 +2,14 @@ define (require) ->
   LyricsEditorModel = require('cs!app/LyricsEditorModel')
 
   describe 'LyricsEditorModel', ->
-    it 'starts with the highlight at the top', ->
-      data = new LyricsEditorModel()
+    it 'starts with the highlight at the top and not encompassing text', ->
+      data = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
       expect(data.highlightY()).toEqual 0
+      expect(data.highlightSize()).toEqual 0
 
-    it 'starts empty', ->
-      data = new LyricsEditorModel()
-      expect(data.rows()).toEqual []
-
-    it 'can load lyrics without trailing newline', ->
-      data = new LyricsEditorModel()
-      data.loadLyrics "line1\nline2\nline3"
-      expect(data.rows().length).toEqual 3
-      expect(data.rows()[0].lyric).toEqual 'line1'
-      expect(data.rows()[1].lyric).toEqual 'line2'
-      expect(data.rows()[2].lyric).toEqual 'line3'
-
-    it 'can load lyrics with trailing newline', ->
-      data = new LyricsEditorModel()
-      data.loadLyrics "line1\nline2\nline3\n"
-      expect(data.rows().length).toEqual 3
-      expect(data.rows()[0].lyric).toEqual 'line1'
-      expect(data.rows()[1].lyric).toEqual 'line2'
-      expect(data.rows()[2].lyric).toEqual 'line3'
-
-
-#    it 'adds second lyrics below the first', ->
 #      data = new LyricsEditorModel()
 #      data.loadLyricsLine  30, 'lyrics line 1',  70
 #      data.loadLyricsLine 130, 'lyrics line 2', 170

@@ -8,7 +8,7 @@ define (require) ->
     temp
 
   class LyricsEditorModel
-    constructor: ->
+    constructor: (rows) ->
       # 0   means starting before the first line of text
       # n-1 means starting before the last line of text
       # n   means starting after the last line of text
@@ -31,9 +31,9 @@ define (require) ->
       # 3 third line of text  <-- (area between lines is highlighted)
       # --------------------
       # 4 fourth line of text
-      @_highlightSize = false
+      @_highlightSize = 0
 
-      @_rows = []
+      @_rows = clone(rows)
 
     # getters
     highlightY: -> @_highlightY
@@ -65,14 +65,6 @@ define (require) ->
         string.substring 0, string.length - 1
       else
         string
-
-    loadLyrics: (lyrics) ->
-      if @_rows.length > 0
-        throw new Error("Lyrics already loaded")
-
-      for lyric in @_trimLastNewline(lyrics).split("\n")
-        lyric = @_convertLyric(lyric)
-        @_rows.push({ lyric: lyric })
 
     moveHighlight: (yDelta) ->
       if yDelta != -1 && yDelta != 1
