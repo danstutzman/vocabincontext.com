@@ -78,14 +78,6 @@ class BackendApp < Sinatra::Base
     redirect '/search'
   end
 
-  get '/index' do
-    haml :index
-  end
-
-  get '/segmenter' do
-    haml :segmenter
-  end
-
   get '/search' do
     serve_search
   end
