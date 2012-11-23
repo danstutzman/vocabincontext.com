@@ -26,12 +26,7 @@
 
     :javascript
       var console_reporter = undefined; // global for console runner
-      require(["cs!app/app",
-          "cs!spec/SoundGridSpec",
-          "cs!spec/TimeSeriesSpec",
-          "cs!spec/UiSpec",
-          "cs!spec/LyricsTableDataSpec"
-          ], function(main) {
+      require(["main_with_tests"], function(main) {
         main.setupForTestingAndThen(function() {
           jasmine.getEnv().updateInterval = 1000;
           var htmlReporter = new jasmine.HtmlReporter();
