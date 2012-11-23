@@ -78,6 +78,6 @@ define (require) ->
       if @_highlightY > @_rows.length
         @_highlightY = @_rows.length
    
-#    setStartCentis: (new_centis) ->
-#      new_centis = @_convertStartCentis(new_centis)
-#      @_rows[@_highlightY]['start_centis'] = new_centis
+    setStartCentis: (new_centis) ->
+      new_centis = @_convertCentis('start_centis', new_centis)
+      @_rows[@_highlightY].start_centis = new_centis

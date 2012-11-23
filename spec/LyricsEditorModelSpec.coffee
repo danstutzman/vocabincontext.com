@@ -61,3 +61,32 @@ define (require) ->
       expect(-> model.moveHighlight -2).toThrow()
       expect(-> model.moveHighlight 2).toThrow()
       expect(-> model.moveHighlight null).toThrow()
+
+    it 'lets you set start_centis in order', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+      model.setStartCentis 123
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[1].start_centis).toEqual null
+
+      model.moveHighlight 1
+      model.setStartCentis 234
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[1].start_centis).toEqual 234
+
+    it 'lets you set start_centis in reverse order', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 1' },
+        { lyric: 'line 2' }
+      ])
+      model.moveHighlight 1
+      model.setStartCentis 234
+      expect(model.rows()[0].start_centis).toEqual null
+      expect(model.rows()[1].start_centis).toEqual 234
+
+      model.moveHighlight -1
+      model.setStartCentis 123
+      expect(model.rows()[0].start_centis).toEqual 123
+      expect(model.rows()[1].start_centis).toEqual 234
