@@ -69,6 +69,7 @@ module FerretSearch
 
       break if all_excerpts.size >= offset + MAX_NUM_EXCERPTS_TO_RETURN
     end # next doc
+    searcher.close
 
     all_excerpts.each_with_index do |excerpt, original_order|
       excerpt[:original_order] = original_order
