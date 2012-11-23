@@ -55,8 +55,8 @@ define (require) ->
 
       if @_highlightY < 0
         @_highlightY = 0
-      if @_highlightY > @_rows.length
-        @_highlightY = @_rows.length
+      if @_highlightY >= @_rows.length
+        @_highlightY = @_rows.length - 1
    
     setStartTime: (new_time) ->
       new_time = @_convertStartTime(new_time)

@@ -69,7 +69,8 @@ define (require) ->
       $('#js-lyrics-table > tbody').append newRow
 
     _highlightedRowSelector: ->
-      "#js-lyrics-table tr:nth-child(#{@_data.highlightY() + 1})"
+      # add 1 because nth-child is 1-based, add 1 because of table headers
+      "#js-lyrics-table tr:nth-child(#{@_data.highlightY() + 2})"
 
     _dataSkipToHtml: (data_skip) ->
       if data_skip then "#" else ""
