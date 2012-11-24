@@ -38,28 +38,28 @@ module FerretSearch
       doc = searcher[doc_id]
       metadata        = JSON.load(doc[:metadata] || '{}')
       lyrics          = doc[:lyrics]
-      has_start_times = (doc[:has_start_times] == '1')
       song_id         = doc[:song_id]
 
       lyrics = searcher.highlight(
         ferret_query, doc_id, :lyrics, :excerpt_length => :all,
         :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
 
-      start_times = metadata['start_times'] || []
+      alignments_by_line_num = [nil] * lyrics.split("\n").size
+      Alignment.all(:song_id => song_id).each do |alignment|
+        alignments_by_line_num[alignment.line_num] = alignment
+      end
+
       lyrics.split("\n").each_with_index do |line, line_num|
         if line.include?('{')
-          start_time = start_times[line_num]
-          end_time = start_times[line_num + 1]
+          alignment = alignments_by_line_num[line_num]
           excerpt = {
-            :has_start_times  => has_start_times,
             :youtube_video_id => metadata['youtube_video_id'],
             :artist_name      => metadata['artist_name'],
             :song_name        => metadata['song_name'],
             :song_id          => song_id,
             :line             => line,
             :line_num         => line_num,
-            :start_time       => start_time,
-            :end_time         => end_time,
+            :alignment        => alignment,
           }
           all_excerpts << excerpt
           break if all_excerpts.size >= offset + MAX_NUM_EXCERPTS_TO_RETURN
@@ -75,8 +75,7 @@ module FerretSearch
     end
 
     all_excerpts = all_excerpts.sort_by do |excerpt|
-      has_start_and_end_time = excerpt[:start_time] && excerpt[:end_time]
-      [has_start_and_end_time ? -1 : 0, excerpt[:original_order]]
+      [excerpt[:alignment] ? -1 : 0, excerpt[:original_order]]
     end
 
     all_excerpts[offset..-1]
@@ -100,15 +99,12 @@ module FerretSearch
       metadata = {}
       metadata['song_name'] = song.song_name
       metadata['artist_name'] = song.artist_name
-      if (song.start_times_json || '[]') != '[]'
-        metadata['start_times'] = JSON.load(song.start_times_json || '[]')
-      end
       if song.youtube_video_id
         metadata['youtube_video_id'] = song.youtube_video_id
       end
       to_update = {
         :lyrics          => song.lyrics,
-        :has_start_times => (song.start_times_json || '[]') != '[]' ? 1 : 0,
+        :has_start_times => (song.alignments.size > 0) ? 1 : 0,
         :metadata        => JSON.dump(metadata),
       }
       index.query_update "song_id:#{song.id}", to_update

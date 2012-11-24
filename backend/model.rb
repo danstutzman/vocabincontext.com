@@ -59,13 +59,15 @@ end
 
 class Task
   include DataMapper::Resource
+
+  # properties that exist when task created
   property :id, Serial, :required => true
   property :action, String, :required => true
   property :song_id, Integer, :required => true, :index => true
-  property :start_time, Integer
-  property :end_time, Integer
+  property :alignment_id, Integer, :required => false, :index => true
   property :created_at, DateTime, :required => true
 
+  # properties that get filled out as task executes
   property :command_line, String
   property :started_at, DateTime
   property :completed_at, DateTime
@@ -74,6 +76,7 @@ class Task
   property :exit_status, Integer
 
   belongs_to :song
+  belongs_to :alignment
 end
 
 DataMapper.auto_upgrade!

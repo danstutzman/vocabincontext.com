@@ -34,9 +34,8 @@ class BackendApp < Sinatra::Base
 
     if query
       excerpts = FerretSearch.search_for(query, offset)
-      @labeled_excerpts, @unlabeled_excerpts = excerpts.partition { |excerpt|
-        excerpt[:start_time] && excerpt[:end_time]
-      }
+      @labeled_excerpts, @unlabeled_excerpts =
+        excerpts.partition { |excerpt| excerpt[:alignment] }
     end
 
     get_term_counts
@@ -86,12 +85,30 @@ class BackendApp < Sinatra::Base
     serve_search
   end
 
+  helpers do
+    def format_centis(centis)
+      centis && sprintf('%.2f', centis / 100.0)
+    end
+  end
+
   get '/song/:song_id' do
     song_id = params['song_id']
     @song = find_song_in_db_or_ferret(song_id) or halt 404
     @lyrics_lines = @song.lyrics.split("\n")
-    @start_times = JSON.load(@song.start_times_json || '[]')
+
+    @start_finish_centis_by_line_num = [[nil, nil]] * @lyrics_lines.size
+    @song.alignments.each do |alignment|
+      @start_finish_centis_by_line_num[alignment.line_num] =
+        [alignment.start_centis, alignment.finish_centis]
+    end
+
     haml :song
+  end
+
+  def param_value_to_centis(value)
+    return nil if value.nil? || value == ''
+    raise "Invalid time value: #{value}" if !value.match(/^[0-9]+(\.[0-9]+)?$/)
+    (value.to_f * 100).round
   end
 
   post '/song/:song_id' do
@@ -113,39 +130,35 @@ class BackendApp < Sinatra::Base
       end
     end
 
-    start_times = []
+    alignments = []
     num_lines = @song.lyrics.split("\n").size
+    Alignment.all(:song_id => song_id).destroy!
     [num_lines, 500].min.times do |line_num| # limit to 500 to avoid DOS attack
-      start_time = params["start_time_line_#{line_num}"]
-      start_time = start_time.match(/^[0-9]+$/) ? start_time.to_i : ''
-      start_times.push start_time
+      alignment = Alignment.new({
+        :song_id => song_id,
+        :line_num => line_num,
+        :start_centis => param_value_to_centis(params['s'][line_num]),
+        :finish_centis => param_value_to_centis(params['f'][line_num]),
+      })
+      if alignment.start_centis && alignment.finish_centis
+        alignment.save rescue raise alignment.errors.inspect
+        alignments.push alignment
+      end
     end
-    while start_times.last == ''
-      start_times.pop
-    end
-    @song.start_times_json = JSON.dump(start_times)
-    @song.save rescue raise @song.errors.inspect
 
-    if (@song.start_times_json || '[]') != '[]'
-      existing_tasks = Task.all({ :action => 'split_mp3', :song_id => song_id })
-      start_times.each_with_index do |start_time, line_num|
-        end_time = start_times[line_num + 1]
-        if Integer === start_time && Integer === end_time
-          existing = existing_tasks.find do |task|
-            task.start_time == start_time &&
-            task.end_time == end_time
-          end
-          unless existing
-            task = Task.new({
-              :action => 'split_mp3',
-              :song_id => song_id,
-              :start_time => start_time,
-              :end_time => end_time,
-              :created_at => DateTime.now,
-            })
-            task.save rescue raise task.errors.inspect
-          end
-        end
+    existing_tasks = Task.all({ :action => 'split_mp3', :song_id => song_id })
+    alignments.each do |alignment|
+      existing = existing_tasks.find do |task|
+        task.alignment_id == alignment.id
+      end
+      unless existing
+        task = Task.new({
+          :action => 'split_mp3',
+          :song_id => song_id,
+          :alignment_id => alignment.id,
+          :created_at => DateTime.now,
+        })
+        task.save rescue raise task.errors.inspect
       end
     end
 

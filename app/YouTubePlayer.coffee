@@ -6,6 +6,6 @@ define (require) ->
       @player = player
     getPosition: ->
       if @player.getPlayerState() == @constructor.IS_PLAYING
-        Math.round(@player.getCurrentTime() * 1000)
+        Math.round(@player.getCurrentTime() * 100)
       else
         null
