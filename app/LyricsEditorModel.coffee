@@ -45,6 +45,8 @@ define (require) ->
     rows: -> clone(@_rows)
     highlightedRow: -> clone(@_rows[@_highlightY])
 
+    numRows: -> @_rows.length
+
     _convertCentis: (field_name, centis) ->
       if typeof(centis) == 'number'
         centis
@@ -81,6 +83,9 @@ define (require) ->
         @_highlightY = 0
       if @_highlightY > @_rows.length
         @_highlightY = @_rows.length
+
+      if @_highlightY == @_rows.length
+        @_highlightSize = 0
    
       @fire 'updateHighlight'
 
@@ -96,16 +101,25 @@ define (require) ->
         @_rows[@_highlightY].start_centis = new_centis
         @fire 'updateCurrentRow'
 
-      else if @_highlightSize == 1 && @_highlightY < @_rows.length - 1
+      # pressing [S] usually marks the current line as finished and moves
+      # you to the next line, but if you're on the last line already, there's
+      # no new line to start.  The only thing left to do is finish the
+      # current (last) line
+      else if @_highlightSize == 1 && @_highlightY == @_rows.length - 1
+        @labelFinishCentis new_centis
+
+      else if @_highlightSize == 1
         @moveHighlight 1
 
         @_rows[@_highlightY].start_centis = new_centis
         @fire 'updateCurrentRow'
 
     labelFinishCentis: (new_centis) ->
-      new_centis = @_convertCentis('start_centis', new_centis)
+      new_centis = @_convertCentis('finish_centis', new_centis)
 
+      console.log 'log1'
       if @_highlightSize == 1
+        console.log 'log2'
         @_rows[@_highlightY].finish_centis = new_centis
         @fire 'updateCurrentRow'
 

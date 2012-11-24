@@ -26,7 +26,8 @@
 
     :javascript
       var console_reporter = undefined; // global for console runner
-      require(["jquery", "cs!spec/LyricsEditorModelSpec"], function($) {
+      require(["jquery", "cs!spec/LyricsEditorModelSpec",
+                         "cs!spec/LyricsEditorViewSpec"], function($) {
         $(function() {
           $('#throbber-background').hide();
           $('#throbber-foreground').hide();
