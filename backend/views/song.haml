@@ -48,7 +48,7 @@
           %th Lyrics line
           %th Finish time
         - @lyrics_lines.each_with_index do |line, line_num|
-          %tr
+          %tr{ :id => "line#{line_num}" }
             %td
               %input{ :type => 'text', :name => "start_time_line_#{line_num}",
                       :value => @start_times[line_num] }

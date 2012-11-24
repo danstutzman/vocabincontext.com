@@ -88,17 +88,26 @@ define (require) ->
    
       @fire 'updateHighlight'
 
+    _updateCurrentRow: (new_data) ->
+      @_updateRow @_highlightY, new_data
+
+    _updateRow: (line_num, new_data) ->
+      for own key, value of new_data
+        @_rows[line_num][key] = value
+
+      event = { name: 'updateRow', line_num: line_num }
+      for own key, value of new_data
+        event[key] = value
+      @fire event
+
     labelStartCentis: (new_centis) ->
       new_centis = @_convertCentis('start_centis', new_centis)
 
       if @_highlightSize == 0 && @_highlightY < @_rows.length
         # current row hadn't started yet; now it has
-
         @_highlightSize = 1
         @fire 'updateHighlight'
-
-        @_rows[@_highlightY].start_centis = new_centis
-        @fire 'updateCurrentRow'
+        @_updateCurrentRow { start_centis: new_centis }
 
       # pressing [S] usually marks the current line as finished and moves
       # you to the next line, but if you're on the last line already, there's
@@ -109,20 +118,30 @@ define (require) ->
 
       # convenience: pressing [S] while you're in a row presses [F] for you
       else if @_highlightSize == 1
-        @_rows[@_highlightY].finish_centis = new_centis
-        @fire 'updateCurrentRow'
-
+        @_updateCurrentRow { finish_centis: new_centis }
         @moveHighlight 1
+        @_updateCurrentRow { start_centis: new_centis }
 
-        @_rows[@_highlightY].start_centis = new_centis
-        @fire 'updateCurrentRow'
+    correctStartCentis: (new_centis) ->
+      new_centis = @_convertCentis('start_centis', new_centis)
+
+      if @_highlightSize == 0
+        # doesn't make sense: nothing to correct
+      else if @_highlightSize == 1
+        @_updateCurrentRow { start_centis: new_centis }
+
+    correctFinishCentis: (new_centis) ->
+      new_centis = @_convertCentis('finish_centis', new_centis)
+
+      if @_highlightY > 0
+        previousY = @_highlightY - 1
+        @_updateRow previousY, { finish_centis: new_centis }
 
     labelFinishCentis: (new_centis) ->
       new_centis = @_convertCentis('finish_centis', new_centis)
 
       if @_highlightSize == 1
-        @_rows[@_highlightY].finish_centis = new_centis
-        @fire 'updateCurrentRow'
+        @_updateCurrentRow { finish_centis: new_centis }
 
         @_highlightSize = 0
         @moveHighlight 1

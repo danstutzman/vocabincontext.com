@@ -27,7 +27,7 @@ define (require) ->
       @_player = player
       @_model = null
 
-    _collectRowsFromDom: ->
+    _readRowsOffDom: ->
       rows = []
       for tr in $('#js-lyrics-table tr')
         tds = $(tr).children('td')
@@ -60,21 +60,25 @@ define (require) ->
 
       @_scrollToShowHighlight()
 
-    _redrawCurrentRow: ->
-      new_data = @_model.highlightedRow()
-      new_start_centis = new_data.start_centis / 100.0
-      new_lyric = new_data.lyric
-      new_finish_centis = new_data.finish_centis / 100.0
+    _redrawRow: (event) ->
+      tds = $("#line#{event.line_num}").children('td')
 
-      tds = @_highlightedRow().children('td')
-      tds.eq(0).children('input').attr 'value', new_start_centis
-      tds.eq(1).text new_lyric
-      tds.eq(2).children('input').attr 'value', new_finish_centis
+      if event.start_centis != undefined
+        new_start_centis = event.start_centis / 100.0
+        tds.eq(0).children('input').attr 'value', new_start_centis
+
+      if event.lyric != undefined
+        new_lyric = event.lyric
+        tds.eq(1).text new_lyric
+
+      if event.finish_centis != undefined
+        new_finish_centis = event.finish_centis / 100.0
+        tds.eq(2).children('input').attr 'value', new_finish_centis
 
     initFromDom: ->
-      @_model = new LyricsEditorModel(@_collectRowsFromDom())
+      @_model = new LyricsEditorModel(@_readRowsOffDom())
       @_model.addListener 'updateHighlight', => @_redrawHighlight()
-      @_model.addListener 'updateCurrentRow', => @_redrawCurrentRow()
+      @_model.addListener 'updateRow', (event) => @_redrawRow(event)
 
       @_redrawHighlight()
 
@@ -82,45 +86,37 @@ define (require) ->
         switch event.which
           when @constructor.E_KEY # Up (mnemonic: [E]arlier)
             @_model.moveHighlight -1
+
           when @constructor.D_KEY # [D]own
             @_model.moveHighlight 1
+
           when @constructor.S_KEY # this line [S]tarted
-            @_model.labelStartCentis @_player.getPosition()
+            if event.shiftKey
+              @_model.correctStartCentis @_player.getPosition()
+            else
+              @_model.labelStartCentis @_player.getPosition()
+
           when @constructor.F_KEY # this line [F]inished
-            @_model.labelFinishCentis @_player.getPosition()
+            if event.shiftKey
+              @_model.correctFinishCentis @_player.getPosition()
+            else
+              @_model.labelFinishCentis @_player.getPosition()
 
     _highlightedRow: ->
-      # add 1 because nth-child is 1-based, add 1 because of table headers
-      $("#js-lyrics-table tr:nth-child(#{@_model.highlightY() + 2})")
+      $("#line#{@_model.highlightY()}")
 
-#    _reloadHighlightedDataForCol: (col_name) ->
-#      new_data = @_data.highlightedRow()[col_name]
-#      if col_name == 'skip'
-#        new_data = @_dataSkipToHtml(new_data)
-#
-#      col_num = @constructor.COL_NAME_TO_COL_NUM[col_name]
-#      selector = "#{@_highlightedRowSelector()} td:nth-child(#{col_num + 1})"
-#      if col_name == 'start_time'
-#        selector += " input"
-#        $(selector).attr 'value', new_data
-#      else
-#        $(selector).html(new_data)
-#
-#    fillInCurrentPosition: ->
-#      time = @_player.getPosition()
-#      @_data.setStartTime time
-#      @_reloadHighlightedDataForCol('start_time')
-#
     _scrollToShowHighlight: ->
-      {x, y, w, h} = objectToXY(@_highlightedRow()[0])
+      tr = @_highlightedRow()
+      if tr.length > 0
+        {x, y, w, h} = objectToXY(tr[0])
 
-      scrollTop = window.pageYOffset
-      if y < scrollTop
-        $('body')[0].scrollTop = y
+        scrollTop = window.pageYOffset
+        if y < scrollTop
+          $('body')[0].scrollTop = y
 
-      scrollbarSize = $('.scrollbar-measure')[0].offsetWidth - \
-        $('.scrollbar-measure')[0].clientWidth
-      windowSize = window.innerHeight - scrollbarSize
-      scrollBottom = window.pageYOffset + windowSize
+        scrollbarSize = $('.scrollbar-measure')[0].offsetWidth - \
+          $('.scrollbar-measure')[0].clientWidth
+        windowSize = window.innerHeight - scrollbarSize
+        scrollBottom = window.pageYOffset + windowSize
       if (y + h) > scrollBottom
         $('body')[0].scrollTop = (y + h) - windowSize

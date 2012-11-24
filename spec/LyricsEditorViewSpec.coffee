@@ -24,9 +24,9 @@ define (require) ->
         html += "</tr>"
         $('#js-lyrics-table').append(html)
 
-      appendRow = (start_centis, lyric, finish_centis) ->
+      appendRow = (line_num, start_centis, lyric, finish_centis) ->
         html = ''
-        html += "<tr>"
+        html += "<tr id='line#{line_num}'>"
         html += "<td><input value='#{start_centis}'/></td>"
         html += "<td>#{lyric}</td>"
         html += "<td><input value='#{finish_centis}'/></td>"
@@ -34,8 +34,8 @@ define (require) ->
         $('#js-lyrics-table').append(html)
 
       #appendHeaders()
-      appendRow  30, 'line1',  70
-      appendRow 130, 'line2', 170
+      appendRow 0,  30, 'line1',  70
+      appendRow 1, 130, 'line2', 170
 
       view = new LyricsEditorView(new FakePlayer())
       view.initFromDom()
