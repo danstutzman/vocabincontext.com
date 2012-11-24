@@ -27,6 +27,6 @@ define (require) ->
         listeners = @_listeners[event_name]
         for listener, i in listeners
           if listener == listener_to_remove
-             listeners.splice i, 1
-             break
+            listeners.splice i, 1
+            break
       null
