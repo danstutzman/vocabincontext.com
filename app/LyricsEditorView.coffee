@@ -60,9 +60,21 @@ define (require) ->
 
       @_scrollToShowHighlight()
 
+    _redrawCurrentRow: ->
+      new_data = @_model.highlightedRow()
+      new_start_centis = new_data.start_centis / 100.0
+      new_lyric = new_data.lyric
+      new_finish_centis = new_data.finish_centis / 100.0
+
+      tds = @_highlightedRow().children('td')
+      tds.eq(0).children('input').attr 'value', new_start_centis
+      tds.eq(1).text new_lyric
+      tds.eq(2).children('input').attr 'value', new_finish_centis
+
     initFromDom: ->
       @_model = new LyricsEditorModel(@_collectRowsFromDom())
       @_model.addListener 'updateHighlight', => @_redrawHighlight()
+      @_model.addListener 'updateCurrentRow', => @_redrawCurrentRow()
 
       @_redrawHighlight()
 
