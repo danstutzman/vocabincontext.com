@@ -42,21 +42,33 @@
         %br
         %input(type='submit')
 
+      %h3 Keyboard commands
+      %ul
+        %li Line [S]tarted
+        %li Line [F]inished
+        %li Go [D]own
+        %li Go up ([E]arlier)
+        %li Shift-S to correct last start time
+        %li Shift-F to correct last finish time
+
       %table(id='js-lyrics-table' border='1')
         %tr
           %th Start time
-          %th Skip?
           %th Lyrics line
+          %th Finish time
         - @lyrics_lines.each_with_index do |line, line_num|
-          %tr
+          - start_centis, finish_centis =              |
+            @start_finish_centis_by_line_num[line_num] |
+          %tr{ :id => "line#{line_num}" }
             %td
-              %input{ :type => 'text', :name => "start_time_line_#{line_num}",
-                      :value => @start_times[line_num] }
-            %td
+              %input{ :type => 'text', :name => "s[]",
+                :value => format_centis(start_centis) }
             %td
               %a{ :name => "line#{line_num}" }
                 = line
-              %br
+            %td
+              %input{ :type => 'text', :name => "f[]",
+                :value => format_centis(finish_centis) }
 
     != haml :_loading
     != haml :_js

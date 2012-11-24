@@ -3,8 +3,7 @@ define (require) ->
   fakeSoundManager = require('cs!app/fakeSoundManager')
   realSoundManager = require('cs!app/soundManager')
   Player           = require('cs!app/Player')
-  LyricsTableData  = require('cs!app/LyricsTableData')
-  LyricsTableView  = require('cs!app/LyricsTableView')
+  LyricsEditorView = require('cs!app/LyricsEditorView')
   YouTubePlayer    = require('cs!app/YouTubePlayer')
 
   getRequestParams = ->
@@ -27,11 +26,8 @@ define (require) ->
 
     if $('#js-lyrics-table').length > 0
       player = new YouTubePlayer($('#myytplayer')[0])
-      data = new LyricsTableData()
-      for td in $('#js-lyrics-table tr td:nth-child(3)')
-        data.loadLyricsLine null, $(td).text()
-      table = new LyricsTableView(player, data)
-      table.init()
+      table = new LyricsEditorView(player)
+      table.initFromDom()
 
     waitForAll.done ->
       $('#throbber-background').hide()

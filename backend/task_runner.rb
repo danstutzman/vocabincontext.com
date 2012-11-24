@@ -6,10 +6,10 @@ require './ferret_search'
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 
-def millis_to_msh(millis) # msh = minutes.seconds.hundredths
-  minutes = millis / 60000
-  seconds = (millis / 1000) % 60
-  hundredths = (millis % 1000) / 10
+def centis_to_msh(centis) # msh = minutes.seconds.hundredths
+  minutes = centis / 6000
+  seconds = (centis / 100) % 60
+  hundredths = centis % 100
   sprintf('%02d.%02d.%02d', minutes, seconds, hundredths)
 end
 
@@ -98,13 +98,21 @@ if task
     end
   elsif task.action == 'split_mp3'
     song = task.song
-    video_id = song.youtube_video_id
-    command_line = "#{mp3splt} -d #{ROOT_DIR}/backend/youtube_downloads"
-    command_line += " -o #{video_id}.#{task.start_time}.#{task.end_time}"
-    command_line += " #{ROOT_DIR}/backend/youtube_downloads/#{video_id}.mp3"
-    command_line += " #{millis_to_msh(task.start_time)}"
-    command_line += " #{millis_to_msh(task.end_time)}"
-    execute_command command_line, task
+    alignment = task.alignment
+    if song && alignment
+      video_id = song.youtube_video_id
+      start_centis = alignment.start_centis
+      finish_centis = alignment.finish_centis
+      command_line = "#{mp3splt} -d #{ROOT_DIR}/backend/youtube_downloads"
+      command_line += " -o #{video_id}.#{start_centis}.#{finish_centis}"
+      command_line += " #{ROOT_DIR}/backend/youtube_downloads/#{video_id}.mp3"
+      command_line += " #{centis_to_msh(start_centis)}"
+      command_line += " #{centis_to_msh(finish_centis)}"
+      execute_command command_line, task
+    else
+      task.stderr = 'missing song or alignment for song_id or alignment_id'
+      task.exit_status = -1
+    end
   elsif task.action == 'update_index'
     FerretSearch.update_index_from_db(task.song_id)
     task.exit_status = 0 # simulate running command-line utility successfully

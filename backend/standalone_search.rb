@@ -13,8 +13,8 @@ def excerpt_to_s(excerpt)
     '-',
     excerpt[:song_name],
     excerpt[:line],
-    excerpt[:start_time],
-    excerpt[:end_time],
+    excerpt[:alignment] && excerpt[:alignment].start_centis,
+    excerpt[:alignment] && excerpt[:alignment].finish_centis,
   ].join(' ')
 end
 
@@ -24,16 +24,15 @@ seconds = Benchmark.realtime {
 }
 puts "#{seconds} seconds"
 
-labeled_excerpts, unlabeled_excerpts = excerpts.partition { |excerpt|
-  excerpt[:start_time] && excerpt[:end_time]
-}
+aligned_excerpts, unaligned_excerpts =
+  excerpts.partition { |excerpt| excerpt[:alignment] }
 
-puts '__Labeled'
-labeled_excerpts.each_with_index do |excerpt, i|
+puts '__Aligned'
+aligned_excerpts.each_with_index do |excerpt, i|
   puts "#{i} #{excerpt_to_s(excerpt)}"
 end
 
-puts '__Unlabeled'
-unlabeled_excerpts.each_with_index do |excerpt, i|
+puts '__Unaligned'
+unaligned_excerpts.each_with_index do |excerpt, i|
   puts "#{i} #{excerpt_to_s(excerpt)}"
 end
