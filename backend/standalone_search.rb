@@ -8,7 +8,7 @@ offset = ARGV[1].to_i or raise "Second argument: offset"
 
 def excerpt_to_s(excerpt)
   [
-    excerpt[:has_start_times],
+    excerpt[:has_alignments],
     excerpt[:artist_name],
     '-',
     excerpt[:song_name],

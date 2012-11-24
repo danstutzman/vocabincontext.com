@@ -13,11 +13,11 @@ def add_unlabeled_song(
   metadata['song_name'] = song_name
   metadata['artist_name'] = artist_name
   to_add = {
-    :song_id         => song_id,
-    :artist_id       => artist_id,
-    :lyrics          => lyrics,
-    :has_start_times => 0,
-    :metadata        => JSON.dump(metadata),
+    :song_id        => song_id,
+    :artist_id      => artist_id,
+    :lyrics         => lyrics,
+    :has_alignments => 0,
+    :metadata       => JSON.dump(metadata),
   }
   index << to_add
 

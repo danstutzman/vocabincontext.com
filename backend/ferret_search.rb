@@ -25,7 +25,7 @@ module FerretSearch
   def self.do_query(ferret_query, offset)
     options = {
       :sort => [
-        Ferret::Search::SortField.new(:has_start_times,
+        Ferret::Search::SortField.new(:has_alignments,
           { :type => :integer, :reverse => true }),
         Ferret::Search::SortField::SCORE
       ],
@@ -103,9 +103,9 @@ module FerretSearch
         metadata['youtube_video_id'] = song.youtube_video_id
       end
       to_update = {
-        :lyrics          => song.lyrics,
-        :has_start_times => (song.alignments.size > 0) ? 1 : 0,
-        :metadata        => JSON.dump(metadata),
+        :lyrics         => song.lyrics,
+        :has_alignments => (song.alignments.size > 0) ? 1 : 0,
+        :metadata       => JSON.dump(metadata),
       }
       index.query_update "song_id:#{song.id}", to_update
     end
