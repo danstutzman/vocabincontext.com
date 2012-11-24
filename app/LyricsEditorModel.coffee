@@ -39,12 +39,11 @@ define (require) ->
 
       @_rows = clone(rows)
 
-    # getters
+    # read-only
     highlightY: -> @_highlightY
     highlightSize: -> @_highlightSize
     rows: -> clone(@_rows)
     highlightedRow: -> clone(@_rows[@_highlightY])
-
     numRows: -> @_rows.length
 
     _convertCentis: (field_name, centis) ->
