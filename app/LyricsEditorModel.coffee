@@ -107,7 +107,11 @@ define (require) ->
       else if @_highlightSize == 1 && @_highlightY == @_rows.length - 1
         @labelFinishCentis new_centis
 
+      # convenience: pressing [S] while you're in a row presses [F] for you
       else if @_highlightSize == 1
+        @_rows[@_highlightY].finish_centis = new_centis
+        @fire 'updateCurrentRow'
+
         @moveHighlight 1
 
         @_rows[@_highlightY].start_centis = new_centis
