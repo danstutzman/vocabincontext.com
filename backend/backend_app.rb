@@ -34,7 +34,7 @@ class BackendApp < Sinatra::Base
 
     if query
       excerpts = FerretSearch.search_for(query, offset)
-      @labeled_excerpts, @unlabeled_excerpts =
+      @aligned_excerpts, @unaligned_excerpts =
         excerpts.partition { |excerpt| excerpt[:alignment] }
     end
 
