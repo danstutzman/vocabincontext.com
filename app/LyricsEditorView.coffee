@@ -39,7 +39,7 @@ define (require) ->
           rows.push row
       rows
 
-    _moveHighlight: ->
+    _redrawHighlight: ->
       # erase old highlight
       $('#js-lyrics-table tr.inBetweenRow').remove()
       $('#js-lyrics-table tr.selectedRow').removeClass 'selectedRow'
@@ -62,10 +62,9 @@ define (require) ->
 
     initFromDom: ->
       @_model = new LyricsEditorModel(@_collectRowsFromDom())
+      @_model.addListener 'updateHighlight', => @_redrawHighlight()
 
-      @_moveHighlight()
-
-      @_model.addListener 'updateHighlight', => @_moveHighlight()
+      @_redrawHighlight()
 
       $(document).keyup (event) =>
         switch event.which
