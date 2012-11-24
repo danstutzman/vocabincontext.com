@@ -117,9 +117,7 @@ define (require) ->
     labelFinishCentis: (new_centis) ->
       new_centis = @_convertCentis('finish_centis', new_centis)
 
-      console.log 'log1'
       if @_highlightSize == 1
-        console.log 'log2'
         @_rows[@_highlightY].finish_centis = new_centis
         @fire 'updateCurrentRow'
 

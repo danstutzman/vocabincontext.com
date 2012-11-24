@@ -24,7 +24,6 @@ define (require) ->
       finish_centis: 2
 
     constructor: (player) ->
-      console.log 'player', player
       @_player = player
       @_model = null
 
