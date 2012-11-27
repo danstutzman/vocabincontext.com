@@ -1,5 +1,5 @@
 # REQUIRED: The name of your application
-app_name: your_app_name
+app_name: vic
 
 # REQUIRED: The system user to run your app servers as
 app_user: app
@@ -18,7 +18,7 @@ timezone: US/Mountain
 
 # REQUIRED: the domain all the instances should be associated with
 #
-domain: foo.com
+domain: vocabincontext.com
 
 # OPTIONAL: See rubber-dns.yml for dns configuration
 # This lets rubber update a dynamic dns service with the instance alias
