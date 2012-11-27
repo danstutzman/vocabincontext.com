@@ -18,6 +18,8 @@ define (require) ->
     @S_KEY: 83
     @D_KEY: 68
     @F_KEY: 70
+    @SPACE_KEY: 32
+    @KEYS_TO_OVERRIDE = [@SPACE_KEY]
     @COL_NAME_TO_COL_NUM:
       start_centis: 0
       lyric: 1
@@ -101,6 +103,18 @@ define (require) ->
               @_model.correctFinishCentis @_player.getPosition()
             else
               @_model.labelFinishCentis @_player.getPosition()
+
+          when @constructor.SPACE_KEY # start/stop player
+            @_player.toggleIsPlaying()
+
+      # in order to prevent default behavior, we have to catch the keydown
+      # not just the keyup
+      $(document).keydown (event) =>
+        if @constructor.KEYS_TO_OVERRIDE.indexOf(event.which) != -1
+          event.preventDefault()
+          false
+        else
+          true
 
     _highlightedRow: ->
       $("#line#{@_model.highlightY()}")

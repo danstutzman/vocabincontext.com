@@ -9,3 +9,8 @@ define (require) ->
         Math.round(@player.getCurrentTime() * 100)
       else
         null
+    toggleIsPlaying: ->
+      if @player.getPlayerState() == @constructor.IS_PLAYING
+        @player.pauseVideo()
+      else
+        @player.playVideo()
