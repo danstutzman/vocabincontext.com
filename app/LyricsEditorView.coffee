@@ -20,10 +20,11 @@ define (require) ->
     @F_KEY: 70
     @SPACE_KEY: 32
     @KEYS_TO_OVERRIDE = [@SPACE_KEY]
-    @COL_NAME_TO_COL_NUM:
-      start_centis: 0
-      lyric: 1
-      finish_centis: 2
+
+    @START_CENTIS_COL = 0
+    @LYRIC_COL = 2
+    @FINISH_CENTIS_COL = 4
+    @NUM_COLS = 5
 
     constructor: (player) ->
       @_player = player
@@ -33,11 +34,14 @@ define (require) ->
       rows = []
       for tr in $('#js-lyrics-table tr')
         tds = $(tr).children('td')
-        if tds.length == 3
+        if tds.length == @constructor.NUM_COLS
+          td1 = $(tds[@constructor.START_CENTIS_COL])
+          td2 = $(tds[@constructor.LYRIC_COL])
+          td3 = $(tds[@constructor.FINISH_CENTIS_COL])
           row =
-            start_centis:  parseInt($(tds[0]).children('input').attr('value'))
-            lyric:         $(tds[1]).text()
-            finish_centis: parseInt($(tds[2]).children('input').attr('value'))
+            start_centis:  parseInt(td1.children('input').attr('value'))
+            lyric:         td2.text()
+            finish_centis: parseInt(td3.children('input').attr('value'))
           rows.push row
       rows
 
@@ -51,7 +55,7 @@ define (require) ->
       switch @_model.highlightSize()
         when 0
           new_tr = "<tr class='selectedRow inBetweenRow'>
-              <td colspan='3'></td>
+              <td colspan='#{@constructor.NUM_COLS}'></td>
             </tr>"
           if y < @_model.numRows()
             @_highlightedRow().before(new_tr)
@@ -67,15 +71,18 @@ define (require) ->
 
       if event.start_centis != undefined
         new_start_centis = event.start_centis / 100.0
-        tds.eq(0).children('input').attr 'value', new_start_centis
+        td = tds.eq(@constructor.START_CENTIS_COL)
+        td.children('input').attr 'value', new_start_centis
 
       if event.lyric != undefined
         new_lyric = event.lyric
-        tds.eq(1).text new_lyric
+        td = tds.eq(@constructor.LYRIC_COL)
+        td.text new_lyric
 
       if event.finish_centis != undefined
         new_finish_centis = event.finish_centis / 100.0
-        tds.eq(2).children('input').attr 'value', new_finish_centis
+        td = tds.eq(@constructor.FINISH_CENTIS_COL)
+        td.children('input').attr 'value', new_finish_centis
 
     initFromDom: ->
       @_model = new LyricsEditorModel(@_readRowsOffDom())

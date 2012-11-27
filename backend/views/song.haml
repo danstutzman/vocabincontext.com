@@ -56,7 +56,9 @@
       %table(id='js-lyrics-table' border='1')
         %tr
           %th Start time
+          %th
           %th Lyrics line
+          %th
           %th Finish time
         - @lyrics_lines.each_with_index do |line, line_num|
           - start_centis, finish_centis =              |
@@ -66,8 +68,10 @@
               %input{ :type => 'text', :name => "s[]",
                 :value => format_centis(start_centis) }
             %td
+            %td
               %a{ :name => "line#{line_num}" }
                 = line
+            %td
             %td
               %input{ :type => 'text', :name => "f[]",
                 :value => format_centis(finish_centis) }
