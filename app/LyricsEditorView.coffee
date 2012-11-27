@@ -22,6 +22,7 @@ define (require) ->
     @KEYS_TO_OVERRIDE = [@SPACE_KEY]
 
     @START_CENTIS_COL = 0
+    @PRESS_S_COL = 1
     @LYRIC_COL = 2
     @FINISH_CENTIS_COL = 4
     @NUM_COLS = 5
@@ -49,6 +50,7 @@ define (require) ->
       # erase old highlight
       $('#js-lyrics-table tr.inBetweenRow').remove()
       $('#js-lyrics-table tr.selectedRow').removeClass 'selectedRow'
+      $('#js-lyrics-table tr td.pressS').removeClass 'pressS'
 
       # draw new highlight
       y = @_model.highlightY()
@@ -61,8 +63,12 @@ define (require) ->
             @_highlightedRow().before(new_tr)
           else
             $('#js-lyrics-table tr:last').after(new_tr)
+          pressSRow = @_highlightedRow()
         when 1
           @_highlightedRow().addClass 'selectedRow'
+          pressSRow = $("#line#{@_model.highlightY() + 1}")
+
+      pressSRow.children('td').eq(@constructor.PRESS_S_COL).addClass 'pressS'
 
       @_scrollToShowHighlight()
 

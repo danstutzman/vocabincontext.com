@@ -21,3 +21,9 @@ td.selectedCell {
   padding-right: 10px;
   float: left;
 }
+th.pressS {
+  width: 30px;
+}
+td.pressS:after {
+  content: "[S]";
+}
