@@ -6,12 +6,11 @@ backend/db.sqlite3
 backend/ferret_index
 
 bible
-artist_names
-song_lyrics
-song_names
 
 backend/public/js/main-compiled.js
 backend/public/js/main-compiled-for-coverage.js
 backend/youtube_downloads/*.mp3
 
 config/rubber/instance-production.yml
+
+backend/scraped

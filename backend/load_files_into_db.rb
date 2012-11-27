@@ -38,9 +38,9 @@ def add_unlabeled_song(
   end
 end
 
-artist_names_path = File.expand_path('../../artist_names/', __FILE__)
-song_names_path = File.expand_path('../../song_names/', __FILE__)
-song_lyrics_path = File.expand_path('../../song_lyrics/', __FILE__)
+artist_names_path = File.expand_path('../scraped/artist_names/', __FILE__)
+song_names_path = File.expand_path('../scraped/song_names/', __FILE__)
+song_lyrics_path = File.expand_path('../scraped/song_lyrics/', __FILE__)
 
 artist_id_to_name = {}
 Dir.foreach(artist_names_path) do |artist_id|
