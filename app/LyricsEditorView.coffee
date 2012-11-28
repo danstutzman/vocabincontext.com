@@ -14,10 +14,10 @@ define (require) ->
       { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   class LyricsEditorView
-    @E_KEY: 69
-    @S_KEY: 83
-    @D_KEY: 68
-    @F_KEY: 70
+    @E_KEY: 101
+    @S_KEY: 115
+    @D_KEY: 100
+    @F_KEY: 102
     @SPACE_KEY: 32
     @KEYS_TO_OVERRIDE = [@SPACE_KEY]
 
@@ -92,7 +92,7 @@ define (require) ->
 
       @_redrawHighlight()
 
-      $(document).keyup (event) =>
+      $(document).keypress (event) =>
         switch event.which
           when @constructor.E_KEY # Up (mnemonic: [E]arlier)
             @_model.moveHighlight -1
@@ -112,6 +112,9 @@ define (require) ->
             else
               @_model.labelFinishCentis @_player.getPosition()
 
+      # keypress doesn't work for space bar
+      $(document).keyup (event) =>
+        switch event.which
           when @constructor.SPACE_KEY # start/stop player
             @_player.toggleIsPlaying()
 
