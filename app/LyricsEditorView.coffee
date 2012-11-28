@@ -91,9 +91,13 @@ define (require) ->
         switch event.which
           when @constructor.E_KEY # Up (mnemonic: [E]arlier)
             @_model.moveHighlight -1
+            if @_model.highlightedRow().start_centis
+              @_player.seekTo @_model.highlightedRow().start_centis, false
 
           when @constructor.D_KEY # [D]own
             @_model.moveHighlight 1
+            if @_model.highlightedRow().start_centis
+              @_player.seekTo @_model.highlightedRow().start_centis, false
 
           when @constructor.S_KEY # this line [S]tarted
             if event.shiftKey
