@@ -50,19 +50,14 @@ define (require) ->
       $('#js-lyrics-table tr.inBetweenRow').remove()
       $('#js-lyrics-table tr.selectedRow').removeClass 'selectedRow'
       $('#js-lyrics-table tr.selectedRowTop').removeClass 'selectedRowTop'
-      $('#js-lyrics-table tr td.pressS').removeClass 'pressS'
 
       # draw new highlight
       y = @_model.highlightY()
       switch @_model.highlightSize()
         when 0
           @_highlightedRow().addClass 'selectedRowTop'
-          pressSRow = @_highlightedRow()
         when 1
           @_highlightedRow().addClass 'selectedRow'
-          pressSRow = $("#line#{@_model.highlightY() + 1}")
-
-      pressSRow.children('td').eq(@constructor.PRESS_S_COL).addClass 'pressS'
 
       @_scrollToShowHighlight()
 
