@@ -15,12 +15,6 @@
   padding-right: 10px;
   float: left;
 }
-td.pressS {
-  width: 30px;
-}
-td.pressS:after {
-  content: "[S]";
-}
 #play-button {
   float: left;
   width: 60px;

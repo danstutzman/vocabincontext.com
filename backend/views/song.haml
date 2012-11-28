@@ -57,19 +57,15 @@
             %td.start-centis
               %input{ :type => 'text', :name => "s[]",
                 :value => format_centis(start_centis) }
-            %td.pressS
             %td.lyric
               %a{ :name => "line#{line_num}" }
                 = line
-            %td
             %td.finish-centis
               %input{ :type => 'text', :name => "f[]",
                 :value => format_centis(finish_centis) }
         %tr{ :id => "line#{@lyrics_lines.size}" }
           %td.start-centis
-          %td.pressS
           %td.lyric
-          %td
           %td.finish-centis
 
     != haml :_loading

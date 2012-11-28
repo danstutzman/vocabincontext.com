@@ -22,10 +22,9 @@ define (require) ->
     @KEYS_TO_OVERRIDE = [@SPACE_KEY]
 
     @START_CENTIS_COL = 0
-    @PRESS_S_COL = 1
-    @LYRIC_COL = 2
-    @FINISH_CENTIS_COL = 4
-    @NUM_COLS = 5
+    @LYRIC_COL = 1
+    @FINISH_CENTIS_COL = 2
+    @NUM_COLS = 3
 
     constructor: (player) ->
       @_player = player
