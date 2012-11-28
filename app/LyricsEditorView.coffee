@@ -1,5 +1,6 @@
 define (require) ->
   $ = require('jquery')
+  Utility = require('cs!app/Utility')
   LyricsEditorModel = require('cs!app/LyricsEditorModel')
 
   objectToXY = (object) ->
@@ -65,7 +66,7 @@ define (require) ->
       tds = $("#line#{event.line_num}").children('td')
 
       if event.start_centis != undefined
-        new_start_centis = event.start_centis / 100.0
+        new_start_centis = Utility.formatTimeMSC(event.start_centis)
         td = tds.eq(@constructor.START_CENTIS_COL)
         td.children('input').attr 'value', new_start_centis
 
@@ -75,7 +76,7 @@ define (require) ->
         td.text new_lyric
 
       if event.finish_centis != undefined
-        new_finish_centis = event.finish_centis / 100.0
+        new_finish_centis = Utility.formatTimeMSC(event.finish_centis)
         td = tds.eq(@constructor.FINISH_CENTIS_COL)
         td.children('input').attr 'value', new_finish_centis
 

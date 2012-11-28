@@ -87,7 +87,11 @@ class BackendApp < Sinatra::Base
 
   helpers do
     def format_centis(centis)
-      centis && sprintf('%.2f', centis / 100.0)
+      if centis
+        mins = centis / 6000
+        secs = (centis - (mins * 6000)) / 100.0
+        sprintf('%d:%05.2f', mins, secs)
+      end
     end
   end
 
@@ -107,8 +111,10 @@ class BackendApp < Sinatra::Base
 
   def param_value_to_centis(value)
     return nil if value.nil? || value == ''
-    raise "Invalid time value: #{value}" if !value.match(/^[0-9]+(\.[0-9]+)?$/)
-    (value.to_f * 100).round
+    match = value.match(/^(([0-9]+):)?([0-9]+(\.[0-9]+)?)$/)
+    raise "Invalid time value: #{value}" if match.nil?
+    mins, secs = match[2].to_i, match[3].to_f
+    (mins * 6000) + (secs * 100).round
   end
 
   post '/song/:song_id' do

@@ -1,5 +1,6 @@
 define (require) ->
   $                = require('jquery')
+  Utility          = require('cs!app/Utility')
   fakeSoundManager = require('cs!app/fakeSoundManager')
   realSoundManager = require('cs!app/soundManager')
   Player           = require('cs!app/Player')
@@ -37,16 +38,10 @@ define (require) ->
         player.toggleIsPlaying()
         false
 
-      formatTime = (numCentis) ->
-        numSeconds = Math.round(numCentis / 100)
-        mins = Math.floor(numSeconds / 60)
-        secs = Math.round(numSeconds - (mins * 60))
-        secs = if secs >= 10 then secs else "0#{secs}"
-        "#{mins}:#{secs}"
-
       player.addListener 'stateChange', (event) ->
         console.log 'stateChange', event.state
-        $('#progress-total-time').text formatTime(player.getDuration())
+        $('#progress-total-time').text \
+          Utility.formatTimeMS(player.getDuration())
         $('#play-button').text player.getCurrentTogglePlayingVerb()
 
       updateProgressBar = (soFar, toGo) ->
@@ -54,16 +49,17 @@ define (require) ->
         barLength = outerLength * soFar / toGo
 
         if barLength >= 40
-          $('#progress-bar').text formatTime(soFar) + "\u00a0\u00a0"
+          $('#progress-bar').text Utility.formatTimeMS(soFar) + "\u00a0\u00a0"
           $('#progress-bar-caption').text ''
         else
           $('#progress-bar').text ''
-          $('#progress-bar-caption').text "\u00a0\u00a0" + formatTime(soFar)
+          $('#progress-bar-caption').text \
+            "\u00a0\u00a0" + Utility.formatTimeMS(soFar)
 
         if outerLength - barLength < 40
           $('#progress-total-time').text ''
         else
-          $('#progress-total-time').text formatTime(toGo)
+          $('#progress-total-time').text Utility.formatTimeMS(toGo)
 
         $('#progress-bar').width Math.round(barLength)
         $('#progress-bar-caption').css 'margin-left', Math.round(barLength)
