@@ -1,5 +1,6 @@
 define (require) ->
   formatTimeMS: (numCentis) ->
+    return '' if numCentis == null
     numSeconds = Math.round(numCentis / 100)
     mins = Math.floor(numSeconds / 60)
     secs = Math.round(numSeconds - (mins * 60))
@@ -7,6 +8,7 @@ define (require) ->
     "#{mins}:#{secs}"
 
   formatTimeMSC: (numCentis) ->
+    return '' if numCentis == null
     mins = Math.floor(numCentis / 6000)
     secs = (numCentis - (mins * 6000)) / 100
     secsFixed = secs.toFixed(2)
