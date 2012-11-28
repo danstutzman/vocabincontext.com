@@ -1,9 +1,3 @@
-tr.selectedRow {
-  background-color: #ffa;
-}
-td.selectedCell {
-  background-color: red;
-}
 #player {
   width: 100%;
   height: 130px;
@@ -21,9 +15,88 @@ td.selectedCell {
   padding-right: 10px;
   float: left;
 }
-th.pressS {
+td.pressS {
   width: 30px;
 }
 td.pressS:after {
   content: "[S]";
+}
+#play-button {
+  float: left;
+  width: 60px;
+  height: 30px;
+}
+#progress-outer {
+  width: 500px;
+  border: 1px black solid;
+  margin-left: 65px;
+  height: 28px;
+  position: relative;
+}
+#progress-bar {
+  width: 0px;
+  height: 23px; /* 28 - 5 */
+  background-color: red;
+  text-align: right;
+  color: white;
+  float: left;
+  padding-top: 5px;
+}
+#progress-bar-caption {
+  position: absolute;
+  padding-top: 5px;
+}
+#progress-total-time {
+  float: right;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+#progress-loaded-bar {
+  width: 0px;
+  height: 28px;
+  background-color: gray;
+  float: left;
+}
+#myytplayer {
+  position: absolute;
+  left: -999px;
+}
+tr.selectedRow > td.lyric {
+  background-color: #ffff44;
+}
+tr.selectedRow.stage1 > td.lyric {
+  background-color: #ffff55;
+}
+tr.selectedRow.stage2 > td.lyric {
+  background-color: #ffff66;
+}
+tr.selectedRow.stage3 > td.lyric {
+  background-color: #ffff55;
+}
+td.start-centis > input {
+  border: transparent;
+  width: 60px;
+  text-align: right;
+  color: gray;
+}
+td.finish-centis > input {
+  border: transparent;
+  width: 60px;
+  text-align: right;
+  color: gray;
+}
+td.lyric {
+  border-top: 3px white solid;
+}
+tr.selectedRowTop > td.lyric {
+  border-top: 3px #ffff44 solid;
+}
+tr.selectedRowTop.stage1 > td.lyric {
+  border-top: 3px #ffff55 solid;
+}
+tr.selectedRowTop.stage2 > td.lyric {
+  border-top: 3px #ffff66 solid;
+}
+tr.selectedRowTop.stage3 > td.lyric {
+  border-top: 3px #ffff55 solid;
 }

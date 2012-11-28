@@ -12,5 +12,8 @@
     window.SM2_DEFER = true;
     require.config({
       baseUrl: "/js",
-      waitSeconds: 5
+      waitSeconds: 5,
+      shim: {
+        'swfobject': { exports: 'swfobject' }
+      }
     });

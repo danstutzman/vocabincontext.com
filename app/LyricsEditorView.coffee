@@ -50,19 +50,14 @@ define (require) ->
       # erase old highlight
       $('#js-lyrics-table tr.inBetweenRow').remove()
       $('#js-lyrics-table tr.selectedRow').removeClass 'selectedRow'
+      $('#js-lyrics-table tr.selectedRowTop').removeClass 'selectedRowTop'
       $('#js-lyrics-table tr td.pressS').removeClass 'pressS'
 
       # draw new highlight
       y = @_model.highlightY()
       switch @_model.highlightSize()
         when 0
-          new_tr = "<tr class='selectedRow inBetweenRow'>
-              <td colspan='#{@constructor.NUM_COLS}'></td>
-            </tr>"
-          if y < @_model.numRows()
-            @_highlightedRow().before(new_tr)
-          else
-            $('#js-lyrics-table tr:last').after(new_tr)
+          @_highlightedRow().addClass 'selectedRowTop'
           pressSRow = @_highlightedRow()
         when 1
           @_highlightedRow().addClass 'selectedRow'

@@ -12,21 +12,9 @@
       %div(style='border:1px black solid;float:right')
         - if @song.youtube_video_id
 
-          %script= "var videoId = '#{@song.youtube_video_id}';"
-          %script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
-          %script(src='/js/swfobject.js')
           %p(id="content-container")
-            #ytapiplayer
+            #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
               You need Flash player 8+ and JavaScript enabled to view this video.
-          :javascript
-            $(function() {
-              var params = { allowScriptAccess: "always" };
-              var atts = { id: "myytplayer" };
-              swfobject.embedSWF("http://www.youtube.com/v/" + videoId +
-                "?enablejsapi=1&playerapiid=ytplayer&version=3",
-                "ytapiplayer", "425", "356", "8", null, null, params, atts);
-            });
-
         %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
           - if @song.youtube_video_id
             Find a different recording of this song on YouTube
@@ -53,28 +41,36 @@
         %li Shift-S to correct last start time
         %li Shift-F to correct last finish time
 
-      %table(id='js-lyrics-table' border='1')
-        %tr
-          %th Start time
-          %th.pressS
-          %th Lyrics line
-          %th
-          %th Finish time
+      %button#play-button Play
+      #progress-outer
+        #progress-total-time
+        #progress-bar
+        #progress-loaded-bar
+        #progress-bar-caption
+      %br
+
+      %table(id='js-lyrics-table')
         - @lyrics_lines.each_with_index do |line, line_num|
           - start_centis, finish_centis =              |
             @start_finish_centis_by_line_num[line_num] |
           %tr{ :id => "line#{line_num}" }
-            %td
+            %td.start-centis
               %input{ :type => 'text', :name => "s[]",
                 :value => format_centis(start_centis) }
-            %td
-            %td
+            %td.pressS
+            %td.lyric
               %a{ :name => "line#{line_num}" }
                 = line
             %td
-            %td
+            %td.finish-centis
               %input{ :type => 'text', :name => "f[]",
                 :value => format_centis(finish_centis) }
+        %tr{ :id => "line#{@lyrics_lines.size}" }
+          %td.start-centis
+          %td.pressS
+          %td.lyric
+          %td
+          %td.finish-centis
 
     != haml :_loading
     != haml :_js
