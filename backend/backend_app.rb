@@ -74,14 +74,10 @@ class BackendApp < Sinatra::Base
   end
 
   get '/' do
-    redirect '/search'
-  end
-
-  get '/search' do
     serve_search
   end
 
-  post '/search' do
+  post '/' do
     serve_search
   end
 
