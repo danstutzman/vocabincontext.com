@@ -78,6 +78,10 @@ define (require) ->
 
       @_highlightY += yDelta
 
+      # skip over blank lines
+      while @_rows[@_highlightY]?.lyric == ''
+        @_highlightY += yDelta
+
       if @_highlightY < 0
         @_highlightY = 0
       if @_highlightY > @_rows.length

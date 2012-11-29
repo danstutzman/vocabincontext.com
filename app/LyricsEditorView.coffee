@@ -41,7 +41,7 @@ define (require) ->
           td3 = $(tds[@constructor.FINISH_CENTIS_COL])
           row =
             start_centis:  parseInt(td1.children('input').attr('value'))
-            lyric:         td2.text()
+            lyric:         $.trim(td2.text())
             finish_centis: parseInt(td3.children('input').attr('value'))
           rows.push row
       rows

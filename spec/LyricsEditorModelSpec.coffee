@@ -159,3 +159,13 @@ define (require) ->
 
       model.labelFinishCentis 345
       expect(numFirings).toEqual 0
+
+    it 'skips over blank lines', ->
+      model = new LyricsEditorModel([
+        { lyric: 'line 0' },
+        { lyric: '' },
+        { lyric: 'line 2' }
+      ])
+      expect(model.highlightY()).toEqual 0
+      model.moveHighlight 1
+      expect(model.highlightY()).toEqual 2
