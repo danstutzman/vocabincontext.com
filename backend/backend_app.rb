@@ -22,24 +22,10 @@ class BackendApp < Sinatra::Base
     '404 Your page cannot be found'
   end
 
-  def get_term_counts
-    @term_counts = BestWord.all.map { |best_word|
-      [best_word.word, best_word.count]
-    }
-  end
-
   def serve_search
     query = params['query']
     offset = params['offset'].to_i
-
-    if query
-      excerpts = FerretSearch.search_for(query, offset)
-      @aligned_excerpts, @unaligned_excerpts =
-        excerpts.partition { |excerpt| excerpt[:alignment] }
-    end
-
-    get_term_counts
-
+    @excerpts = FerretSearch.search_for(query, offset) if query
     haml :search
   end
 
