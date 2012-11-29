@@ -63,7 +63,7 @@
             %td.finish-centis
               %input{ :type => 'text', :name => "f[]",
                 :value => format_centis(finish_centis) }
-        %tr{ :id => "line#{@lyrics_lines.size}" }
+        %tr{ :id => "line#{@lyrics_lines.size}", :class => 'extra-blank-line' }
           %td.start-centis
           %td.lyric
           %td.finish-centis

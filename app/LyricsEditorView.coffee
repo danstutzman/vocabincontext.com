@@ -35,7 +35,8 @@ define (require) ->
       rows = []
       for tr in $('#js-lyrics-table tr')
         tds = $(tr).children('td')
-        if tds.length == @constructor.NUM_COLS
+        if tds.length == @constructor.NUM_COLS &&
+           !$(tr).hasClass('extra-blank-line')
           td1 = $(tds[@constructor.START_CENTIS_COL])
           td2 = $(tds[@constructor.LYRIC_COL])
           td3 = $(tds[@constructor.FINISH_CENTIS_COL])
@@ -96,7 +97,7 @@ define (require) ->
 
           when @constructor.D_KEY # [D]own
             @_model.moveHighlight 1
-            if @_model.highlightedRow().start_centis
+            if @_model.highlightedRow()?.start_centis
               @_player.seekTo @_model.highlightedRow().start_centis, false
 
           when @constructor.S_KEY # this line [S]tarted
