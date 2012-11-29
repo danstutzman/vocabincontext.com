@@ -15,10 +15,12 @@ define (require) ->
       { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   class LyricsEditorView
-    @E_KEY: 101
-    @S_KEY: 115
-    @D_KEY: 100
-    @F_KEY: 102
+    @LOWER_E_KEY: 101
+    @LOWER_S_KEY: 115
+    @UPPER_S_KEY: 83
+    @LOWER_D_KEY: 100
+    @LOWER_F_KEY: 102
+    @UPPER_F_KEY: 70
     @SPACE_KEY: 32
     @KEYS_TO_OVERRIDE = [@SPACE_KEY]
 
@@ -90,27 +92,27 @@ define (require) ->
 
       $(document).keypress (event) =>
         switch event.which
-          when @constructor.E_KEY # Up (mnemonic: [E]arlier)
+          when @constructor.LOWER_E_KEY # Up (mnemonic: [E]arlier)
             @_model.moveHighlight -1
             if @_model.highlightedRow().start_centis
               @_player.seekTo @_model.highlightedRow().start_centis, false
 
-          when @constructor.D_KEY # [D]own
+          when @constructor.LOWER_D_KEY # [D]own
             @_model.moveHighlight 1
             if @_model.highlightedRow()?.start_centis
               @_player.seekTo @_model.highlightedRow().start_centis, false
 
-          when @constructor.S_KEY # this line [S]tarted
-            if event.shiftKey
-              @_model.correctStartCentis @_player.getPosition()
-            else
-              @_model.labelStartCentis @_player.getPosition()
+          when @constructor.LOWER_S_KEY # this line [S]tarted
+            @_model.labelStartCentis @_player.getPosition()
 
-          when @constructor.F_KEY # this line [F]inished
-            if event.shiftKey
-              @_model.correctFinishCentis @_player.getPosition()
-            else
-              @_model.labelFinishCentis @_player.getPosition()
+          when @constructor.UPPER_S_KEY
+            @_model.correctStartCentis @_player.getPosition()
+
+          when @constructor.LOWER_F_KEY # this line [F]inished
+            @_model.labelFinishCentis @_player.getPosition()
+
+          when @constructor.UPPER_F_KEY
+            @_model.correctFinishCentis @_player.getPosition()
 
       # keypress doesn't work for space bar
       $(document).keyup (event) =>
