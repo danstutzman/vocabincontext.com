@@ -288,7 +288,9 @@ a.button:hover {
 
 #youtube-search {
   width: 500px;
-  height: 500px;
+  height: 350px;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 #temporary-loading-notice {
   font-size: 16pt;
