@@ -21,3 +21,5 @@ gem 'unicorn'
 gem 'airbrake'
 
 gem 'rb-inotify'
+
+gem 'youtube_it'

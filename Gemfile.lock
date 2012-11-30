@@ -69,6 +69,8 @@ GEM
     do_sqlite3 (0.10.10)
       data_objects (= 0.10.10)
     excon (0.16.10)
+    faraday (0.8.4)
+      multipart-post (~> 1.1)
     fastercsv (1.5.5)
     ferret (0.11.8.4)
       rake
@@ -89,13 +91,17 @@ GEM
       rubinius-actor
     haml (3.1.7)
     highline (1.6.15)
+    httpauth (0.2.0)
     jruby-pageant (1.1.1)
     json (1.7.5)
     json_pure (1.7.5)
+    jwt (0.1.5)
+      multi_json (>= 1.0)
     kgio (2.7.4)
     listen (0.5.3)
     mime-types (1.19)
     multi_json (1.3.7)
+    multipart-post (1.1.5)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -105,6 +111,13 @@ GEM
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     nokogiri (1.5.5)
+    oauth (0.4.7)
+    oauth2 (0.8.0)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
     open4 (1.3.0)
     pg (0.14.1)
     rack (1.4.1)
@@ -129,6 +142,7 @@ GEM
       rubinius-core-api
     rubinius-core-api (0.0.1)
     ruby-hmac (0.4.0)
+    simple_oauth (0.1.9)
     sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
@@ -142,6 +156,13 @@ GEM
       rack
       raindrops (~> 0.7)
     uuidtools (2.1.3)
+    youtube_it (2.1.8)
+      builder
+      faraday (~> 0.8)
+      nokogiri (~> 1.5.2)
+      oauth (~> 0.4.4)
+      oauth2 (~> 0.6)
+      simple_oauth (~> 0.1.5)
 
 PLATFORMS
   ruby
@@ -162,3 +183,4 @@ DEPENDENCIES
   sinatra
   sqlite3
   unicorn
+  youtube_it

@@ -4,6 +4,7 @@ require 'haml'
 require './model'
 require 'json'
 require './ferret_search'
+require 'youtube_it'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -103,11 +104,15 @@ class BackendApp < Sinatra::Base
 
   post '/song/:song_id' do
     song_id = params['song_id']
+    video_id = params['youtube_video_id']
     link = params['youtube_video_link']
 
     @song = find_song_in_db_or_ferret(song_id) or halt 404
     if link && link != ''
-      @song.youtube_video_id = youtube_video_link_to_video_id(link)
+      video_id = youtube_video_link_to_video_id(link)
+    end
+    if video_id && video_id != ''
+      @song.youtube_video_id = video_id
       @song.save rescue raise @song.errors.inspect
 
       unless Task.first({ :action => 'download_mp3', :song_id => song_id })
@@ -118,6 +123,10 @@ class BackendApp < Sinatra::Base
         })
         task.save rescue raise task.errors.inspect
       end
+    end
+    if params['remove_youtube_video']
+      @song.youtube_video_id = nil
+      @song.save rescue raise @song.errors.inspect
     end
 
     alignments = []
@@ -170,5 +179,21 @@ class BackendApp < Sinatra::Base
 
   get '/split_mp3s/:filename' do |filename|
     send_file "#{ROOT_DIR}/backend/youtube_downloads/#{filename}"
+  end
+
+  get '/youtube-search/:query' do |query|
+    client = YouTubeIt::Client.new
+    videos = client.videos_by(:query => query, :per_page => 6)
+    if videos.feed_id
+      @videos = videos.videos
+
+      if params['no_layout']
+        haml :youtube_search, :layout => false
+      else
+        haml :youtube_search
+      end
+    else
+      'Error: unable to contact youtube.com'
+    end
   end
 end

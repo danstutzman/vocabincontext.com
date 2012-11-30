@@ -1,0 +1,24 @@
+#youtube-search
+  - @videos.each do |video|
+    - thumb = video.thumbnails.find { |thumb| thumb.name == 'default' }.url
+    .video
+
+      %a{ :href => video.player_url, :target => '_blank' }
+        %img.video-thumb{ :src => "#{thumb}" }
+
+      %button#set-youtube-video-id{ :name => 'youtube_video_id',
+                                    :value => video.unique_id }
+        Extract audio
+        %br
+        from this video
+
+      #video-info
+        .video-title= video.title
+        uploaded by
+        = video.author.name
+        %br
+        = sprintf('%d min %02d sec', video.duration / 60, video.duration % 60)
+        %br
+        = video.view_count
+        views
+        %br

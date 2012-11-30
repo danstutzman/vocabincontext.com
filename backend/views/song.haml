@@ -1,29 +1,45 @@
-%h1= @song.song_name
-%h2= "by #{@song.artist_name}"
-
 %form{ :method => 'post' }
+  %h1#song_name= @song.song_name
+  %h2
+    by
+    %span#artist_name= @song.artist_name
+
+  - if @song.youtube_video_id.nil?
+    #dialog-overlay
+    #dialog-box
+      .dialog-content
+        #dialog-message
+          %p#no-recording-yet
+            Now we need a recording of the song named
+            %br
+            %i= @song.song_name
+            = "by #{@song.artist_name}."
+            We can extract it from a YouTube video,
+            if you find it in the search results below:
+
+          #youtube-search-is-loading
+            Searching YouTube...
+            %img#animated-throbber(src="/images/loading-animated.gif")
+          %p#supply-your-own
+            If you want to supply your own YouTube video,
+            please paste in its URL below. For example:
+            http://www.youtube.com/watch?v=9bZkp7q19f0
+          %input#youtube-video-link(type='text' name='youtube_video_link')
+          %button#set-youtube-video-link(name='set_youtube_video_link')
+            Extract audio from this video
+        %a.button.close-button(href='#') Close
+
   %input#save-button(type='submit' name='submit') Save
+
   %div(style='border:1px black solid;float:right')
     - if @song.youtube_video_id
+      Youtube Video Id is
+      = @song.youtube_video_id
+      %button(name='remove_youtube_video' value='true') Remove
 
       %p(id="content-container")
         #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
           You need Flash player 8+ and JavaScript enabled to view this video.
-    %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
-      - if @song.youtube_video_id
-        Find a different recording of this song on YouTube
-      - else
-        Find this song on YouTube
-      %br
-
-      - if @song.youtube_video_id
-        To change the video, copy the link to it and paste it below:
-      - else
-        Once you find a video, copy the link to it and paste it below:
-    %br
-    %textarea(name='youtube_video_link' cols='45' rows='3')
-    %br
-    %input(type='submit')
 
   %h3 Keyboard commands
   %ul
