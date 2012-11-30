@@ -130,13 +130,13 @@ define (require) ->
           show_popup()
     show_popup()
  
-    if $('#youtube-search').length
+    if $('#youtube-search-is-loading').length
       song_name = $('#song_name').text()
       artist_name = $('#artist_name').text()
       promise = $.ajax
         url: "/youtube-search/#{song_name}+#{artist_name}?no_layout=true"
       promise.done (data, text_status, jqxhr) ->
-        $('#youtube-search').html data
+        $('#youtube-search-is-loading').replaceWith data
 
   setupFromRequestParams: ->
     params = getRequestParams()
