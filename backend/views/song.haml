@@ -1,8 +1,16 @@
+- if true || @song.youtube_video_id.nil?
+  #dialog-overlay
+  #dialog-box
+    .dialog-content
+      #dialog-message
+      %a.button(href='#') Close
+
 %h1= @song.song_name
 %h2= "by #{@song.artist_name}"
 
 %form{ :method => 'post' }
   %input#save-button(type='submit' name='submit') Save
+
   %div(style='border:1px black solid;float:right')
     - if @song.youtube_video_id
 
