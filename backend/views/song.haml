@@ -3,7 +3,12 @@
   #dialog-box
     .dialog-content
       #dialog-message
-      %a.button(href='#') Close
+        %p
+          We don't have a recording of
+          %i= @song.song_name
+          yet, but it might be on YouTube.  Do you see it below?
+        #youtube-search(style='border:1px black solid;width:500px;height:500px')
+      %a.button.close-button(href='#') Close
 
 %h1= @song.song_name
 %h2= "by #{@song.artist_name}"

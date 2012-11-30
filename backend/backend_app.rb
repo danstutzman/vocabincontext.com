@@ -177,6 +177,11 @@ class BackendApp < Sinatra::Base
     client = YouTubeIt::Client.new
     videos = client.videos_by(:query => query, :per_page => 3)
     @videos = videos.videos
-    haml :youtube_search
+
+    if params['no_layout']
+      haml :youtube_search, :layout => false
+    else
+      haml :youtube_search
+    end
   end
 end

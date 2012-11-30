@@ -110,8 +110,8 @@ define (require) ->
 
     `$(document).ready(function () {
  
-      // if user clicked on button, the overlay layer or the dialogbox, close the dialog  
-      $('a.btn-ok, #dialog-overlay, #dialog-box').click(function () {     
+      // if user clicked on button, close the dialog  
+      $('a.button.close-button').click(function () {     
           $('#dialog-overlay, #dialog-box').hide();       
           return false;
       });
@@ -121,31 +121,33 @@ define (require) ->
       $(window).resize(function () {
            
           //only do it if the dialog box is not hidden
-          if (!$('#dialog-box').is(':hidden')) popup();       
+          if (!$('#dialog-box').is(':hidden')) show_popup();
       }); 
     var song_title = $('title').text();
-    popup("<p>We don't have a recording of <i>" + song_title + "</i> yet, but it might be on YouTube.  Do you see it below?</p>");
+    show_popup();
 });
  
 //Popup dialog
-function popup(message) {
-         
+function show_popup() {
     // get the screen height and width  
     var maskHeight = $(window).height();  
     var maskWidth = $(window).width();
      
     // calculate the values for center alignment
-    var dialogTop =  (maskHeight/3) - ($('#dialog-box').height());  
+    var dialogTop =  30;
     var dialogLeft = (maskWidth/2) - ($('#dialog-box').width()/2); 
      
     // assign values to the overlay and dialog box
     $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show();
     $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show();
-     
-    // display the message
-    $('#dialog-message').html(message);
-             
 }`
+
+    if $('#youtube-search').length
+      song_name = $('h1').text()
+      promise = $.ajax
+        url: "/youtube-search/#{song_name}?no_layout=true"
+      promise.done (data, text_status, jqxhr) ->
+        $('#youtube-search').html data
 
   setupFromRequestParams: ->
     params = getRequestParams()
