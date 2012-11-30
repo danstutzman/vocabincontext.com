@@ -23,25 +23,11 @@
     - if @song.youtube_video_id
       Youtube Video Id is
       = @song.youtube_video_id
+      %button(name='remove_youtube_video' value='true') Remove
 
       %p(id="content-container")
         #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
           You need Flash player 8+ and JavaScript enabled to view this video.
-    %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
-      - if @song.youtube_video_id
-        Find a different recording of this song on YouTube
-      - else
-        Find this song on YouTube
-      %br
-
-      - if @song.youtube_video_id
-        To change the video, copy the link to it and paste it below:
-      - else
-        Once you find a video, copy the link to it and paste it below:
-    %br
-    %textarea(name='youtube_video_link' cols='45' rows='3')
-    %br
-    %input(type='submit')
 
   %h3 Keyboard commands
   %ul

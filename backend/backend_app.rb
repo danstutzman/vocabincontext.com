@@ -124,6 +124,10 @@ class BackendApp < Sinatra::Base
         task.save rescue raise task.errors.inspect
       end
     end
+    if params['remove_youtube_video']
+      @song.youtube_video_id = nil
+      @song.save rescue raise @song.errors.inspect
+    end
 
     alignments = []
     num_lines = @song.lyrics.split("\n").size
