@@ -108,40 +108,28 @@ define (require) ->
       input = $('.query-input')[0]
       input.focus() if input
 
-    `$(document).ready(function () {
- 
-      // if user clicked on button, close the dialog  
-      $('a.button.close-button').click(function () {     
-          $('#dialog-overlay, #dialog-box').hide();       
-          return false;
-      });
-       
-      // if user resize the window, call the same function again
-      // to make sure the overlay fills the screen and dialogbox aligned to center    
-      $(window).resize(function () {
-           
-          //only do it if the dialog box is not hidden
-          if (!$('#dialog-box').is(':hidden')) show_popup();
-      }); 
-    var song_title = $('title').text();
-    show_popup();
-});
- 
-//Popup dialog
-function show_popup() {
-    // get the screen height and width  
-    var maskHeight = $(window).height();  
-    var maskWidth = $(window).width();
-     
-    // calculate the values for center alignment
-    var dialogTop =  30;
-    var dialogLeft = (maskWidth/2) - ($('#dialog-box').width()/2); 
-     
-    // assign values to the overlay and dialog box
-    $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show();
-    $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show();
-}`
+    show_popup = ->
+      maskHeight = $(window).height()
+      maskWidth = $(window).width()
+      dialogTop = 30
+      dialogLeft = maskWidth / 2 - $('#dialog-box').width() / 2
+      $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show()
+      $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show()
 
+    $ ->
+      $('a.button.close-button').click ->
+        $('#dialog-overlay, #dialog-box').hide()
+        false
+       
+      # if user resize the window, call the same function again
+      # to make sure the overlay fills the screen and
+      # dialogbox aligned to center
+      $(window).resize ->
+        # only do it if the dialog box is not hidden
+        if (!$('#dialog-box').is(':hidden'))
+          show_popup()
+    show_popup()
+ 
     if $('#youtube-search').length
       song_name = $('h1').text()
       promise = $.ajax
