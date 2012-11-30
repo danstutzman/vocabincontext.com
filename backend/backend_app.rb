@@ -104,11 +104,15 @@ class BackendApp < Sinatra::Base
 
   post '/song/:song_id' do
     song_id = params['song_id']
+    video_id = params['youtube_video_id']
     link = params['youtube_video_link']
 
     @song = find_song_in_db_or_ferret(song_id) or halt 404
     if link && link != ''
-      @song.youtube_video_id = youtube_video_link_to_video_id(link)
+      video_id = youtube_video_link_to_video_id(link)
+    end
+    if video_id && video_id != ''
+      @song.youtube_video_id = video_id
       @song.save rescue raise @song.errors.inspect
 
       unless Task.first({ :action => 'download_mp3', :song_id => song_id })

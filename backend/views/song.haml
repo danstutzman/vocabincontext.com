@@ -1,23 +1,28 @@
-- if true || @song.youtube_video_id.nil?
-  #dialog-overlay
-  #dialog-box
-    .dialog-content
-      #dialog-message
-        %p
-          We don't have a recording of
-          %i= @song.song_name
-          yet, but it might be on YouTube.  Do you see it below?
-        #youtube-search(style='border:1px black solid;width:500px;height:500px')
-      %a.button.close-button(href='#') Close
-
-%h1= @song.song_name
-%h2= "by #{@song.artist_name}"
-
 %form{ :method => 'post' }
+  %h1= @song.song_name
+  %h2= "by #{@song.artist_name}"
+
+  - if @song.youtube_video_id.nil?
+    #dialog-overlay
+    #dialog-box
+      .dialog-content
+        #dialog-message
+          %p#no-recording-yet
+            We don't have a recording of
+            %i= @song.song_name
+            yet, but it might be on YouTube.  Do you see it below?
+          #youtube-search
+            #temporary-loading-notice
+              Loading...
+              %img#animated-throbber(src="/images/loading-animated.gif")
+        %a.button.close-button(href='#') Close
+
   %input#save-button(type='submit' name='submit') Save
 
   %div(style='border:1px black solid;float:right')
     - if @song.youtube_video_id
+      Youtube Video Id is
+      = @song.youtube_video_id
 
       %p(id="content-container")
         #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }

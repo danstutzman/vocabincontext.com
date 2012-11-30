@@ -13,7 +13,9 @@
     views
     %br
     %button(style='height:30px;margin-top:10px') Watch on YouTube
-    %button(style='height:30px;margin-left:10px;margin-top:10px') Choose this video
+    %button{ :style => 'height:30px;margin-left:10px;margin-top:10px',
+      :name => 'youtube_video_id', :value => video.unique_id }
+      Choose this video
 
 %p(style='clear:both;padding-top:20px;padding-bottom:0;margin-bottom:0') Or paste in a YouTube URL directly:
 %input(type='text' style='margin:0;padding:0;width:255px')
