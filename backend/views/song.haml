@@ -20,9 +20,13 @@
           #youtube-search-is-loading
             Searching YouTube...
             %img#animated-throbber(src="/images/loading-animated.gif")
-          %p(style='clear:both;padding-top:20px;padding-bottom:0;margin-bottom:0') If you want to supply your own YouTube video, please paste in its URL below. For example: http://www.youtube.com/watch?v=9bZkp7q19f0
-          %input(type='text' style='margin:0;padding:0;width:255px' name='youtube_video_link')
-          %button(style='height:30px;margin-left:10px;margin-top:10px' name='set_youtube_video_link') Extract audio from this video
+          %p#supply-your-own
+            If you want to supply your own YouTube video,
+            please paste in its URL below. For example:
+            http://www.youtube.com/watch?v=9bZkp7q19f0
+          %input#youtube-video-link(type='text' name='youtube_video_link')
+          %button#set-youtube-video-link(name='set_youtube_video_link')
+            Extract audio from this video
         %a.button.close-button(href='#') Close
 
   %input#save-button(type='submit' name='submit') Save

@@ -1,20 +1,19 @@
 #youtube-search
   - @videos.each do |video|
     - thumb = video.thumbnails.find { |thumb| thumb.name == 'default' }.url
-    .video(style='clear:both;padding-top:25px;')
+    .video
 
       %a{ :href => video.player_url, :target => '_blank' }
-        %img{ :src => "#{thumb}", :style => 'float:left;padding-right:10px' }
+        %img.video-thumb{ :src => "#{thumb}" }
 
-      %button{ :style => 'height:30px;margin-left:10px;float:right;height:60px;margin-right:20px',
-        :name => 'youtube_video_id', :value => video.unique_id }
+      %button#set-youtube-video-id{ :name => 'youtube_video_id',
+                                    :value => video.unique_id }
         Extract audio
         %br
         from this video
 
       #video-info
-        %h2(style='font-size:16px;font-weight:bold;margin:0')
-          = video.title
+        .video-title= video.title
         uploaded by
         = video.author.name
         %br
