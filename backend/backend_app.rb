@@ -183,13 +183,17 @@ class BackendApp < Sinatra::Base
 
   get '/youtube-search/:query' do |query|
     client = YouTubeIt::Client.new
-    videos = client.videos_by(:query => query, :per_page => 3)
-    @videos = videos.videos
+    videos = client.videos_by(:query => query, :per_page => 6)
+    if videos.feed_id
+      @videos = videos.videos
 
-    if params['no_layout']
-      haml :youtube_search, :layout => false
+      if params['no_layout']
+        haml :youtube_search, :layout => false
+      else
+        haml :youtube_search
+      end
     else
-      haml :youtube_search
+      'Error: unable to contact youtube.com'
     end
   end
 end
