@@ -4,6 +4,7 @@ require 'haml'
 require './model'
 require 'json'
 require './ferret_search'
+require 'youtube_it'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -170,5 +171,12 @@ class BackendApp < Sinatra::Base
 
   get '/split_mp3s/:filename' do |filename|
     send_file "#{ROOT_DIR}/backend/youtube_downloads/#{filename}"
+  end
+
+  get '/youtube-search/:query' do |query|
+    client = YouTubeIt::Client.new
+    videos = client.videos_by(:query => query, :per_page => 3)
+    @videos = videos.videos
+    haml :youtube_search
   end
 end
