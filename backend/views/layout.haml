@@ -1,0 +1,36 @@
+!!!
+%html
+  %head
+    %title= @title
+    %link(href="/css/application.css" rel="stylesheet" type="text/css")
+
+    - if ENV['ENV'] != 'production'
+      %script(src="/js/require.js")
+      :javascript
+        window.SM2_DEFER = true;
+        require.config({
+          baseUrl: "/js",
+          waitSeconds: 5,
+          shim: {
+            'swfobject': { exports: 'swfobject' }
+          }
+        });
+
+  %body
+    %div.scrollbar-measure
+
+    != yield
+
+    != haml :_loading
+
+    - if ENV['ENV'] == 'production'
+      %script window.SM2_DEFER = true;
+      %script(src="/js/main-compiled.js")
+      %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+      %script(src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js")
+
+    :javascript
+      require(["main", "jquery", "cs!app/app"], function(main, jquery, app) {
+        jquery.noConflict(); // remove $ global
+        app.setupFromRequestParams();
+      });

@@ -1,74 +1,63 @@
-%html
-  %head
-    %title= @song.song_name
-    %link(href="/css/application.css" rel="stylesheet" type="text/css")
-  %body
-    %div.scrollbar-measure
-    %h1= @song.song_name
-    %h2= "by #{@song.artist_name}"
+%h1= @song.song_name
+%h2= "by #{@song.artist_name}"
 
-    %form{ :method => 'post' }
-      %input#save-button(type='submit' name='submit') Save
-      %div(style='border:1px black solid;float:right')
-        - if @song.youtube_video_id
+%form{ :method => 'post' }
+  %input#save-button(type='submit' name='submit') Save
+  %div(style='border:1px black solid;float:right')
+    - if @song.youtube_video_id
 
-          %p(id="content-container")
-            #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
-              You need Flash player 8+ and JavaScript enabled to view this video.
-        %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
-          - if @song.youtube_video_id
-            Find a different recording of this song on YouTube
-          - else
-            Find this song on YouTube
-          %br
-
-          - if @song.youtube_video_id
-            To change the video, copy the link to it and paste it below:
-          - else
-            Once you find a video, copy the link to it and paste it below:
-        %br
-        %textarea(name='youtube_video_link' cols='45' rows='3')
-        %br
-        %input(type='submit')
-
-      %h3 Keyboard commands
-      %ul
-        %li [Space] to start or stop the video
-        %li Line [S]tarted
-        %li Line [F]inished
-        %li Go [D]own
-        %li Go up ([E]arlier)
-        %li Shift-S to correct last start time
-        %li Shift-F to correct last finish time
-
-      %button#play-button Play
-      #progress-outer
-        #progress-total-time
-        #progress-bar
-        #progress-loaded-bar
-        #progress-bar-caption
+      %p(id="content-container")
+        #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
+          You need Flash player 8+ and JavaScript enabled to view this video.
+    %a{ :href => "http://www.youtube.com/results?search_query=#{CGI.escape(@song.artist_name)}+#{CGI.escape(@song.song_name)}", :target => 'new' }
+      - if @song.youtube_video_id
+        Find a different recording of this song on YouTube
+      - else
+        Find this song on YouTube
       %br
 
-      %table(id='js-lyrics-table')
-        - @lyrics_lines.each_with_index do |line, line_num|
-          - start_centis, finish_centis =              |
-            @start_finish_centis_by_line_num[line_num] |
-          %tr{ :id => "line#{line_num}" }
-            %td.start-centis
-              %input{ :type => 'text', :name => "s[]",
-                :value => format_centis(start_centis) }
-            %td.lyric
-              %a{ :name => "line#{line_num}" }
-                = line
-            %td.finish-centis
-              %input{ :type => 'text', :name => "f[]",
-                :value => format_centis(finish_centis) }
-        %tr{ :id => "line#{@lyrics_lines.size}", :class => 'extra-blank-line' }
-          %td.start-centis
-          %td.lyric
-          %td.finish-centis
+      - if @song.youtube_video_id
+        To change the video, copy the link to it and paste it below:
+      - else
+        Once you find a video, copy the link to it and paste it below:
+    %br
+    %textarea(name='youtube_video_link' cols='45' rows='3')
+    %br
+    %input(type='submit')
 
-    != haml :_loading
-    != haml :_js
-    :javascript
-      require(["cs!app/app"], function(app) { app.setupFromRequestParams(); });
+  %h3 Keyboard commands
+  %ul
+    %li [Space] to start or stop the video
+    %li Line [S]tarted
+    %li Line [F]inished
+    %li Go [D]own
+    %li Go up ([E]arlier)
+    %li Shift-S to correct last start time
+    %li Shift-F to correct last finish time
+
+  %button#play-button Play
+  #progress-outer
+    #progress-total-time
+    #progress-bar
+    #progress-loaded-bar
+    #progress-bar-caption
+  %br
+
+  %table(id='js-lyrics-table')
+    - @lyrics_lines.each_with_index do |line, line_num|
+      - start_centis, finish_centis =              |
+        @start_finish_centis_by_line_num[line_num] |
+      %tr{ :id => "line#{line_num}" }
+        %td.start-centis
+          %input{ :type => 'text', :name => "s[]",
+            :value => format_centis(start_centis) }
+        %td.lyric
+          %a{ :name => "line#{line_num}" }
+            = line
+        %td.finish-centis
+          %input{ :type => 'text', :name => "f[]",
+            :value => format_centis(finish_centis) }
+    %tr{ :id => "line#{@lyrics_lines.size}" }
+      %td.start-centis
+      %td.lyric
+      %td.finish-centis

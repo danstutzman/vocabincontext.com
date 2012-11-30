@@ -104,6 +104,10 @@ define (require) ->
       $('#throbber-foreground').hide()
       callback()
 
+    $ ->
+      input = $('.query-input')[0]
+      input.focus() if input
+
   setupFromRequestParams: ->
     params = getRequestParams()
     setup realSoundManager, (->)

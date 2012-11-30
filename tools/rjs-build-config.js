@@ -6,12 +6,12 @@
   modules: [
     {
       name: 'main',
-      include: ['almond'],
-      exclude: ['coffee-script', 'jquery']
+      include: ['almond', 'swfobject-shim'],
+      exclude: ['coffee-script', 'jquery', 'swfobject'],
     },
     {
       name: 'main_with_tests',
-      exclude: ['coffee-script', 'jquery']
+      exclude: ['coffee-script', 'jquery', 'swfobject']
     }
   ]
 }

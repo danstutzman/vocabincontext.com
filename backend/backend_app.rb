@@ -26,6 +26,7 @@ class BackendApp < Sinatra::Base
     query = params['query']
     offset = params['offset'].to_i
     @excerpts = FerretSearch.search_for(query, offset) if query
+    @title = 'Search for vocab in context'
     haml :search
   end
 
@@ -87,6 +88,7 @@ class BackendApp < Sinatra::Base
       @start_finish_centis_by_line_num[alignment.line_num] =
         [alignment.start_centis, alignment.finish_centis]
     end
+    @title = @song.song_name
 
     haml :song
   end
