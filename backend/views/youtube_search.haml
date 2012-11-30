@@ -3,7 +3,7 @@
   .video(style='clear:both;padding-top:25px;')
     %a{ :href => video.player_url, :target => '_blank' }
       %img{ :src => "#{thumb}", :style => 'float:left;padding-right:10px' }
-    %button{ :style => 'height:30px;margin-left:10px;margin-top:10px;float:right;height:60px',
+    %button{ :style => 'height:30px;margin-left:10px;margin-top:10px;float:right;height:60px;margin-right:20px',
       :name => 'youtube_video_id', :value => video.unique_id }
       Use this video
       %br
@@ -18,7 +18,3 @@
     = video.view_count
     views
     %br
-
-%p(style='clear:both;padding-top:20px;padding-bottom:0;margin-bottom:0') Or paste in a YouTube URL directly:
-%input(type='text' style='margin:0;padding:0;width:255px' name='youtube_video_link')
-%button(style='height:30px;margin-left:10px;margin-top:10px' name='set_youtube_video_link') Choose this video

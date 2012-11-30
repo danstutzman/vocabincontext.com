@@ -15,6 +15,9 @@
             #temporary-loading-notice
               Loading...
               %img#animated-throbber(src="/images/loading-animated.gif")
+          %p(style='clear:both;padding-top:20px;padding-bottom:0;margin-bottom:0') Or paste in a YouTube URL directly:
+          %input(type='text' style='margin:0;padding:0;width:255px' name='youtube_video_link')
+          %button(style='height:30px;margin-left:10px;margin-top:10px' name='set_youtube_video_link') Choose this video
         %a.button.close-button(href='#') Close
 
   %input#save-button(type='submit' name='submit') Save
