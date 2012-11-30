@@ -131,9 +131,10 @@ define (require) ->
     show_popup()
  
     if $('#youtube-search').length
-      song_name = $('h1').text()
+      song_name = $('#song_name').text()
+      artist_name = $('#artist_name').text()
       promise = $.ajax
-        url: "/youtube-search/#{song_name}?no_layout=true"
+        url: "/youtube-search/#{song_name}+#{artist_name}?no_layout=true"
       promise.done (data, text_status, jqxhr) ->
         $('#youtube-search').html data
 

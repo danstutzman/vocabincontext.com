@@ -1,6 +1,8 @@
 %form{ :method => 'post' }
-  %h1= @song.song_name
-  %h2= "by #{@song.artist_name}"
+  %h1#song_name= @song.song_name
+  %h2
+    by
+    %span#artist_name= @song.artist_name
 
   - if @song.youtube_video_id.nil?
     #dialog-overlay
@@ -9,7 +11,7 @@
         #dialog-message
           %p#no-recording-yet
             We don't have a recording of
-            %i= @song.song_name
+            %i= "#{@song.artist_name}: #{@song.song_name}"
             yet, but it might be on YouTube.  Do you see it below?
           #youtube-search
             #temporary-loading-notice
