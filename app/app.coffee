@@ -104,10 +104,6 @@ define (require) ->
       $('#throbber-foreground').hide()
       callback()
 
-    $ ->
-      input = $('.query-input')[0]
-      input.focus() if input
-
     show_popup = ->
       maskHeight = $(window).height()
       maskWidth = $(window).width()

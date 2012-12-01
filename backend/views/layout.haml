@@ -4,7 +4,7 @@
     %title= @title
     %link(href="/css/application.css" rel="stylesheet" type="text/css")
 
-    - if ENV['ENV'] != 'production'
+    - if ENV['ENV'] != 'production' && request.path != '/'
       %script(src="/js/require.js")
       :javascript
         window.SM2_DEFER = true;
@@ -21,16 +21,58 @@
 
     != yield
 
-    != haml :_loading
+    - if request.path != '/'
+      != haml :_loading
 
-    - if ENV['ENV'] == 'production'
+    - if ENV['ENV'] == 'production' && request.path != '/'
       %script window.SM2_DEFER = true;
       %script(src="/js/main-compiled.js")
       %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
       %script(src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js")
 
-    :javascript
-      require(["main", "jquery", "cs!app/app"], function(main, jquery, app) {
-        jquery.noConflict(); // remove $ global
-        app.setupFromRequestParams();
-      });
+    - if request.path == '/'
+      :javascript
+        function onload() {
+          // give focus to query-input field
+          var input = document.getElementsByTagName('input')[0];
+          if (input) {
+            input.focus();
+          }
+
+          // Preload JavaScript
+          window.SM2_DEFER = true; // don't request SoundManager2 SWF yet
+          var urls = [
+            '/js/main-compiled.js',
+            '//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+            '//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+          ];
+          for (var i = 0; i < urls.length; i++) {
+            var script = document.createElement('script');
+            script.src = urls[i];
+            document.body.appendChild(script);
+          }
+
+          // Preload SoundManager2 SWF
+          var obj = document.createElement('object');
+          obj.type = 'application/x-shockwave-flash';
+          obj.name = 'plugin';
+          obj.data = '/swf/soundmanager2_flash9.swf';
+          obj.width = 1;
+          obj.height = 1;
+          document.body.appendChild(obj);
+        }
+
+        // Set onload
+        if (window.addEventListener) {
+          window.addEventListener('load', onload, false);
+        } else if (window.attachEvent) {
+          window.attachEvent('onload', onload);
+        } else {
+          window.onload = onload;
+        }
+    - else
+      :javascript
+        require(["main", "jquery", "cs!app/app"], function(main, jquery, app) {
+          jquery.noConflict(); // remove $ global
+          app.setupFromRequestParams();
+        });
