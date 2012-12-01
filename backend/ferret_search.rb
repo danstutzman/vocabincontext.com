@@ -37,6 +37,7 @@ module FerretSearch
     searcher.search_each(ferret_query, options) do |doc_id, score|
       doc = searcher[doc_id]
       metadata        = JSON.load(doc[:metadata] || '{}')
+      has_alignments  = (doc[:has_alignments].to_i == 1)
       lyrics          = doc[:lyrics]
       song_id         = doc[:song_id]
 
@@ -45,8 +46,11 @@ module FerretSearch
         :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
 
       alignments_by_line_num = [nil] * lyrics.split("\n").size
-      Alignment.all(:song_id => song_id).each do |alignment|
-        alignments_by_line_num[alignment.line_num] = alignment
+      if has_alignments
+        # avoid performance hit of querying the db if not needed
+        Alignment.all(:song_id => song_id).each do |alignment|
+          alignments_by_line_num[alignment.line_num] = alignment
+        end
       end
 
       lyrics.split("\n").each_with_index do |line, line_num|
