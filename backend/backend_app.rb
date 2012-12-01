@@ -16,7 +16,12 @@ class BackendApp < Sinatra::Base
     set :haml, {:format => :html5, :escape_html => true, :ugly => true}
     set :static, true
     set :public_folder, File.join(ROOT_DIR, 'backend', 'public')
-    set :static_cache_control, [:public, :no_cache]
+
+    if ENV['ENV'] == 'production'
+      set :static_cache_control, [:public, :max_age => 300]
+    else
+      set :static_cache_control, [:public, :no_cache]
+    end
   end
 
   not_found do
