@@ -63,19 +63,10 @@ def execute_command(command_line, task)
     exit_status = wait_thr.value.exitstatus
   end
   task.command_line = command_line
-  task.stdout = all_stdout
-  task.stderr = all_stderr
+  task.stdout = (task.stdout || '') + all_stdout
+  task.stderr = (task.stderr || '') + all_stderr
   task.exit_status = exit_status
 end
-
-mp3splt =
-  if File.exists?('/usr/bin/mp3splt')
-    '/usr/bin/mp3splt'
-  elsif File.exists?('/usr/local/bin/mp3splt')
-    '/usr/local/bin/mp3splt'
-  else
-    raise "Don't know where to find mp3splt"
-  end
 
 task = Task.first({
   :action => %w[download_mp3 split_mp3 update_index],
@@ -101,13 +92,18 @@ if task
     alignment = task.alignment
     if song && alignment
       video_id = song.youtube_video_id
-      start_centis = alignment.start_centis
-      finish_centis = alignment.finish_centis
-      command_line = "#{mp3splt} -d #{ROOT_DIR}/backend/youtube_downloads"
-      command_line += " -o #{video_id}.#{start_centis}.#{finish_centis}"
-      command_line += " #{ROOT_DIR}/backend/youtube_downloads/#{video_id}.mp3"
-      command_line += " #{centis_to_msh(start_centis)}"
-      command_line += " #{centis_to_msh(finish_centis)}"
+      start_seconds = sprintf('%.2f',
+        [(alignment.start_centis - 100) / 100.0, 0.0].max)
+      duration_seconds = sprintf('%.2f',
+        (alignment.finish_centis - alignment.start_centis + 200) / 100.0)
+      output_filename = [video_id, alignment.start_centis.to_s,
+                         alignment.finish_centis.to_s, 'mp3'].join('.')
+      command_line = "backend/excerpt_clip.sh "
+      command_line += "#{video_id} "
+      command_line += "#{start_seconds} "
+      command_line += "#{duration_seconds} "
+      command_line += "#{output_filename} "
+      command_line = "cd #{ROOT_DIR} && #{command_line}"
       execute_command command_line, task
     else
       task.stderr = 'missing song or alignment for song_id or alignment_id'
