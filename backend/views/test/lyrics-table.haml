@@ -1,0 +1,21 @@
+- @start_finish_centis_by_line_num = [[123, 234], [345, 456]]
+- @lyrics_lines = ["line 1", "line 2"]
+
+%table(id='js-lyrics-table')
+  - @lyrics_lines.each_with_index do |line, line_num|
+    - start_centis, finish_centis =              |
+      @start_finish_centis_by_line_num[line_num] |
+    %tr{ :id => "line#{line_num}" }
+      %td.start-centis
+        %input{ :type => 'text', :name => "s[]",
+          :value => format_centis(start_centis) }
+      %td.lyric
+        %a{ :name => "line#{line_num}" }
+          = line
+      %td.finish-centis
+        %input{ :type => 'text', :name => "f[]",
+          :value => format_centis(finish_centis) }
+  %tr{ :id => "line#{@lyrics_lines.size}" }
+    %td.start-centis
+    %td.lyric
+    %td.finish-centis
