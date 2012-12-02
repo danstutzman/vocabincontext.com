@@ -1,5 +1,8 @@
+$thumb-width: 120px
+$thumb-height: 90px
+
 .youtube-search
-  width: 485px
+  width: $need-video-width - $need-video-margin * 2
   height: 350px
   overflow: scroll
   overflow-x: hidden
@@ -11,9 +14,11 @@
   .video-thumb
     float: left
     padding-right: 10px
+    width: $thumb-width
+    height: $thumb-height
 
   .video-info
-    margin-left: 130px
+    margin-left: $thumb-width + 10px
 
   .set-youtube-video-id
     height: 30px
