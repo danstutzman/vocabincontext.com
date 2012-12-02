@@ -1,3 +1,6 @@
+@import compass/reset
+@import compass/css3/opacity
+
 @import loading
 @import mp3-player
 @import progress-bar
@@ -24,7 +27,5 @@ h1
   text-align: center
   z-index: 1000
   background-color: black
-  opacity: 0.5
-  filter: alpha(opacity=50)
-  -moz-opacity: 0.5
   display: none // hide it by default
+  @include opacity(0.5)

@@ -26,3 +26,4 @@ gem 'youtube_it'
 
 gem 'sass'
 gem 'coffee-filter'
+gem 'compass'

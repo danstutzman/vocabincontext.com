@@ -7,6 +7,7 @@ require './ferret_search'
 require 'youtube_it'
 require 'sass'
 require 'coffee-filter'
+require 'compass'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -26,6 +27,8 @@ class BackendApp < Sinatra::Base
       set :static_cache_control, [:public, :no_cache]
       set :sass, { :style => :compact }
     end
+
+    Sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory
   end
 
   not_found do
