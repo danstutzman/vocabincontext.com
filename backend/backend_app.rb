@@ -210,10 +210,10 @@ class BackendApp < Sinatra::Base
     sass 'sass/application'.intern
   end
 
-  get '/test/player' do
-    haml 'test/player'.intern
-  end
   get '/test/test.mp3' do
     send_file "#{ROOT_DIR}/backend/views/test/test.mp3"
+  end
+  get '/test/:template' do |template|
+    haml "test/#{template}".intern
   end
 end
