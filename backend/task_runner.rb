@@ -69,7 +69,7 @@ def execute_command(command_line, task)
 end
 
 task = Task.first({
-  :action => %w[download_mp3 split_mp3 update_index],
+  :action => %w[download_mp4 split_mp4 update_index],
   :started_at => nil,
   :order => [:id]
 })
@@ -78,16 +78,16 @@ if task
   task.started_at = DateTime.now
   task.save rescue raise task.errors.inspect
 
-  if task.action == 'download_mp3'
+  if task.action == 'download_mp4'
     video_id = task.song.youtube_video_id
     if video_id.match(/^[a-zA-Z0-9_-]{11}$/)
-      command_line = "cd #{ROOT_DIR} && backend/youtube_to_mp3.sh #{video_id}"
+      command_line = "cd #{ROOT_DIR} && backend/youtube_to_mp4.sh #{video_id}"
       execute_command command_line, task
     else
       task.stderr = "youtube_video_id fails regex check: #{video_id}"
       task.exit_status = -1
     end
-  elsif task.action == 'split_mp3'
+  elsif task.action == 'split_mp4'
     song = task.song
     alignment = task.alignment
     if song && alignment

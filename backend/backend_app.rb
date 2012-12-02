@@ -120,9 +120,9 @@ class BackendApp < Sinatra::Base
       @song.youtube_video_id = video_id
       @song.save rescue raise @song.errors.inspect
 
-      unless Task.first({ :action => 'download_mp3', :song_id => song_id })
+      unless Task.first({ :action => 'download_mp4', :song_id => song_id })
         task = Task.new({
-          :action => 'download_mp3',
+          :action => 'download_mp4',
           :song_id => song_id,
           :created_at => DateTime.now,
         })
@@ -150,14 +150,14 @@ class BackendApp < Sinatra::Base
       end
     end
 
-    existing_tasks = Task.all({ :action => 'split_mp3', :song_id => song_id })
+    existing_tasks = Task.all({ :action => 'split_mp4', :song_id => song_id })
     alignments.each do |alignment|
       existing = existing_tasks.find do |task|
         task.alignment_id == alignment.id
       end
       unless existing
         task = Task.new({
-          :action => 'split_mp3',
+          :action => 'split_mp4',
           :song_id => song_id,
           :alignment_id => alignment.id,
           :created_at => DateTime.now,
