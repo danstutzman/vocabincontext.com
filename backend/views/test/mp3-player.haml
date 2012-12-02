@@ -1,0 +1,6 @@
+.mp3-player
+:coffeescript
+  require ['cs!app/Mp3Player', 'cs!app/soundManager', 'jquery'], \
+      (Mp3Player, realSoundManager, $) ->
+    $ ->
+      player = new Mp3Player($('.mp3-player'), realSoundManager, 'test.mp3')

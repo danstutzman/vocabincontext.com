@@ -3,7 +3,6 @@ define (require) ->
   Utility          = require('cs!app/Utility')
   fakeSoundManager = require('cs!app/fakeSoundManager')
   realSoundManager = require('cs!app/soundManager')
-  Player           = require('cs!app/Player')
   LyricsEditorView = require('cs!app/LyricsEditorView')
   YouTubePlayer    = require('cs!app/YouTubePlayer')
 
