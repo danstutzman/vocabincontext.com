@@ -63,22 +63,13 @@ def execute_command(command_line, task)
     exit_status = wait_thr.value.exitstatus
   end
   task.command_line = command_line
-  task.stdout = all_stdout
-  task.stderr = all_stderr
+  task.stdout = (task.stdout || '') + all_stdout
+  task.stderr = (task.stderr || '') + all_stderr
   task.exit_status = exit_status
 end
 
-mp3splt =
-  if File.exists?('/usr/bin/mp3splt')
-    '/usr/bin/mp3splt'
-  elsif File.exists?('/usr/local/bin/mp3splt')
-    '/usr/local/bin/mp3splt'
-  else
-    raise "Don't know where to find mp3splt"
-  end
-
 task = Task.first({
-  :action => %w[download_mp3 split_mp3 update_index],
+  :action => %w[download_mp4 split_mp4 update_index],
   :started_at => nil,
   :order => [:id]
 })
@@ -87,27 +78,32 @@ if task
   task.started_at = DateTime.now
   task.save rescue raise task.errors.inspect
 
-  if task.action == 'download_mp3'
+  if task.action == 'download_mp4'
     video_id = task.song.youtube_video_id
     if video_id.match(/^[a-zA-Z0-9_-]{11}$/)
-      command_line = "cd #{ROOT_DIR} && backend/youtube_to_mp3.sh #{video_id}"
+      command_line = "cd #{ROOT_DIR} && backend/youtube_to_mp4.sh #{video_id}"
       execute_command command_line, task
     else
       task.stderr = "youtube_video_id fails regex check: #{video_id}"
       task.exit_status = -1
     end
-  elsif task.action == 'split_mp3'
+  elsif task.action == 'split_mp4'
     song = task.song
     alignment = task.alignment
     if song && alignment
       video_id = song.youtube_video_id
-      start_centis = alignment.start_centis
-      finish_centis = alignment.finish_centis
-      command_line = "#{mp3splt} -d #{ROOT_DIR}/backend/youtube_downloads"
-      command_line += " -o #{video_id}.#{start_centis}.#{finish_centis}"
-      command_line += " #{ROOT_DIR}/backend/youtube_downloads/#{video_id}.mp3"
-      command_line += " #{centis_to_msh(start_centis)}"
-      command_line += " #{centis_to_msh(finish_centis)}"
+      start_seconds = sprintf('%.2f',
+        [(alignment.start_centis - 100) / 100.0, 0.0].max)
+      duration_seconds = sprintf('%.2f',
+        (alignment.finish_centis - alignment.start_centis + 200) / 100.0)
+      output_filename = sprintf("%s.%05d.%05d.mp3",
+        video_id, alignment.start_centis.to_s, alignment.finish_centis.to_s)
+      command_line = "backend/excerpt_clip.sh "
+      command_line += "#{video_id} "
+      command_line += "#{start_seconds} "
+      command_line += "#{duration_seconds} "
+      command_line += "#{output_filename} "
+      command_line = "cd #{ROOT_DIR} && #{command_line}"
       execute_command command_line, task
     else
       task.stderr = 'missing song or alignment for song_id or alignment_id'

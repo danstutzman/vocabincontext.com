@@ -8,8 +8,8 @@ if [ "$1" == "" ]; then
 fi
 VIDEO_ID="$1"
 
-if [ -e "$ROOT_DIR/backend/youtube_downloads/$VIDEO_ID.mp3" ]; then
-  echo "$VIDEO_ID.mp3 already exists"
+if [ -e "$ROOT_DIR/backend/youtube_downloads/$VIDEO_ID.mp4" ]; then
+  echo "$VIDEO_ID.mp4 already exists"
   exit 0
 fi
 
@@ -21,9 +21,9 @@ fi
 
 # -vn ignores the video, just looks at audio
 # -acodec copy keeps the same audio codec
+# -acodec mp3 keeps mp3s as is, recodes mp4s to mp3
 # -y overwrites without asking
-#ffmpeg -y -i "/tmp/$VIDEO_ID.flv" -vn -acodec copy "/tmp/$VIDEO_ID.mp4"
-ffmpeg -y -i "$VIDEO_ID.flv" -vn -acodec mp3 "$VIDEO_ID.mp3"
+ffmpeg -y -i "$VIDEO_ID.flv" -vn -acodec copy "$VIDEO_ID.mp4"
 
 if [ "$?" != "0" ]; then exit 1; fi
 
