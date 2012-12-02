@@ -99,7 +99,7 @@ define (require) ->
       window.setInterval pulsate, 200
 
     waitForAll.done ->
-      $('#modal-background').hide()
+      $('.modal-background').hide()
       $('#throbber-foreground').hide()
       callback()
 
