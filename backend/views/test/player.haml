@@ -1,0 +1,6 @@
+#player(style='position:relative')
+:coffeescript
+  require ['cs!app/Player', 'cs!app/soundManager', 'jquery'], \
+      (Player, realSoundManager, $) ->
+    $ ->
+      player = new Player($('#player'), $, realSoundManager, 'test.mp3')

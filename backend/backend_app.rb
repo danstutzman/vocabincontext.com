@@ -6,6 +6,7 @@ require 'json'
 require './ferret_search'
 require 'youtube_it'
 require 'sass'
+require 'coffee-filter'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -206,6 +207,13 @@ class BackendApp < Sinatra::Base
   end
 
   get '/css/application.css' do
-    sass :'sass/application'
+    sass 'sass/application'.intern
+  end
+
+  get '/test/player' do
+    haml 'test/player'.intern
+  end
+  get '/test/test.mp3' do
+    send_file "#{ROOT_DIR}/backend/views/test/test.mp3"
   end
 end
