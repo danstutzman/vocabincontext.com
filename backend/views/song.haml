@@ -5,7 +5,7 @@
     %span#artist_name= @song.artist_name
 
   - if @song.youtube_video_id.nil?
-    != haml :_need_video
+    != haml '_need-video'.intern
 
   %input#save-button(type='submit' name='submit') Save
 
