@@ -206,6 +206,6 @@ class BackendApp < Sinatra::Base
   end
 
   get '/css/application.css' do
-    sass :application
+    sass :'sass/application'
   end
 end
