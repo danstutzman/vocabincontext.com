@@ -99,7 +99,7 @@ define (require) ->
       window.setInterval pulsate, 200
 
     waitForAll.done ->
-      $('#throbber-background').hide()
+      $('#modal-background').hide()
       $('#throbber-foreground').hide()
       callback()
 
@@ -108,16 +108,16 @@ define (require) ->
       maskWidth = $(window).width()
       dialogTop = 30
       dialogLeft = maskWidth / 2 - $('#dialog-box').width() / 2
-      $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show()
+      $('.modal-background').css({height:maskHeight, width:maskWidth}).show()
       $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show()
 
     $ ->
       $('a.button.close-button').click ->
-        $('#dialog-overlay, #dialog-box').hide()
+        $('.modal-background, #dialog-box').hide()
         false
        
       # if user resize the window, call the same function again
-      # to make sure the overlay fills the screen and
+      # to make sure the modal-background fills the screen and
       # dialogbox aligned to center
       $(window).resize ->
         # only do it if the dialog box is not hidden
