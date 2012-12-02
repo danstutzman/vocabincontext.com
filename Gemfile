@@ -23,3 +23,5 @@ gem 'airbrake'
 gem 'rb-inotify'
 
 gem 'youtube_it'
+
+gem 'sass'

@@ -5,6 +5,7 @@ require './model'
 require 'json'
 require './ferret_search'
 require 'youtube_it'
+require 'sass'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -19,8 +20,10 @@ class BackendApp < Sinatra::Base
 
     if ENV['ENV'] == 'production'
       set :static_cache_control, [:public, :max_age => 300]
+      set :sass, { :style => :compressed }
     else
       set :static_cache_control, [:public, :no_cache]
+      set :sass, { :style => :compact }
     end
   end
 
@@ -200,5 +203,9 @@ class BackendApp < Sinatra::Base
     else
       'Error: unable to contact youtube.com'
     end
+  end
+
+  get '/css/application.css' do
+    sass :application
   end
 end
