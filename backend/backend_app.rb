@@ -5,6 +5,9 @@ require './model'
 require 'json'
 require './ferret_search'
 require 'youtube_it'
+require 'sass'
+require 'coffee-filter'
+require 'compass'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -19,9 +22,13 @@ class BackendApp < Sinatra::Base
 
     if ENV['ENV'] == 'production'
       set :static_cache_control, [:public, :max_age => 300]
+      set :sass, { :style => :compressed }
     else
       set :static_cache_control, [:public, :no_cache]
+      set :sass, { :style => :compact }
     end
+
+    Sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory
   end
 
   not_found do
@@ -200,5 +207,16 @@ class BackendApp < Sinatra::Base
     else
       'Error: unable to contact youtube.com'
     end
+  end
+
+  get '/css/application.css' do
+    sass 'sass/application'.intern
+  end
+
+  get '/test/test.mp3' do
+    send_file "#{ROOT_DIR}/backend/views/test/test.mp3"
+  end
+  get '/test/:template' do |template|
+    haml "test/#{template}".intern
   end
 end

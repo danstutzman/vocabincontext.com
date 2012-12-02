@@ -1,19 +1,21 @@
 define (require) ->
+  $ = require('jquery')
   SoundGrid = require('cs!app/SoundGrid')
 
-  class Player
-    constructor: ($player, $, sm, mp3Url) ->
+  class Mp3Player
+    constructor: ($player, sm, mp3Url) ->
       $player.append "
-        <div id='cursor'></div>
-        <canvas id='canvas' width='50' height='100'>
+        <div class='cursor'></div>
+        <canvas class='canvas' width='50' height='100'>
           HTML5 Canvas element not supported.
         </canvas>
-        <button id='play-button' class='clickable' disabled='disabled'>
+        <button class='play-button clickable' disabled='disabled'>
           Play</button>"
-      @canvas = $('#canvas')[0]
-      @$playButton = $('#play-button')
-      @cursor = $('#cursor')[0]
-      @context = @canvas.getContext('2d')
+      @$canvas     = $player.children('.canvas')
+      @$playButton = $player.children('.play-button')
+      @$cursor     = $player.children('.cursor')
+
+      @context = @$canvas[0].getContext('2d')
 
       @theSound = undefined
       @isPaused = true
@@ -28,27 +30,27 @@ define (require) ->
           whileplaying: => @whilePlaying()
           onfinish: => @onFinish()
         @setupPlayButton()
-      @column = @context.createImageData(1, @canvas.height)
+      @column = @context.createImageData(1, @$canvas.height())
       @soundGrid = null # wait until we know the sound's duration
 
       resizeCanvas = =>
-        @canvas.width = window.innerWidth - 16
-        @canvas.style.width = "#{@canvas.width}px"
+        @$canvas.width window.innerWidth - 16
+        @$canvas.attr 'width', @$canvas.width()
   
       mouseMove = (event) =>
-        canvasMinX = $('#canvas').offset().left
+        canvasMinX = @$canvas.offset().left
         @moveCursorTo(event.pageX - canvasMinX)
   
       $(document).ready =>
         resizeCanvas()
         @redrawCanvas()
-        $('#canvas').mousedown (event) ->
+        @$canvas.mousedown (event) ->
           mouseMove(event)
-          $('#canvas').bind 'mousemove', mouseMove
-        $('#canvas').mouseup (event) ->
-          $('#canvas').unbind 'mousemove', mouseMove
-        $('#cursor').mouseup (event) ->
-          $('#canvas').unbind 'mousemove', mouseMove
+          @$canvas.bind 'mousemove', mouseMove
+        @$canvas.mouseup (event) ->
+          @$canvas.unbind 'mousemove', mouseMove
+        @$cursor.mouseup (event) ->
+          @$canvas.unbind 'mousemove', mouseMove
   
       $(window).resize =>
         resizeCanvas()
@@ -76,9 +78,9 @@ define (require) ->
       #console.log 'updateCursorX', @theSound.duration
       if @theSound && @theSound.duration
         cursorX =
-          Math.floor(@canvas.width * @theSound.position / @theSound.duration)
+          Math.floor(@$canvas.width() * @theSound.position / @theSound.duration)
         #console.log 'cursor is now at', "#{cursorX + 1}px"
-        @cursor.style.left = "#{cursorX + 1}px" # add 1 for border
+        @$cursor.css 'left', "#{cursorX + 1}px" # add 1 for border
   
     onFinish: ->
       try
@@ -106,10 +108,10 @@ define (require) ->
   
     redrawCanvas: ->
       if @soundGrid
-        stripes = @soundGrid.resize(@canvas.width, @canvas.height)
+        stripes = @soundGrid.resize(@$canvas.width(), @$canvas.height())
       else
         stripes = {}
-        for x in [0...@canvas.width]
+        for x in [0...@$canvas.width()]
           stripes[x] = null
 
       for own x, stripe of stripes
@@ -122,7 +124,7 @@ define (require) ->
       #   @theSound.peakData.left, @theSound.peakData.right
       if @theSound.duration && !@soundGrid
         @soundGrid =
-          new SoundGrid(@canvas.width, @canvas.height, @theSound.duration)
+          new SoundGrid(@$canvas.width(), @$canvas.height(), @theSound.duration)
       try
         peakData = @theSound.peakData
         if peakData && not @justSetPosition && @soundGrid
@@ -136,7 +138,7 @@ define (require) ->
         console.log "Error in whilePlaying: #{error}"
   
     moveCursorTo: (x) ->
-      millis = x * @theSound.duration / @canvas.width
+      millis = x * @theSound.duration / @$canvas.width()
       @justSetPosition = true
       @theSound.setPosition millis
       @updateCursorX()

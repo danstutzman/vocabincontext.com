@@ -1,0 +1,90 @@
+@import compass/css3/images
+
+$glow0: #ffff44
+$glow1: #ffff55
+$glow2: #ffff66
+$glow3: #ffff55
+$lyrics-spacing: 3px
+
+#js-lyrics-table
+  border-collapse: collapse
+
+  tr.selectedRow
+    > td.lyric,
+    > td.finish-centis
+      background: $glow0
+
+    &.stage1 > td.lyric,
+    &.stage1 > td.finish-centis
+      background: $glow1
+
+    &.stage2 > td.lyric,
+    &.stage2 > td.finish-centis
+      background: $glow2
+
+    &.stage3 > td.lyric,
+    &.stage3 > td.finish-centis
+      background: $glow3
+  
+  td.start-centis
+    background-color: #eee
+    border-top: $lyrics-spacing #eee solid
+    @include background(linear-gradient(top, #eee, #ddd))
+  
+    > input
+      border: transparent
+      width: 60px
+      text-align: right
+      color: #aaa
+      padding-right: 5px
+      background: transparent
+  
+  td.finish-centis
+    background-color: #eee
+    border-top: $lyrics-spacing #eee solid
+    @include background(linear-gradient(top, #eee, #ddd))
+  
+    > input
+      border: transparent
+      width: 60px
+      text-align: right
+      color: #aaa
+      background: transparent
+      padding-right: 5px
+  
+  td.lyric
+    padding-left: 30px
+    padding-right: 30px
+    border-top: $lyrics-spacing white solid
+  
+  tr.selectedRowTop
+    > td.lyric,
+    > td.start-centis
+      border-top: $lyrics-spacing $glow0 solid
+
+    &.stage1 > td.lyric
+      border-top: $lyrics-spacing $glow1 solid
+    &.stage2 > td.lyric
+      border-top: $lyrics-spacing $glow2 solid
+    &.stage3 > td.lyric
+      border-top: $lyrics-spacing $glow3 solid
+
+    &.stage1 > td.start-centis
+      border-top: $lyrics-spacing $glow1 solid
+      background: $glow1
+    &.stage2 > td.start-centis
+      border-top: $lyrics-spacing $glow2 solid
+      background: $glow2
+    &.stage3 > td.start-centis
+      border-top: $lyrics-spacing $glow3 solid
+      background: $glow3
+
+    > td.start-centis
+      background: $glow0
+  
+.scrollbar-measure
+  width: 100px
+  height: 100px
+  overflow: scroll
+  position: absolute
+  top: -9999px

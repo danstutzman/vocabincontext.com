@@ -1,0 +1,21 @@
+.need-video
+  .content
+    %p
+      Now we need a recording of the song named
+      %br
+      %i= @song.song_name
+      = "by #{@song.artist_name}."
+      We can extract it from a YouTube video,
+      if you find it in the search results below:
+
+    .youtube-search-is-loading
+      Searching YouTube...
+      .animated-throbber
+    %p.supply-your-own
+      If you want to supply your own YouTube video,
+      please paste in its URL below. For example:
+      http://www.youtube.com/watch?v=9bZkp7q19f0
+    %input.youtube-video-link(type='text' name='youtube_video_link')
+    %button.set-youtube-video-link(name='set_youtube_video_link')
+      Extract audio from this video
+    %a.button.close-button(href='#') Close

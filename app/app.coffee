@@ -3,7 +3,6 @@ define (require) ->
   Utility          = require('cs!app/Utility')
   fakeSoundManager = require('cs!app/fakeSoundManager')
   realSoundManager = require('cs!app/soundManager')
-  Player           = require('cs!app/Player')
   LyricsEditorView = require('cs!app/LyricsEditorView')
   YouTubePlayer    = require('cs!app/YouTubePlayer')
 
@@ -100,7 +99,8 @@ define (require) ->
       window.setInterval pulsate, 200
 
     waitForAll.done ->
-      $('#throbber-background').hide()
+      unless $('.need-video').is(':visible')
+        $('.modal-background').hide()
       $('#throbber-foreground').hide()
       callback()
 
@@ -108,31 +108,31 @@ define (require) ->
       maskHeight = $(window).height()
       maskWidth = $(window).width()
       dialogTop = 30
-      dialogLeft = maskWidth / 2 - $('#dialog-box').width() / 2
-      $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show()
-      $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show()
+      dialogLeft = maskWidth / 2 - $('.need-video').width() / 2
+      $('.modal-background').css({height:maskHeight, width:maskWidth}).show()
+      $('.need-video').css({top:dialogTop, left:dialogLeft}).show()
 
     $ ->
       $('a.button.close-button').click ->
-        $('#dialog-overlay, #dialog-box').hide()
+        $('.modal-background, .need-video').hide()
         false
        
       # if user resize the window, call the same function again
-      # to make sure the overlay fills the screen and
+      # to make sure the modal-background fills the screen and
       # dialogbox aligned to center
       $(window).resize ->
         # only do it if the dialog box is not hidden
-        if (!$('#dialog-box').is(':hidden'))
+        if (!$('.need-video').is(':hidden'))
           show_popup()
     show_popup()
  
-    if $('#youtube-search-is-loading').length
+    if $('.youtube-search-is-loading').length
       song_name = $('#song_name').text()
       artist_name = $('#artist_name').text()
       promise = $.ajax
         url: "/youtube-search/#{song_name}+#{artist_name}?no_layout=true"
       promise.done (data, text_status, jqxhr) ->
-        $('#youtube-search-is-loading').replaceWith data
+        $('.youtube-search-is-loading').replaceWith data
 
   setupFromRequestParams: ->
     params = getRequestParams()

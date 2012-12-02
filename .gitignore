@@ -16,3 +16,5 @@ backend/youtube_downloads/*.wav
 config/rubber/instance-production.yml
 
 backend/scraped
+
+backend/.sass-cache
