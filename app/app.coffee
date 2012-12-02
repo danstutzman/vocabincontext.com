@@ -107,13 +107,13 @@ define (require) ->
       maskHeight = $(window).height()
       maskWidth = $(window).width()
       dialogTop = 30
-      dialogLeft = maskWidth / 2 - $('#dialog-box').width() / 2
+      dialogLeft = maskWidth / 2 - $('.need-video').width() / 2
       $('.modal-background').css({height:maskHeight, width:maskWidth}).show()
-      $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show()
+      $('.need-video').css({top:dialogTop, left:dialogLeft}).show()
 
     $ ->
       $('a.button.close-button').click ->
-        $('.modal-background, #dialog-box').hide()
+        $('.modal-background, .need-video').hide()
         false
        
       # if user resize the window, call the same function again
@@ -121,7 +121,7 @@ define (require) ->
       # dialogbox aligned to center
       $(window).resize ->
         # only do it if the dialog box is not hidden
-        if (!$('#dialog-box').is(':hidden'))
+        if (!$('.need-video').is(':hidden'))
           show_popup()
     show_popup()
  
