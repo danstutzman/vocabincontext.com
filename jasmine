@@ -4,7 +4,7 @@ cd `dirname $0`
 SOUND_MANAGER=fakeSoundManager
 #SOUND_MANAGER=realSoundManager
 PARAMS="soundManager=$SOUND_MANAGER"
-BROWSER_URL="http://localhost:8888/www/TestRunner.html?$PARAMS"
+BROWSER_URL="http://localhost:9393/TestRunner?$PARAMS"
 
 BROWSER=/usr/bin/google-chrome # location for Linux
 if [ -e "$BROWSER" ]; then
