@@ -35,6 +35,7 @@ For Ubuntu 10.04 LTS:
   sudo apt-get install libxslt-dev libxml2-dev
 - Install postgres locally with:
   sudo apt-get install postgresql
+- sudo apt-get install ffmpeg sox lame
 - Start the backend server with:
   - cd backend
   - bundle exec shotgun
