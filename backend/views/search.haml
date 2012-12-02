@@ -27,7 +27,7 @@
       %tr
         %td.action
           - if excerpt[:alignment]
-            %a{ :href => "/split_mp3s/#{excerpt[:youtube_video_id]}.#{excerpt[:alignment].start_centis}.#{excerpt[:alignment].finish_centis}.mp3", :target => '_blank' }
+            %a{ :href => sprintf("/split_mp3s/%s.%05d.%05d.mp3", excerpt[:youtube_video_id], excerpt[:alignment].start_centis, excerpt[:alignment].finish_centis), :target => '_blank' }
               %button Play
           - else
             %button Label

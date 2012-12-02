@@ -96,8 +96,8 @@ if task
         [(alignment.start_centis - 100) / 100.0, 0.0].max)
       duration_seconds = sprintf('%.2f',
         (alignment.finish_centis - alignment.start_centis + 200) / 100.0)
-      output_filename = [video_id, alignment.start_centis.to_s,
-                         alignment.finish_centis.to_s, 'mp3'].join('.')
+      output_filename = sprintf("%s.%05d.%05d.mp3",
+        video_id, alignment.start_centis.to_s, alignment.finish_centis.to_s)
       command_line = "backend/excerpt_clip.sh "
       command_line += "#{video_id} "
       command_line += "#{start_seconds} "
