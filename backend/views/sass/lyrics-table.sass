@@ -1,3 +1,5 @@
+@import compass/css3/images
+
 $glow0: #ffff44
 $glow1: #ffff55
 $glow2: #ffff66
@@ -27,7 +29,7 @@ $lyrics-spacing: 3px
   td.start-centis
     background-color: #eee
     border-top: $lyrics-spacing #eee solid
-    background: -webkit-linear-gradient(top, #eee, #ddd)
+    @include background(linear-gradient(top, #eee, #ddd))
   
     > input
       border: transparent
@@ -40,7 +42,7 @@ $lyrics-spacing: 3px
   td.finish-centis
     background-color: #eee
     border-top: $lyrics-spacing #eee solid
-    background: -webkit-linear-gradient(top, #eee, #ddd)
+    @include background(linear-gradient(top, #eee, #ddd))
   
     > input
       border: transparent
