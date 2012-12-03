@@ -3,6 +3,7 @@
   %h2
     by
     %span#artist_name= @song.artist_name
+  #youtube-video-id(display:none)= @song.youtube_video_id
 
   - if @song.youtube_video_id.nil?
     != haml '_need-video'.intern
@@ -15,10 +16,6 @@
       = @song.youtube_video_id
       %button(name='remove_youtube_video' value='true') Remove
 
-      %p(id="content-container")
-        #ytapiplayer{ :'data-video-id' => @song.youtube_video_id }
-          You need Flash player 8+ and JavaScript enabled to view this video.
-
   %h3 Keyboard commands
   %ul
     %li [Space] to start or stop the video
@@ -29,12 +26,7 @@
     %li Shift-S to correct last start time
     %li Shift-F to correct last finish time
 
-  %button#play-button Play
-  #progress-outer
-    #progress-total-time
-    #progress-bar
-    #progress-loaded-bar
-    #progress-bar-caption
+  .youtube-player
   %br
 
   %table(id='js-lyrics-table')

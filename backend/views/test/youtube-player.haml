@@ -1,0 +1,8 @@
+.youtube-player
+:coffeescript
+  require ['jquery', 'cs!app/FakeYouTubeSound', 'cs!app/YouTubePlayer'], \
+      ($, FakeYouTubeSound, YouTubePlayer) ->
+    sound = new FakeYouTubeSound()
+    player = new YouTubePlayer(sound)
+    player.init $('.youtube-player')
+    sound.init()

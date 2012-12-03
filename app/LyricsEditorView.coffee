@@ -1,18 +1,7 @@
 define (require) ->
-  $ = require('jquery')
-  Utility = require('cs!app/Utility')
+  $                 = require('jquery')
+  Utility           = require('cs!app/Utility')
   LyricsEditorModel = require('cs!app/LyricsEditorModel')
-
-  objectToXY = (object) ->
-    if object.offsetParent
-      x = 0
-      y = 0
-      parent = object
-      while parent
-        x += parent.offsetLeft
-        y += parent.offsetTop
-        parent = parent.offsetParent
-      { x:x, y:y, w:object.offsetWidth, h:object.offsetHeight }
 
   class LyricsEditorView
     @LOWER_E_KEY: 101
@@ -29,8 +18,8 @@ define (require) ->
     @FINISH_CENTIS_COL = 2
     @NUM_COLS = 3
 
-    constructor: (player) ->
-      @_player = player
+    constructor: (sound) ->
+      @_sound = sound
       @_model = null
 
     _readRowsOffDom: ->
@@ -90,35 +79,44 @@ define (require) ->
 
       @_redrawHighlight()
 
+      pulsationCounter = 0
+      pulsate = ->
+        $('tr.selectedRow').removeClass "stage#{pulsationCounter}"
+        $('tr.selectedRowTop').removeClass "stage#{pulsationCounter}"
+        pulsationCounter = (pulsationCounter + 1) % 4
+        $('tr.selectedRow').addClass "stage#{pulsationCounter}"
+        $('tr.selectedRowTop').addClass "stage#{pulsationCounter}"
+      window.setInterval pulsate, 200
+
       $(document).keypress (event) =>
         switch event.which
           when @constructor.LOWER_E_KEY # Up (mnemonic: [E]arlier)
             @_model.moveHighlight -1
             if @_model.highlightedRow().start_centis
-              @_player.seekTo @_model.highlightedRow().start_centis, false
+              @_sound.seekTo @_model.highlightedRow().start_centis, false
 
           when @constructor.LOWER_D_KEY # [D]own
             @_model.moveHighlight 1
             if @_model.highlightedRow()?.start_centis
-              @_player.seekTo @_model.highlightedRow().start_centis, false
+              @_sound.seekTo @_model.highlightedRow().start_centis, false
 
           when @constructor.LOWER_S_KEY # this line [S]tarted
-            @_model.labelStartCentis @_player.getPosition()
+            @_model.labelStartCentis @_sound.getPosition()
 
           when @constructor.UPPER_S_KEY
-            @_model.correctStartCentis @_player.getPosition()
+            @_model.correctStartCentis @_sound.getPosition()
 
           when @constructor.LOWER_F_KEY # this line [F]inished
-            @_model.labelFinishCentis @_player.getPosition()
+            @_model.labelFinishCentis @_sound.getPosition()
 
           when @constructor.UPPER_F_KEY
-            @_model.correctFinishCentis @_player.getPosition()
+            @_model.correctFinishCentis @_sound.getPosition()
 
       # keypress doesn't work for space bar
       $(document).keyup (event) =>
         switch event.which
-          when @constructor.SPACE_KEY # start/stop player
-            @_player.toggleIsPlaying()
+          when @constructor.SPACE_KEY # start/stop sound
+            @_sound.toggleIsPlaying()
 
       # in order to prevent default behavior, we have to catch the keydown
       # not just the keyup
@@ -135,7 +133,7 @@ define (require) ->
     _scrollToShowHighlight: ->
       tr = @_highlightedRow()
       if tr.length > 0
-        {x, y, w, h} = objectToXY(tr[0])
+        {x, y, w, h} = Utility.objectToXY(tr[0])
 
         scrollTop = window.pageYOffset
         if y < scrollTop

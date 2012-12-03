@@ -1,7 +1,0 @@
-- require 'base64'
-.modal-background(style='display:block')
-%div(id='throbber-foreground')
-  Loading...
-  %br
-  %br
-  %img{:id => 'animated-throbber', :src => "data:image/gif;base64,#{Base64.encode64(File.read(File.expand_path('../../public/images/loading-animated.gif', __FILE__)))}"}

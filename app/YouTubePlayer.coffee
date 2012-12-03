@@ -1,62 +1,23 @@
 define (require) ->
-  swfobject = require('swfobject')
-  EventTarget = require('cs!app/EventTarget')
+  $            = require('jquery')
+  ProgressBar  = require('cs!app/ProgressBar')
 
-  class YouTubePlayer extends EventTarget
-    @IS_PLAYING = 1
+  class YouTubePlayer
+    constructor: (sound) ->
+      @_sound = sound
+      @_progress = new ProgressBar(@_sound)
 
-    constructor: ->
-      super()
-      @player = null
+    init: ($player) ->
+      @$player = $player
+      @$player.append "
+        <button class='play-button clickable'>Play</button>
+        <div class='progress-bar'></div>
+        "
+      @$playButton  = @$player.children('.play-button')
+      @$progressBar = @$player.children('.progress-bar')
 
-    init: (parentId, playerId, videoId) ->
-      window.onYouTubePlayerReady = =>
-        console.log 'ready'
-        ytplayer = document.getElementById(playerId)
-        @player = ytplayer
-        ytplayer.addEventListener 'onStateChange', 'onytplayerStateChange'
+      @$playButton.click =>
+        @_sound.toggleIsPlaying()
+        false
 
-        updateProgress = =>
-          if @player
-            @fire 'updateProgress'
-        window.setInterval updateProgress, 1000
-
-      window.onytplayerStateChange = (newState) =>
-        try
-          @fire { name: 'stateChange', state: newState }
-        catch error
-          console.error error
-
-      params = { allowScriptAccess: 'always' }
-      atts = { id: playerId }
-      url = "http://www.youtube.com/v/#{videoId}?enablejsapi=1&version=3"
-      swfobject.embedSWF url, parentId, '425', '356', '8',
-        null, null, params, atts
-
-    getPosition: ->
-      if @player && @player.getPlayerState() == @constructor.IS_PLAYING
-        Math.round(@player.getCurrentTime() * 100)
-      else
-        null
-
-    getDuration: ->
-      @player && Math.round(@player.getDuration() * 100)
-
-    getVideoLoadedFraction: ->
-      @player && @player.getVideoLoadedFraction()
-
-    toggleIsPlaying: ->
-      if @player
-        if @player.getPlayerState() == @constructor.IS_PLAYING
-          @player.pauseVideo()
-        else
-          @player.playVideo()
-
-    getCurrentTogglePlayingVerb: ->
-      if @player && @player.getPlayerState() == @constructor.IS_PLAYING
-        'Pause'
-      else
-        'Play'
-
-    seekTo: (positionInCentis, allowSeekAhead) ->
-      @player.seekTo positionInCentis / 100, allowSeekAhead
+      @_progress.init @$progressBar, @$playButton

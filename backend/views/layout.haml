@@ -18,11 +18,9 @@
 
   %body
     %div.scrollbar-measure
+    .modal-background
 
     != yield
-
-    - if request.path != '/'
-      != haml :_loading
 
     - if ENV['ENV'] == 'production' && request.path != '/'
       %script window.SM2_DEFER = true;
