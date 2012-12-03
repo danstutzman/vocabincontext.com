@@ -1,4 +1,5 @@
 define (require) ->
+  $                = require('jquery')
   LyricsEditorView = require('cs!app/LyricsEditorView')
 
   class FakePlayer
