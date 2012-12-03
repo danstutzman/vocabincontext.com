@@ -1,42 +1,31 @@
 %link(href="/css/jasmine.css" rel="stylesheet" type="text/css")
 
-%table(id='js-lyrics-table' border='1')
+%table(id='js-lyrics-table')
   %tr
     %th Start time
     %th Lyrics line
     %th Finish time
-%ul(id='words')
-%ul(id='lyrics')
 
 %script(src="/js/jasmine.js")
 %script(src="/js/jasmine-html.js")
 %script(src="/js/phantom-jasmine-console-runner.js")
 %script(src="/js/jscover_report.js")
 
-:javascript
-  var console_reporter = undefined; // global for console runner
-  require(["jquery", "cs!spec/LyricsEditorModelSpec",
-                     "cs!spec/LyricsEditorViewSpec"], function($) {
-    $(function() {
-      $('#throbber-background').hide();
-      $('#throbber-foreground').hide();
-
-      jasmine.getEnv().updateInterval = 1000;
-      var htmlReporter = new jasmine.HtmlReporter();
-      jasmine.getEnv().addReporter(htmlReporter);
-      jasmine.getEnv().specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-      console_reporter = new jasmine.ConsoleReporter();
-      jasmine.getEnv().addReporter(console_reporter);
-      if (typeof(top._$jscoverage) !== 'undefined') {
-        jasmine.getEnv().addReporter({
-          reportRunnerResults: function() {
-            var report = run_jscover_report();
-            jQuery('body').append(report);
-          }
-        });
-      }
-      jasmine.getEnv().execute();
-    });
-  });
+:coffeescript
+  console_reporter = undefined # global for console runner
+  require ["jquery", "cs!spec/LyricsEditorModelSpec",
+                     "cs!spec/LyricsEditorViewSpec"], ($) ->
+    $ ->
+      jasmine.getEnv().updateInterval = 1000
+      htmlReporter = new jasmine.HtmlReporter()
+      jasmine.getEnv().addReporter(htmlReporter)
+      jasmine.getEnv().specFilter = (spec) ->
+        return htmlReporter.specFilter(spec)
+      console_reporter = new jasmine.ConsoleReporter()
+      jasmine.getEnv().addReporter(console_reporter)
+      if typeof(top._$jscoverage) != 'undefined'
+        jasmine.getEnv().addReporter
+          reportRunnerResults: ->
+            report = run_jscover_report()
+            $('body').append(report)
+      jasmine.getEnv().execute()

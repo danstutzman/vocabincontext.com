@@ -6,15 +6,14 @@
 
     - if ENV['ENV'] != 'production' && request.path != '/'
       %script(src="/js/require.js")
-      :javascript
-        window.SM2_DEFER = true;
-        require.config({
-          baseUrl: "/js",
-          waitSeconds: 5,
-          shim: {
-            'swfobject': { exports: 'swfobject' }
-          }
-        });
+      :coffeescript
+        window.SM2_DEFER = true
+        require.config
+          baseUrl: '/js'
+          waitSeconds: 5
+          shim:
+            swfobject:
+              exports: 'swfobject'
 
   %body
     %div.scrollbar-measure
@@ -29,48 +28,42 @@
       %script(src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js")
 
     - if request.path == '/'
-      :javascript
-        function onload() {
-          // give focus to query-input field
-          var input = document.getElementsByTagName('input')[0];
-          if (input) {
-            input.focus();
-          }
+      :coffeescript
+        onload = ->
+          # give focus to query-input field
+          input = document.getElementsByTagName('input')[0]
+          input.focus() if input
 
-          // Preload JavaScript
-          window.SM2_DEFER = true; // don't request SoundManager2 SWF yet
-          var urls = [
+          # Preload JavaScript
+          window.SM2_DEFER = true # don't request SoundManager2 SWF yet
+          urls = [
             '/js/main-compiled.js',
             '//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
             '//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-          ];
-          for (var i = 0; i < urls.length; i++) {
-            var script = document.createElement('script');
-            script.src = urls[i];
-            document.body.appendChild(script);
-          }
+          ]
+          for url in urls
+            script = document.createElement('script')
+            script.src = url
+            document.body.appendChild(script)
 
-          // Preload SoundManager2 SWF
-          var obj = document.createElement('object');
-          obj.type = 'application/x-shockwave-flash';
-          obj.name = 'plugin';
-          obj.data = '/swf/soundmanager2_flash9.swf';
-          obj.width = 1;
-          obj.height = 1;
-          document.body.appendChild(obj);
-        }
+          # Preload SoundManager2 SWF
+          obj = document.createElement('object')
+          obj.type = 'application/x-shockwave-flash'
+          obj.name = 'plugin'
+          obj.data = '/swf/soundmanager2_flash9.swf'
+          obj.width = 1
+          obj.height = 1
+          document.body.appendChild(obj)
 
-        // Set onload
-        if (window.addEventListener) {
-          window.addEventListener('load', onload, false);
-        } else if (window.attachEvent) {
-          window.attachEvent('onload', onload);
-        } else {
-          window.onload = onload;
-        }
+        # Set onload
+        if window.addEventListener
+          window.addEventListener 'load', onload, false
+        else if window.attachEvent
+          window.attachEvent 'onload', onload
+        else
+          window.onload = onload
+
     - else
-      :javascript
-        require(["main", "jquery", "cs!app/app"], function(main, jquery, app) {
-          jquery.noConflict(); // remove $ global
-          app.setupFromRequestParams();
-        });
+      :coffeescript
+        require ["cs!app/app"], (app) ->
+          app.setupFromRequestParams()
