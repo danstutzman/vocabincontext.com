@@ -10,4 +10,5 @@ else
 fi
 
 cd backend
-ENV="$ENV" bundle exec rerun -- rackup --port 9393 config.ru
+#ENV="$ENV" bundle exec rerun -- rackup --port 9393 config.ru
+ENV="$ENV" bundle exec rackup --port 9393 config.ru
