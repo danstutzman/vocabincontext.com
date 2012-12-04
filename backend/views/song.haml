@@ -1,35 +1,32 @@
 %form{ :method => 'post' }
-  %h1#song_name= @song.song_name
-  %h2
+  %h1
+    %span#song_name= @song.song_name
     by
     %span#artist_name= @song.artist_name
-  #youtube-video-id(display:none)= @song.youtube_video_id
+  #youtube-video-id(style='display:none')= @song.youtube_video_id
 
   - if @song.youtube_video_id.nil?
     != haml '_need-video'.intern
   - else
     != haml '_need-alignments'.intern
 
-  %input#save-button(type='submit' name='submit') Save
-
-  %div(style='border:1px black solid;float:right')
+  %div(style='float:right')
     - if @song.youtube_video_id
       Youtube Video Id is
       = @song.youtube_video_id
       %button(name='remove_youtube_video' value='true') Remove
+    .youtube-player
 
-  %h3 Keyboard commands
-  %ul
-    %li [Space] to start or stop the video
-    %li Line [S]tarted
-    %li Line [F]inished
-    %li Go [D]own
-    %li Go up ([E]arlier)
-    %li Shift-S to correct last start time
-    %li Shift-F to correct last finish time
-
-  .youtube-player
-  %br
+    %hr
+    %h3 Keyboard commands
+    %ul
+      %li Press [Space] to pause or play
+      %li Press [S] when a line starts
+      %li Press [F] when a line finishes (optional)
+      %li Press [D] to go down
+      %li Press [E] to go up (earlier)
+      %li Press [Shift]-[S] to correct a start time
+      %li Press [Shift]-[F] to correct a finish time
 
   %table(id='js-lyrics-table')
     - @lyrics_lines.each_with_index do |line, line_num|
@@ -49,3 +46,5 @@
       %td.start-centis
       %td.lyric
       %td.finish-centis
+
+  %input#save-button(type='submit' name='submit') Save

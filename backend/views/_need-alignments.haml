@@ -1,8 +1,18 @@
 .need-alignments.pop-up
   .content
-    %p
-      We need timings to know when each line is sung.
-      The music will start --
-      press [Space] when you hear the first word below.
-    .youtube-player
-    %a.button.close-button(href='#') Close
+    .step1
+      %p Now we want to cut the recording into pieces,
+      %p so people can play just the lines they want.
+      %p &nbsp;
+      %p Your job is to follow along with the words,
+      %p and press the [S] key whenever the singer
+      %p starts a new line.
+      %p &nbsp;
+      %p Press [Space] to start the music...
+    .step2(style='display:none')
+      %p Press [S] when you start to hear...
+      %p &nbsp;
+      %p(style='text-align:center')
+        %code "La cabeza en un rincon"
+    .step3(style='display:none')
+      %p Keep pressing [S] when a new line starts...
