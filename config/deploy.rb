@@ -10,7 +10,7 @@ on :load do
 end
 
 set :scm, "git"
-set :repository, "git@github.com:danielstutzman/mp3_player.git"
+set :repository, "git@github.com:danielstutzman/vocabincontext.com.git"
 set :branch, "master"
 
 # keep git repo locally and only fetch changes since last deploy
