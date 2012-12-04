@@ -12,15 +12,27 @@ define (require) ->
       super()
       @_swf = null
       @_video_id = video_id
+      @predownloading = true
+      @playAsap = false
 
     init: ->
       window.onYouTubePlayerReady = =>
         console.log 'ready'
         @_swf = document.getElementById(@constructor.SWF_ID)
         @_swf.addEventListener 'onStateChange', 'onytplayerStateChange'
+        if @predownloading
+          @_swf.mute()
+          @_swf.playVideo() # start downloading it by playing it muted
+        else if @playAsap
+          @_swf.playVideo()
 
         updateProgress = =>
           if @_swf
+            if @predownloading && @_swf.getCurrentTime() >= 1.0
+              @predownloading = false
+              @_swf.unMute()
+              @_swf.pauseVideo()
+              @_swf.seekTo 0.0, true
             @fire 'updateProgress'
         window.setInterval updateProgress, 1000
 
@@ -56,6 +68,18 @@ define (require) ->
 
     getVideoLoadedFraction: ->
       @_swf && @_swf.getVideoLoadedFraction()
+
+    startPlayingImmediately: ->
+      if @predownloading
+        @predownloading = false
+        if @_swf
+          @_swf.seekTo 0.0, true
+          @_swf.unMute()
+
+      if @_swf
+        @_swf.playVideo()
+      else
+        @playAsap = true
 
     toggleIsPlaying: ->
       if @_swf

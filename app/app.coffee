@@ -1,13 +1,14 @@
 define (require) ->
-  $                = require('jquery')
-  fakeSoundManager = require('cs!app/fakeSoundManager')
-  realSoundManager = require('cs!app/soundManager')
-  LyricsEditorView = require('cs!app/LyricsEditorView')
-  YouTubeSound     = require('cs!app/YouTubeSound')
-  YouTubePlayer    = require('cs!app/YouTubePlayer')
-  ProgressBar      = require('cs!app/ProgressBar')
-  Utility          = require('cs!app/Utility')
-  NeedVideoPopUp   = require('cs!app/NeedVideoPopup')
+  $                   = require('jquery')
+  fakeSoundManager    = require('cs!app/fakeSoundManager')
+  realSoundManager    = require('cs!app/soundManager')
+  LyricsEditorView    = require('cs!app/LyricsEditorView')
+  YouTubeSound        = require('cs!app/YouTubeSound')
+  YouTubePlayer       = require('cs!app/YouTubePlayer')
+  ProgressBar         = require('cs!app/ProgressBar')
+  Utility             = require('cs!app/Utility')
+  NeedVideoPopUp      = require('cs!app/NeedVideoPopup')
+  NeedAlignmentsPopUp = require('cs!app/NeedAlignmentsPopup')
 
   setup = (soundManager, callback) ->
     if $('#js-lyrics-table').length > 0
@@ -21,6 +22,10 @@ define (require) ->
 
         table = new LyricsEditorView(sound)
         table.initFromDom()
+
+        if $('.need-alignments').length
+          pop_up = new NeedAlignmentsPopUp(sound)
+          pop_up.init $('.need-alignments'), $('.modal-background')
 
     if $('.need-video').length
       pop_up = new NeedVideoPopUp()
