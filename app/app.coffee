@@ -7,8 +7,8 @@ define (require) ->
   YouTubePlayer       = require('cs!app/YouTubePlayer')
   ProgressBar         = require('cs!app/ProgressBar')
   Utility             = require('cs!app/Utility')
-  NeedVideoPopUp      = require('cs!app/NeedVideoPopup')
-  NeedAlignmentsPopUp = require('cs!app/NeedAlignmentsPopup')
+  NeedVideoPopUp      = require('cs!app/NeedVideoPopUp')
+  NeedAlignmentsPopUp = require('cs!app/NeedAlignmentsPopUp')
 
   setup = (soundManager, callback) ->
     if $('#js-lyrics-table').length > 0
