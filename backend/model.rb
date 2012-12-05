@@ -48,6 +48,7 @@ class Alignment
   property :line_num,      Integer, :required => true
   property :start_centis,  Integer, :required => true
   property :finish_centis, Integer, :required => true
+  property :location,      String,  :length => 2
 
   belongs_to :song
 end

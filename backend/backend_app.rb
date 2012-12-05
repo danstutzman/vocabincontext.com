@@ -8,6 +8,7 @@ require 'youtube_it'
 require 'sass'
 require 'coffee-filter'
 require 'compass'
+require 'socket'
 
 class BackendApp < Sinatra::Base
   if ENV['ENV'] == 'production'
@@ -141,35 +142,47 @@ class BackendApp < Sinatra::Base
       @song.save rescue raise @song.errors.inspect
     end
 
-    alignments = []
     num_lines = @song.lyrics.split("\n").size
-    Alignment.all(:song_id => song_id).destroy!
     [num_lines, 500].min.times do |line_num| # limit to 500 to avoid DOS attack
-      alignment = Alignment.new({
-        :song_id => song_id,
-        :line_num => line_num,
-        :start_centis => param_value_to_centis(params['s'][line_num]),
-        :finish_centis => param_value_to_centis(params['f'][line_num]),
-      })
-      if alignment.start_centis && alignment.finish_centis
-        alignment.save rescue raise alignment.errors.inspect
-        alignments.push alignment
-      end
-    end
-
-    existing_tasks = Task.all({ :action => 'split_mp4', :song_id => song_id })
-    alignments.each do |alignment|
-      existing = existing_tasks.find do |task|
-        task.alignment_id == alignment.id
-      end
-      unless existing
-        task = Task.new({
-          :action => 'split_mp4',
+      start_centis = param_value_to_centis(params['s'][line_num])
+      finish_centis = param_value_to_centis(params['f'][line_num])
+      if start_centis && finish_centis
+        existing_alignment = Alignment.first({
           :song_id => song_id,
-          :alignment_id => alignment.id,
-          :created_at => DateTime.now,
+          :line_num => line_num
         })
-        task.save rescue raise task.errors.inspect
+        if existing_alignment
+          if existing_alignment.start_centis != start_centis ||
+             existing_alignment.finish_centis != finish_centis
+            existing_alignment.start_centis = start_centis
+            existing_alignment.finish_centis = finish_centis
+            existing_alignment.save rescue raise alignment.errors.inspect
+
+            task = Task.new({
+              :action => 'split_mp4',
+              :song_id => song_id,
+              :alignment_id => existing_alignment.id,
+              :created_at => DateTime.now,
+            })
+            task.save rescue raise task.errors.inspect
+          end
+        else
+          alignment = Alignment.create({
+            :song_id => song_id,
+            :line_num => line_num,
+            :start_centis => start_centis,
+            :finish_centis => finish_centis,
+          })
+          alignment.save rescue raise alignment.errors.inspect
+
+          task = Task.new({
+            :action => 'split_mp4',
+            :song_id => song_id,
+            :alignment_id => alignment.id,
+            :created_at => DateTime.now,
+          })
+          task.save rescue raise task.errors.inspect
+        end
       end
     end
 
@@ -180,6 +193,14 @@ class BackendApp < Sinatra::Base
         :created_at => DateTime.now,
       })
       task.save rescue raise task.errors.inspect
+    end
+
+    begin
+      socket = UNIXSocket.new("/tmp/wake_up_vocabincontext_task_runner")
+      socket.write "wake_up\n"
+      socket.close
+    rescue Errno::ENOENT => e
+      p e
     end
 
     redirect "/song/#{song_id}"
