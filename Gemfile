@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem "haml"
 
-gem "sinatra"
+gem 'sinatra', :git => 'git://github.com/sinatra/sinatra.git'
 gem "rerun"
 gem 'rb-fsevent', '~> 0.9.1'
 
