@@ -45,6 +45,16 @@ namespace :ferret_index do
     run "ln -nfs #{shared_path}/ferret_index #{release_path}/backend/ferret_index"
   end
   after "deploy:finalize_update", "ferret_index:symlink"
+
+  desc 'Overwrite existing remote ferret_index with copy of local index'
+  task :overwrite, :except => { :no_release => true } do
+    run "#{try_sudo} rm -rf #{shared_path}/ferret_index_uploaded #{shared_path}/ferret_index_old"
+    upload 'backend/ferret_index', "#{shared_path}/ferret_index_uploaded",
+      :via => :sftp, :recursive => true
+    chown_to = "#{rubber_env.app_user}:#{rubber_env.app_user}"
+    run "#{try_sudo} chown -R #{chown_to} #{shared_path}/ferret_index_uploaded"
+    run "#{try_sudo} mv #{shared_path}/ferret_index #{shared_path}/ferret_index_old && #{try_sudo} mv #{shared_path}/ferret_index_uploaded #{shared_path}/ferret_index"
+  end
 end
 
 namespace :youtube_downloads do
