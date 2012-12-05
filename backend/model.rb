@@ -11,8 +11,8 @@ if ENV['ENV'] == 'production'
   DataMapper.setup :default, {
     :adapter  => 'postgres',
     :host     => 'localhost',
-    :database => 'your_app_name_production',
-    :user     => 'your_app_name',
+    :database => 'vic_production',
+    :user     => 'vic',
   }
 else
   db_path = File.expand_path('../db.sqlite3', __FILE__)
