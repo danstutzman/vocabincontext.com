@@ -17,16 +17,36 @@
       %button(name='remove_youtube_video' value='true') Remove
     .youtube-player
 
-    %hr
-    %h3 Keyboard commands
-    %ul
-      %li Press [Space] to pause or play
-      %li Press [S] when a line starts
-      %li Press [F] when a line finishes (optional)
-      %li Press [D] to go down
-      %li Press [E] to go up (earlier)
-      %li Press [Shift]-[S] to correct a start time
-      %li Press [Shift]-[F] to correct a finish time
+    .key-photos
+      .key-photo.e E
+      .key-photo.s S
+      .key-photo.d D
+      .key-photo.f F
+
+    %ul.keyboard-shortcuts
+      %li
+        %span.key-inline Space
+        to pause or play
+      %li
+        %span.key-inline S
+        when a line starts
+      %li
+        %span.key-inline F
+        when a line finishes (optional)
+      %li
+        %span.key-inline D
+        to go down
+      %li
+        %span.key E
+        to go up (earlier)
+      %li
+        %span.key Shift
+        %span.key S
+        to correct a start time
+      %li
+        %span.key Shift
+        %span.key F
+        to correct a finish time
 
   %table(id='js-lyrics-table')
     - @lyrics_lines.each_with_index do |line, line_num|

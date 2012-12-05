@@ -1,0 +1,38 @@
+$key-photo-padding-top: 17px // to get the label perfectly centered
+$key-photo-width: 50px
+
+.key-photos
+  position: relative
+  width: $key-photo-width * 3
+  height: $key-photo-width * 2
+
+.key-photo
+  background-image: url('/images/key_closeup-100x100.jpg')
+  background-size: $key-photo-width $key-photo-width
+  width: $key-photo-width
+  height: $key-photo-width - $key-photo-padding-top
+  text-align: center
+  padding-top: $key-photo-padding-top
+  position: absolute
+
+  &.e
+    top: 0
+    left: $key-photo-width * 1
+  &.s
+    top: $key-photo-width * 1
+    left: $key-photo-width * 0
+  &.d
+    top: $key-photo-width * 1
+    left: $key-photo-width * 1
+  &.f
+    top: $key-photo-width * 1
+    left: $key-photo-width * 2
+
+.key-inline
+  padding: 0 5px
+  border: #999 1px solid
+  border-top: #ccc 1px solid
+  border-bottom: #777 1px solid
+
+.keyboard-shortcuts li
+  padding: 4px
