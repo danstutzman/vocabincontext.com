@@ -1,6 +1,9 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require 'data_mapper'
-require './analyzer'
-require './airbrake'
+require File.join(File.dirname(__FILE__), './analyzer')
+require File.join(File.dirname(__FILE__), './airbrake')
 
 ROOT_DIR = File.expand_path('../../', __FILE__)
 FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')

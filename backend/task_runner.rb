@@ -1,9 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9'
-require './model'
+require 'rubygems'
+require 'bundler/setup'
 require 'open3'
 require 'json'
-require './ferret_search'
-require 'listen'
+require 'socket'
+require 'daemons'
+require 'logger'
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 STDOUT.sync = true
@@ -15,8 +17,8 @@ def centis_to_msh(centis) # msh = minutes.seconds.hundredths
   sprintf('%02d.%02d.%02d', minutes, seconds, hundredths)
 end
 
-def execute_command(command_line, task)
-  p command_line
+def execute_command(command_line, task, log)
+  log.info "command line: #{command_line}"
 
   all_stdout, all_stderr, exit_status = '', '', nil
   Open3.popen3(command_line) do |stdin, stdout, stderr, wait_thr|
@@ -49,16 +51,16 @@ def execute_command(command_line, task)
     end
 
     if timeout
-      puts 'Timeout!'
+      log.info 'Timeout!'
       all_stderr += "\n(Killing because of timeout)\n"
       Process.kill "KILL", wait_thr.pid
     else
       new_stdout = stdout.read
-      puts "STDOUT #{new_stdout}"
+      log.info "STDOUT #{new_stdout}"
       all_stdout += new_stdout
 
       new_stderr = stderr.read
-      puts "STDERR #{new_stderr}"
+      log.info "STDERR #{new_stderr}"
       all_stderr += new_stderr
     end
 
@@ -70,18 +72,18 @@ def execute_command(command_line, task)
   task.exit_status = exit_status
 end
 
-def run_any_existing_tasks
-  puts "Looking for tasks..."
+def run_any_existing_tasks(log)
+  log.info "Looking for tasks..."
   task = Task.first({
     :action => %w[download_mp4 split_mp4 update_index],
     :started_at => nil,
     :order => [:id]
   })
   if task
-    p task
+    log.info "Found #{task.inspect}"
   else
-    puts "Found none."
-    return
+    log.info "Found none."
+    return false
   end
 
   task.started_at = DateTime.now
@@ -91,7 +93,7 @@ def run_any_existing_tasks
     video_id = task.song.youtube_video_id
     if video_id.match(/^[a-zA-Z0-9_-]{11}$/)
       command_line = "cd #{ROOT_DIR} && backend/youtube_to_mp4.sh #{video_id}"
-      execute_command command_line, task
+      execute_command command_line, task, log
     else
       task.stderr = "youtube_video_id fails regex check: #{video_id}"
       task.exit_status = -1
@@ -113,7 +115,7 @@ def run_any_existing_tasks
       command_line += "#{duration_seconds} "
       command_line += "#{output_filename} "
       command_line = "cd #{ROOT_DIR} && #{command_line}"
-      execute_command command_line, task
+      execute_command command_line, task, log
 
       alignment.location = 'fs'
       alignment.save rescue raise alignment.errors.inspect
@@ -128,16 +130,42 @@ def run_any_existing_tasks
 
   if task.exit_status == 0
     task.destroy
-    p "Task completed successfully"
+    log.info "Task completed successfully"
   else
     task.completed_at = DateTime.now
     task.save rescue raise task.errors.inspect
-    p task
   end
+  true
 end
 
-run_any_existing_tasks
-Listen.to("#{ROOT_DIR}/backend/youtube_downloads",
-    :filter => /wake_up_task_runner/) do |modified, added, removed|
-  run_any_existing_tasks
+BACKEND_DIR = File.expand_path('../', __FILE__)
+Daemons.run_proc('task_runner', {
+    :app_name => 'task_runner',
+    :dir_mode => :normal,
+    :dir => "#{BACKEND_DIR}/../log",
+    :backtrace => true,
+    :log_output => true,
+    }) do
+  require File.join(BACKEND_DIR, 'model')
+  require File.join(BACKEND_DIR, 'ferret_search')
+  File.open "#{BACKEND_DIR}/../log/task_runner.log", 'a' do |log_out|
+    log = Logger.new(log_out)
+    log.level = Logger::INFO
+
+    #$stdout.reopen log_out, 'a'
+    #$stderr.reopen log_out, 'a'
+    log_out.sync = true
+    #$stdout.sync = true
+    #$stderr.sync = true
+    Socket.unix_server_loop("/tmp/wake_up_vocabincontext_task_runner") do
+        |sock, client_addrinfo|
+      begin
+        while true
+          run_any_existing_tasks(log) or break
+        end
+      ensure
+        sock.close
+      end
+    end
+  end
 end

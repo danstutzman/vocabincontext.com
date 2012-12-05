@@ -16,3 +16,7 @@ backend/youtube_downloads/*.wav
 backend/scraped
 
 backend/.sass-cache
+
+log/task_runner.log
+log/task_runner.pid
+log/task_runner.output

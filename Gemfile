@@ -28,4 +28,4 @@ gem 'sass'
 gem 'coffee-filter'
 gem 'compass'
 
-gem 'listen'
+gem 'daemons'
