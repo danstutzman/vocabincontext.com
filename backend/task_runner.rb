@@ -3,6 +3,7 @@ require './model'
 require 'open3'
 require 'json'
 require './ferret_search'
+require 'listen'
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 
@@ -68,13 +69,20 @@ def execute_command(command_line, task)
   task.exit_status = exit_status
 end
 
-task = Task.first({
-  :action => %w[download_mp4 split_mp4 update_index],
-  :started_at => nil,
-  :order => [:id]
-})
-if task
-  p task
+def run_any_existing_tasks
+  puts "Looking for tasks..."
+  task = Task.first({
+    :action => %w[download_mp4 split_mp4 update_index],
+    :started_at => nil,
+    :order => [:id]
+  })
+  if task
+    p task
+  else
+    puts "Found none."
+    return
+  end
+
   task.started_at = DateTime.now
   task.save rescue raise task.errors.inspect
 
@@ -105,6 +113,9 @@ if task
       command_line += "#{output_filename} "
       command_line = "cd #{ROOT_DIR} && #{command_line}"
       execute_command command_line, task
+
+      alignment.location = 'fs'
+      alignment.save rescue raise alignment.errors.inspect
     else
       task.stderr = 'missing song or alignment for song_id or alignment_id'
       task.exit_status = -1
@@ -122,4 +133,10 @@ if task
     task.save rescue raise task.errors.inspect
     p task
   end
+end
+
+run_any_existing_tasks
+Listen.to("#{ROOT_DIR}/backend/youtube_downloads",
+    :filter => /wake_up_task_runner/) do |modified, added, removed|
+  run_any_existing_tasks
 end

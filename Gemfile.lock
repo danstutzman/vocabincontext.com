@@ -192,6 +192,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   ferret
   haml
+  listen
   open4
   pg
   rb-fsevent (~> 0.9.1)
