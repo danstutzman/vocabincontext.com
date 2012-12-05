@@ -139,13 +139,21 @@ def run_any_existing_tasks(log)
 end
 
 BACKEND_DIR = File.expand_path('../', __FILE__)
-Daemons.run_proc('task_runner', {
-    :app_name => 'task_runner',
-    :dir_mode => :normal,
-    :dir => "#{BACKEND_DIR}/../log",
-    :backtrace => true,
-    :log_output => true,
-    }) do
+
+options = {
+  :app_name => 'task_runner',
+  :dir_mode => :normal,
+  :dir => "#{BACKEND_DIR}/../log",
+  :backtrace => true,
+  :log_output => true,
+}
+
+if Process.uid == 0 # if running as root
+  options[:user] = 'app'
+  options[:group] = 'app'
+end
+
+Daemons.run_proc('task_runner', options) do
   require File.join(BACKEND_DIR, 'model')
   require File.join(BACKEND_DIR, 'ferret_search')
   File.open "#{BACKEND_DIR}/../log/task_runner.log", 'a' do |log_out|
