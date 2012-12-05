@@ -40,9 +40,9 @@
   - !ruby/object:Rubber::Configuration::RoleItem
     name: node
     options: {}
-  instance_id: i-b00bffce
+  instance_id: i-6ec93110
   image_type: m1.small
-  image_id: ami-eafa5883
+  image_id: ami-3b4ff252
   security_groups:
   - vic_production_default
   - vic_production_web
@@ -58,12 +58,12 @@
   - vic_production_nginx
   - vic_production_unicorn
   - vic_production_node
-  external_host: ec2-184-73-12-215.compute-1.amazonaws.com
-  external_ip: 184.73.12.215
-  internal_host: ip-10-4-37-95.ec2.internal
-  internal_ip: 10.4.37.95
-  zone: us-east-1b
+  external_host: ec2-23-22-132-79.compute-1.amazonaws.com
+  external_ip: 23.22.132.79
+  internal_host: ip-10-32-145-87.ec2.internal
+  internal_ip: 10.32.145.87
+  zone: us-east-1c
   platform: linux
-  root_device_type: instance-store
+  root_device_type: ebs
 - volumes: {}
   static_ips: {}
