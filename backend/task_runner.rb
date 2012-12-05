@@ -6,6 +6,7 @@ require './ferret_search'
 require 'listen'
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
+STDOUT.sync = true
 
 def centis_to_msh(centis) # msh = minutes.seconds.hundredths
   minutes = centis / 6000

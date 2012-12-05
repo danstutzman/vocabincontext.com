@@ -13,4 +13,7 @@ else
 fi
 
 cd backend
-bundle exec ruby task_runner.rb
+
+ENV=production bundle exec ruby task_runner.rb \
+   >>/mnt/vic-production/shared/log/task_runner.log \
+  2>>/mnt/vic-production/shared/log/task_runner.log
