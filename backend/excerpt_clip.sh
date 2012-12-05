@@ -40,7 +40,7 @@ sox "backend/youtube_downloads/$VIDEO_ID.wav" \
 # 64 kbps MP3 compression
 sox "backend/youtube_downloads/$OUTPUT_FILENAME.wav" \
   "backend/youtube_downloads/$OUTPUT_FILENAME.fade.wav" \
-  fade h 0:1 0 0:1
+  fade h 0:1 "$DURATION_SECONDS" 0:1
 
 rm "backend/youtube_downloads/$OUTPUT_FILENAME.wav"
 
