@@ -38,5 +38,5 @@
             =excerpt[:song_name]
 
   %hr
-  %a{ :href => "/search?query=#{params['query']}&offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
+  %a{ :href => "/?query=#{params['query']}&offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
     Next page
