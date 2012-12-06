@@ -24,13 +24,16 @@ class BackendApp < Sinatra::Base
     set :static, true
     set :public_folder, File.join(ROOT_DIR, 'backend', 'public')
 
+    database_yml = YAML::load(
+      ERB.new(File.read(File.join(ROOT_DIR, 'config', 'database.yml'))).result)
     if ENV['ENV'] == 'production'
       set :static_cache_control, [:public, :max_age => 300]
       set :sass, { :style => :compressed }
+      ActiveRecord::Base.establish_connection database_yml['production']
     else
       set :static_cache_control, [:public, :no_cache]
       set :sass, { :style => :compact }
-      set :database, "sqlite3:///#{ROOT_DIR}/backend/db.sqlite3"
+      ActiveRecord::Base.establish_connection database_yml['development']
     end
 
     Sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory

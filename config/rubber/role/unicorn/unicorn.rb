@@ -85,6 +85,6 @@ after_fork do |server, worker|
   
   # Here we are establishing the connection after forking worker
   # processes
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.establish_connection
+  #defined?(ActiveRecord::Base) and
+  #  ActiveRecord::Base.establish_connection
 end
