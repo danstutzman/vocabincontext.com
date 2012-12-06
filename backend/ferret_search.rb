@@ -48,7 +48,7 @@ module FerretSearch
       alignments_by_line_num = [nil] * lyrics.split("\n").size
       if has_alignments
         # avoid performance hit of querying the db if not needed
-        Alignment.all(:song_id => song_id).each do |alignment|
+        Alignment.where(:song_id => song_id).each do |alignment|
           alignments_by_line_num[alignment.line_num] = alignment
         end
       end
@@ -64,6 +64,7 @@ module FerretSearch
             :line             => line,
             :line_num         => line_num,
             :alignment        => alignment,
+            :has_alignments   => has_alignments,
           }
           all_excerpts << excerpt
           break if all_excerpts.size >= offset + MAX_NUM_EXCERPTS_TO_RETURN
@@ -99,7 +100,7 @@ module FerretSearch
 
   def self.update_index_from_db(song_id)
     with_ferret_index do |index|
-      song = Song.first(:id => song_id)
+      song = Song.find_by_song_id(song_id)
       metadata = {}
       metadata['song_name'] = song.song_name
       metadata['artist_name'] = song.artist_name
@@ -111,7 +112,7 @@ module FerretSearch
         :has_alignments => (song.alignments.size > 0) ? 1 : 0,
         :metadata       => JSON.dump(metadata),
       }
-      index.query_update "song_id:#{song.id}", to_update
+      index.query_update "song_id:#{song.song_id}", to_update
     end
   end
 end

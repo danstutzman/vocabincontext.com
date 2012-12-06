@@ -6,6 +6,7 @@ require 'json'
 require 'socket'
 require 'daemons'
 require 'logger'
+require File.join(File.dirname(__FILE__), './backend_app') # for db params
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 STDOUT.sync = true
@@ -74,11 +75,10 @@ end
 
 def run_any_existing_tasks(log)
   log.info "Looking for tasks..."
-  task = Task.first({
-    :action => %w[download_mp4 split_mp4 update_index],
-    :started_at => nil,
-    :order => [:id]
-  })
+  task = Task \
+    .where(:started_at => nil) \
+    .where("action in ('download_mp4', 'split_mp4', 'update_index')")
+    .order(:id).first
   if task
     log.info "Found #{task.inspect}"
   else
@@ -87,7 +87,7 @@ def run_any_existing_tasks(log)
   end
 
   task.started_at = DateTime.now
-  task.save rescue raise task.errors.inspect
+  task.save!
 
   if task.action == 'download_mp4'
     video_id = task.song.youtube_video_id
@@ -118,7 +118,7 @@ def run_any_existing_tasks(log)
       execute_command command_line, task, log
 
       alignment.location = 'fs'
-      alignment.save rescue raise alignment.errors.inspect
+      alignment.save!
     else
       task.stderr = 'missing song or alignment for song_id or alignment_id'
       task.exit_status = -1
@@ -133,7 +133,7 @@ def run_any_existing_tasks(log)
     log.info "Task completed successfully"
   else
     task.completed_at = DateTime.now
-    task.save rescue raise task.errors.inspect
+    task.save!
   end
   true
 end

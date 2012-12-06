@@ -2,6 +2,7 @@
 #
 # Rakefile needed by rubber for non-rails apps
 #
+require 'bundler/setup'
 require 'rake'
 require 'rake/testtask'
 require 'rdoc/task'
@@ -13,4 +14,5 @@ require 'rubber'
  
 Rubber::initialize(root, env)
  
-require 'rubber/tasks/rubber'
+require 'sinatra/activerecord/rake'
+require './backend/backend_app'

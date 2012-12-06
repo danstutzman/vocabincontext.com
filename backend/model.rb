@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
+require 'sinatra/activerecord'
 
-require 'data_mapper'
 require File.join(File.dirname(__FILE__), './analyzer')
 require File.join(File.dirname(__FILE__), './airbrake')
 
@@ -10,83 +10,30 @@ FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')
 
 #DataMapper::Logger.new(STDERR, :debug)
 
-if ENV['ENV'] == 'production'
-  DataMapper.setup :default, {
-    :adapter  => 'postgres',
-    :host     => 'localhost',
-    :database => 'vic_production',
-    :user     => 'vic',
-  }
-else
-  db_path = File.expand_path('../db.sqlite3', __FILE__)
-  DataMapper.setup :default, "sqlite3:#{db_path}"
+class Song < ActiveRecord::Base
+  validates :song_id,     :presence => true
+  validates :song_name,   :presence => true
+  validates :artist_id,   :presence => true
+  validates :artist_name, :presence => true
+  validates :song_name,   :presence => true
+  validates :lyrics,      :presence => true
+  has_many :alignments, :primary_key => :song_id # not songs.id
 end
 
-# set all String properties to have a default length of 255
-DataMapper::Property::String.length(255)
-
-class Song
-  include DataMapper::Resource
-
-  property :id,          Serial,   :required => true
-  property :artist_id,   Integer,  :required => true
-  property :artist_name, String,   :required => true
-  property :song_name,   String,   :required => true
-  property :lyrics,      Text,     :required => true
-  property :created_at,  DateTime, :required => true
-
-  property :youtube_video_id, String, :required => false
-
-  has n, :alignments
+class Alignment < ActiveRecord::Base
+  validates :song_id,       :presence => true
+  validates :line_num,      :presence => true
+  validates :start_centis,  :presence => true
+  validates :finish_centis, :presence => true
+  belongs_to :song, :primary_key => :song_id # not songs.id
 end
 
-class Alignment
-  include DataMapper::Resource
-
-  property :id,            Serial,  :required => true
-  property :song_id,       Integer, :required => true
-  property :line_num,      Integer, :required => true
-  property :start_centis,  Integer, :required => true
-  property :finish_centis, Integer, :required => true
-  property :location,      String,  :length => 2
-
-  belongs_to :song
-end
-
-class BestWord
-  include DataMapper::Resource
-  property :id, Serial, :required => true
-  property :word, String, :required => true
-  property :count, Integer, :required => true
-  property :created_at, DateTime, :required => true
-end
-
-class Task
-  include DataMapper::Resource
-
-  # properties that exist when task created
-  property :id, Serial, :required => true
-  property :action, String, :required => true
-  property :song_id, Integer, :required => true, :index => true
-  property :alignment_id, Integer, :required => false, :index => true
-  property :created_at, DateTime, :required => true
-
-  # properties that get filled out as task executes
-  property :command_line, String
-  property :started_at, DateTime
-  property :completed_at, DateTime
-  property :stdout, Text
-  property :stderr, Text
-  property :exit_status, Integer
-
-  belongs_to :song
+class Task < ActiveRecord::Base
+  validates :action, :presence => true
+  validates :song_id, :presence => true
+  belongs_to :song, :primary_key => :song_id # not songs.id
   belongs_to :alignment
 end
-
-DataMapper.auto_upgrade!
-DataMapper.finalize
-
-DataMapper::Model.raise_on_save_failure = true
 
 # ------------------
 

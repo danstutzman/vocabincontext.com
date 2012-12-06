@@ -1,16 +1,19 @@
 require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sinatra/base'
 require 'haml'
-require './model'
+require File.join(File.dirname(__FILE__), './model')
 require 'json'
-require './ferret_search'
+require File.join(File.dirname(__FILE__), './ferret_search')
 require 'youtube_it'
 require 'sass'
 require 'coffee-filter'
 require 'compass'
 require 'socket'
+require 'sinatra/activerecord'
 
 class BackendApp < Sinatra::Base
+  register Sinatra::ActiveRecordExtension
+
   if ENV['ENV'] == 'production'
     use Airbrake::Rack
     enable :raise_errors
@@ -27,6 +30,7 @@ class BackendApp < Sinatra::Base
     else
       set :static_cache_control, [:public, :no_cache]
       set :sass, { :style => :compact }
+      set :database, "sqlite3:///#{ROOT_DIR}/backend/db.sqlite3"
     end
 
     Sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory
@@ -53,7 +57,7 @@ class BackendApp < Sinatra::Base
   end
 
   def find_song_in_db_or_ferret(song_id)
-    song = Song.first(:id => song_id)
+    song = Song.find_by_song_id(song_id.to_i)
     if song.nil?
       doc = FerretSearch.find_song_by_id(song_id)
       return nil if doc.nil?
@@ -63,12 +67,11 @@ class BackendApp < Sinatra::Base
       artist_id = doc[:artist_id]
 
       song = Song.new({
-        :id => song_id,
+        :song_id => song_id,
         :song_name => metadata['song_name'],
         :artist_id => artist_id,
         :artist_name => metadata['artist_name'],
         :lyrics => lyrics,
-        :created_at => DateTime.now,
       })
     end
     song
@@ -126,20 +129,19 @@ class BackendApp < Sinatra::Base
     end
     if video_id && video_id != ''
       @song.youtube_video_id = video_id
-      @song.save rescue raise @song.errors.inspect
+      @song.save!
 
-      unless Task.first({ :action => 'download_mp4', :song_id => song_id })
+      unless Task.exists?({ :action => 'download_mp4', :song_id => song_id })
         task = Task.new({
           :action => 'download_mp4',
           :song_id => song_id,
-          :created_at => DateTime.now,
         })
-        task.save rescue raise task.errors.inspect
+        task.save!
       end
     end
     if params['remove_youtube_video']
       @song.youtube_video_id = nil
-      @song.save rescue raise @song.errors.inspect
+      @song.save!
     end
 
     num_lines = @song.lyrics.split("\n").size
@@ -147,52 +149,49 @@ class BackendApp < Sinatra::Base
       start_centis = param_value_to_centis(params['s'][line_num])
       finish_centis = param_value_to_centis(params['f'][line_num])
       if start_centis && finish_centis
-        existing_alignment = Alignment.first({
+        existing_alignment = Alignment.where({
           :song_id => song_id,
           :line_num => line_num
-        })
+        }).first
         if existing_alignment
           if existing_alignment.start_centis != start_centis ||
              existing_alignment.finish_centis != finish_centis
             existing_alignment.start_centis = start_centis
             existing_alignment.finish_centis = finish_centis
-            existing_alignment.save rescue raise alignment.errors.inspect
+            existing_alignment.save!
 
             task = Task.new({
               :action => 'split_mp4',
               :song_id => song_id,
               :alignment_id => existing_alignment.id,
-              :created_at => DateTime.now,
             })
-            task.save rescue raise task.errors.inspect
+            task.save!
           end
         else
-          alignment = Alignment.create({
+          alignment = Alignment.new({
             :song_id => song_id,
             :line_num => line_num,
             :start_centis => start_centis,
             :finish_centis => finish_centis,
           })
-          alignment.save rescue raise alignment.errors.inspect
+          alignment.save!
 
           task = Task.new({
             :action => 'split_mp4',
             :song_id => song_id,
             :alignment_id => alignment.id,
-            :created_at => DateTime.now,
           })
-          task.save rescue raise task.errors.inspect
+          task.save!
         end
       end
     end
 
-    unless Task.first({ :action => 'update_index', :song_id => song_id })
+    unless Task.exists?({ :action => 'update_index', :song_id => song_id })
       task = Task.new({
         :action => 'update_index',
         :song_id => song_id,
-        :created_at => DateTime.now,
       })
-      task.save rescue raise task.errors.inspect
+      task.save!
     end
 
     begin

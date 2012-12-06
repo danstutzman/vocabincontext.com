@@ -6,11 +6,10 @@ gem 'sinatra', :git => 'git://github.com/sinatra/sinatra.git'
 gem "rerun"
 gem 'rb-fsevent', '~> 0.9.1'
 
-gem 'data_mapper'
-gem 'dm-sqlite-adapter'
+gem 'activerecord', '>= 3.1'
 gem 'sqlite3'
 gem 'pg'
-gem 'dm-postgres-adapter'
+gem 'sinatra-activerecord'
 
 gem 'ferret'
 
