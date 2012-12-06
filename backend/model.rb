@@ -5,7 +5,7 @@ require 'sinatra/activerecord'
 require File.join(File.dirname(__FILE__), './analyzer')
 require File.join(File.dirname(__FILE__), './airbrake')
 
-ROOT_DIR = File.expand_path('../../', __FILE__)
+ROOT_DIR = File.expand_path('../../', __FILE__) unless defined? ROOT_DIR
 FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')
 
 #DataMapper::Logger.new(STDERR, :debug)

@@ -2,7 +2,8 @@ require './model'
 require 'json'
 require 'benchmark'
 require './ferret_search'
-require File.join(File.dirname(__FILE__), './backend_app') # for db params
+
+load File.join(File.dirname(__FILE__), 'connect_to_db.rb')
 
 query_string = ARGV[0] or raise "First argument: query params"
 offset = ARGV[1].to_i or raise "Second argument: offset"

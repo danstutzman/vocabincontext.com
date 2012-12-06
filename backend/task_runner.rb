@@ -6,7 +6,8 @@ require 'json'
 require 'socket'
 require 'daemons'
 require 'logger'
-require File.join(File.dirname(__FILE__), './backend_app') # for db params
+
+load File.join(File.dirname(__FILE__), 'connect_to_db.rb')
 
 TIMEOUT = 10 * 60 # kill process after X minutes of waiting for stdout/stderr
 STDOUT.sync = true
