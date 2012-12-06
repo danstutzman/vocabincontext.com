@@ -87,5 +87,5 @@ after_fork do |server, worker|
   # processes
   #defined?(ActiveRecord::Base) and
   #  ActiveRecord::Base.establish_connection
-  load File.join(File.dirname(__FILE__), 'connect_to_db.rb')
+  load File.join(File.dirname(__FILE__), '../backend/connect_to_db.rb')
 end
