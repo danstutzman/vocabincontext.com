@@ -1,4 +1,6 @@
 .youtube-search
+  - if @videos.size == 0
+    %p.no-videos-found No videos found.
   - @videos.each do |video|
     - thumb = video.thumbnails.find { |thumb| thumb.name == 'default' }.url
     .video

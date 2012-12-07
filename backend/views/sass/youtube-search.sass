@@ -1,33 +1,40 @@
 $thumb-width: 120px
 $thumb-height: 90px
 
-.youtube-search
-  width: $need-video-width - $need-video-margin * 2
-  height: 350px
-  overflow: scroll
-  overflow-x: hidden
+// need the indentation so earlier css rules are overridden
+.pop-up
+  .content
+    .youtube-search
+      width: $need-video-width - $need-video-margin * 2
+      height: 350px
+      overflow: scroll
+      overflow-x: hidden
 
-.video
-  clear: both
-  padding-top: 25px
+      .no-videos-found
+        margin-top: 100px
+        text-align: center
 
-  .video-thumb
-    float: left
-    padding-right: 10px
-    width: $thumb-width
-    height: $thumb-height
+    .video
+      clear: both
+      padding-top: 25px
 
-  .video-info
-    margin-left: $thumb-width + 10px
+      .video-thumb
+        float: left
+        padding-right: 10px
+        width: $thumb-width
+        height: $thumb-height
 
-  .set-youtube-video-id
-    height: 30px
-    margin-left: 10px
-    float: right
-    height: 60px
-    margin-right: 20px
+      .video-info
+        margin-left: $thumb-width + 10px
 
-  .video-title
-    font-size: 16px
-    font-weight: bold
-    margin: 0
+      .set-youtube-video-id
+        height: 30px
+        margin-left: 10px
+        float: right
+        height: 60px
+        margin-right: 20px
+
+      .video-title
+        font-size: 16px
+        font-weight: bold
+        margin: 0
