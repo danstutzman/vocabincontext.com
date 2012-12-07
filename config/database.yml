@@ -1,0 +1,14 @@
+development:
+  adapter: sqlite3
+  database: <%= ROOT_DIR %>/backend/db.sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: vic_production
+  username: vic
+  password: 
+  host: localhost
+  pool: 5
