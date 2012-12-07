@@ -15,4 +15,4 @@ require 'rubber'
 Rubber::initialize(root, env)
  
 require 'sinatra/activerecord/rake'
-require './backend/backend_app'
+load "#{root}/backend/connect_to_db.rb"
