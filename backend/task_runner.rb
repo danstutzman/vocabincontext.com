@@ -166,6 +166,11 @@ Daemons.run_proc('task_runner', options) do
     log_out.sync = true
     #$stdout.sync = true
     #$stderr.sync = true
+
+    while true
+      run_any_existing_tasks(log) or break
+    end
+
     Socket.unix_server_loop("/tmp/wake_up_vocabincontext_task_runner") do
         |sock, client_addrinfo|
       begin
