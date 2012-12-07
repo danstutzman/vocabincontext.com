@@ -39,6 +39,8 @@ def execute_command(command_line, task, log)
           puts "STDOUT #{new_stdout}"
           all_stdout += new_stdout
         rescue EOFError
+        rescue Exception => e
+          raise e.class.inspect
         end
       end
 
@@ -48,6 +50,8 @@ def execute_command(command_line, task, log)
           puts "STDERR #{new_stderr}"
           all_stderr += new_stderr
         rescue EOFError
+        rescue Exception => e
+          raise e.class.inspect
         end
       end
     end
