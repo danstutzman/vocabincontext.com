@@ -1,0 +1,2 @@
+#!/bin/sh
+RACK_ENV=development exec bundle exec irb -r ./backend/backend_app.rb
