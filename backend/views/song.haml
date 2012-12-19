@@ -7,7 +7,7 @@
 
   - if @song.youtube_video_id.nil?
     != haml '_need-video'.intern
-  - else
+  - elsif @song.alignments.size == 0
     != haml '_need-alignments'.intern
 
   %div(style='float:right')
