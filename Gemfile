@@ -29,3 +29,5 @@ gem 'coffee-filter'
 gem 'compass'
 
 gem 'daemons'
+
+gem 'bing_translator', '~> 3.0.0'
