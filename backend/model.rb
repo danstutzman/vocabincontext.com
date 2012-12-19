@@ -11,13 +11,13 @@ FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')
 #DataMapper::Logger.new(STDERR, :debug)
 
 class Song < ActiveRecord::Base
-  validates :song_id,     :presence => true
-  validates :song_name,   :presence => true
-  validates :artist_id,   :presence => true
-  validates :artist_name, :presence => true
-  validates :song_name,   :presence => true
-  validates :lyrics,      :presence => true
-  has_many :alignments, :primary_key => :song_id # not songs.id
+  validates :scraped_song_id, :presence => true
+  validates :song_name,       :presence => true
+  validates :artist_id,       :presence => true
+  validates :artist_name,     :presence => true
+  validates :song_name,       :presence => true
+  validates :lyrics,          :presence => true
+  has_many :alignments
 end
 
 class Alignment < ActiveRecord::Base
@@ -25,14 +25,19 @@ class Alignment < ActiveRecord::Base
   validates :line_num,      :presence => true
   validates :start_centis,  :presence => true
   validates :finish_centis, :presence => true
-  belongs_to :song, :primary_key => :song_id # not songs.id
+  belongs_to :song
 end
 
 class Task < ActiveRecord::Base
   validates :action, :presence => true
   validates :song_id, :presence => true
-  belongs_to :song, :primary_key => :song_id # not songs.id
+  belongs_to :song
   belongs_to :alignment
+end
+
+class BestWord < ActiveRecord::Base
+  validates :word,  :presence => true
+  validates :count, :presence => true
 end
 
 # ------------------
@@ -46,7 +51,7 @@ def with_ferret_index(&block)
   # for some reason it helps to open and close the index first
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
-    :id_field => :song_id,
+    :id_field => :scraped_song_id,
     :path => FERRET_INDEX_DIR,
     :analyzer => analyzer,
   })
@@ -55,13 +60,13 @@ def with_ferret_index(&block)
   index_already_existed = File.exists?(FERRET_INDEX_DIR)
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
-    :id_field => :song_id,
+    :id_field => :scraped_song_id,
     :path => FERRET_INDEX_DIR,
     :analyzer => analyzer,
   })
 
   if !index_already_existed
-    index.field_infos.add_field :song_id, {
+    index.field_infos.add_field :scraped_song_id, {
       :store => :yes, :index => :untokenized, :term_vector => :no
     }
     index.field_infos.add_field :lyrics, {

@@ -57,10 +57,10 @@ class BackendApp < Sinatra::Base
     end
   end
 
-  def find_song_in_db_or_ferret(song_id)
-    song = Song.find_by_song_id(song_id.to_i)
+  def find_song_in_db_or_ferret(scraped_song_id)
+    song = Song.find_by_scraped_song_id(scraped_song_id.to_i)
     if song.nil?
-      doc = FerretSearch.find_song_by_id(song_id)
+      doc = FerretSearch.find_song_by_scraped_song_id(scraped_song_id)
       return nil if doc.nil?
 
       lyrics = doc[:lyrics].force_encoding('UTF-8')
@@ -68,7 +68,7 @@ class BackendApp < Sinatra::Base
       artist_id = doc[:artist_id]
 
       song = Song.new({
-        :song_id => song_id,
+        :scraped_song_id => scraped_song_id,
         :song_name => metadata['song_name'],
         :artist_id => artist_id,
         :artist_name => metadata['artist_name'],
@@ -96,9 +96,9 @@ class BackendApp < Sinatra::Base
     end
   end
 
-  get '/song/:song_id' do
-    song_id = params['song_id']
-    @song = find_song_in_db_or_ferret(song_id) or halt 404
+  get '/song/:scraped_song_id' do
+    scraped_song_id = params['scraped_song_id']
+    @song = find_song_in_db_or_ferret(scraped_song_id) or halt 404
     @lyrics_lines = @song.lyrics.split("\n")
 
     @start_finish_centis_by_line_num = [[nil, nil]] * @lyrics_lines.size
@@ -119,12 +119,12 @@ class BackendApp < Sinatra::Base
     (mins * 6000) + (secs * 100).round
   end
 
-  post '/song/:song_id' do
-    song_id = params['song_id']
+  post '/song/:scraped_song_id' do
+    scraped_song_id = params['scraped_song_id']
     video_id = params['youtube_video_id']
     link = params['youtube_video_link']
 
-    @song = find_song_in_db_or_ferret(song_id) or halt 404
+    @song = find_song_in_db_or_ferret(scraped_song_id) or halt 404
     if link && link != ''
       video_id = youtube_video_link_to_video_id(link)
     end
@@ -132,65 +132,67 @@ class BackendApp < Sinatra::Base
       @song.youtube_video_id = video_id
       @song.save!
 
-      unless Task.exists?({ :action => 'download_mp4', :song_id => song_id })
+      unless Task.exists?({ :action => 'download_mp4', :song_id => @song.id })
         task = Task.new({
           :action => 'download_mp4',
-          :song_id => song_id,
+          :song_id => @song.id,
         })
         task.save!
       end
     end
+
     if params['remove_youtube_video']
       @song.youtube_video_id = nil
+      @song.alignments.destroy_all
       @song.save!
-    end
-
-    num_lines = @song.lyrics.split("\n").size
-    [num_lines, 500].min.times do |line_num| # limit to 500 to avoid DOS attack
-      start_centis = param_value_to_centis(params['s'][line_num])
-      finish_centis = param_value_to_centis(params['f'][line_num])
-      if start_centis && finish_centis
-        existing_alignment = Alignment.where({
-          :song_id => song_id,
-          :line_num => line_num
-        }).first
-        if existing_alignment
-          if existing_alignment.start_centis != start_centis ||
-             existing_alignment.finish_centis != finish_centis
-            existing_alignment.start_centis = start_centis
-            existing_alignment.finish_centis = finish_centis
-            existing_alignment.save!
-
+    else
+      num_lines = @song.lyrics.split("\n").size
+      [num_lines, 500].min.times do |line_num| # limit to 500
+        start_centis = param_value_to_centis(params['s'][line_num])
+        finish_centis = param_value_to_centis(params['f'][line_num])
+        if start_centis && finish_centis
+          existing_alignment = Alignment.where({
+            :song_id => @song.id,
+            :line_num => line_num
+          }).first
+          if existing_alignment
+            if existing_alignment.start_centis != start_centis ||
+               existing_alignment.finish_centis != finish_centis
+              existing_alignment.start_centis = start_centis
+              existing_alignment.finish_centis = finish_centis
+              existing_alignment.save!
+  
+              task = Task.new({
+                :action => 'split_mp4',
+                :song_id => @song.id,
+                :alignment_id => existing_alignment.id,
+              })
+              task.save!
+            end
+          else
+            alignment = Alignment.new({
+              :song_id => @song.id,
+              :line_num => line_num,
+              :start_centis => start_centis,
+              :finish_centis => finish_centis,
+            })
+            alignment.save!
+  
             task = Task.new({
               :action => 'split_mp4',
-              :song_id => song_id,
-              :alignment_id => existing_alignment.id,
+              :song_id => @song.id,
+              :alignment_id => alignment.id,
             })
             task.save!
           end
-        else
-          alignment = Alignment.new({
-            :song_id => song_id,
-            :line_num => line_num,
-            :start_centis => start_centis,
-            :finish_centis => finish_centis,
-          })
-          alignment.save!
-
-          task = Task.new({
-            :action => 'split_mp4',
-            :song_id => song_id,
-            :alignment_id => alignment.id,
-          })
-          task.save!
-        end
-      end
-    end
-
-    unless Task.exists?({ :action => 'update_index', :song_id => song_id })
+        end # if this alignment has start and finish_centis
+      end # loop through lines
+    end # if removing youtube video or not
+  
+    unless Task.exists?({ :action => 'update_index', :song_id => @song.id })
       task = Task.new({
         :action => 'update_index',
-        :song_id => song_id,
+        :song_id => @song.id,
       })
       task.save!
     end
@@ -203,7 +205,7 @@ class BackendApp < Sinatra::Base
       p e
     end
 
-    redirect "/song/#{song_id}"
+    redirect "/song/#{scraped_song_id}"
   end
 
   get '/TestRunner' do

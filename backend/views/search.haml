@@ -34,7 +34,7 @@
         %td.lyric= "\u201c#{excerpt[:line]}\u201d"
         %td.artist-name= excerpt[:artist_name]
         %td.song-name
-          %a{ :href => "/song/#{excerpt[:song_id]}" }
+          %a{ :href => "/song/#{excerpt[:scraped_song_id]}" }
             =excerpt[:song_name]
 
   %hr

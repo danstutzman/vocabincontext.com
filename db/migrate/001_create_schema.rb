@@ -1,15 +1,15 @@
 class CreateSchema < ActiveRecord::Migration
   def change
     create_table :songs do |t|
-      t.integer :song_id,     :null => false
-      t.integer :artist_id,   :null => false
-      t.string  :artist_name, :null => false
-      t.string  :song_name,   :null => false
-      t.text    :lyrics,      :null => false
+      t.integer :scraped_song_id, :null => false
+      t.integer :artist_id,       :null => false
+      t.string  :artist_name,     :null => false
+      t.string  :song_name,       :null => false
+      t.text    :lyrics,          :null => false
       t.string  :youtube_video_id
       t.timestamps
     end
-    add_index :songs, :song_id, :unique => true
+    add_index :songs, :scraped_song_id, :unique => true
     add_index :songs, :artist_id
 
     create_table :alignments do |t|
@@ -34,5 +34,12 @@ class CreateSchema < ActiveRecord::Migration
       t.integer :exit_status
     end
     add_index :tasks, :song_id
+
+    create_table :best_words do |t|
+      t.string :word, :null => false
+      t.integer :count, :null => false
+      t.timestamps
+    end
+    add_index :best_words, :count
   end
 end

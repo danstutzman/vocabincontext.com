@@ -39,17 +39,18 @@ module FerretSearch
       metadata        = JSON.load(doc[:metadata] || '{}')
       has_alignments  = (doc[:has_alignments].to_i == 1)
       lyrics          = doc[:lyrics]
-      song_id         = doc[:song_id]
+      scraped_song_id = doc[:scraped_song_id]
 
       lyrics = searcher.highlight(
         ferret_query, doc_id, :lyrics, :excerpt_length => :all,
         :pre_tag => '{', :post_tag => '}').join.force_encoding('UTF-8')
 
       alignments_by_line_num = [nil] * lyrics.split("\n").size
-      if has_alignments
-        # avoid performance hit of querying the db if not needed
-        Alignment.where(:song_id => song_id).each do |alignment|
-          alignments_by_line_num[alignment.line_num] = alignment
+      if has_alignments # avoid performance hit of querying the db if not needed
+        if song = Song.find_by_scraped_song_id(scraped_song_id)
+          Alignment.where(:song_id => song.id).each do |alignment|
+            alignments_by_line_num[alignment.line_num] = alignment
+          end
         end
       end
 
@@ -60,7 +61,7 @@ module FerretSearch
             :youtube_video_id => metadata['youtube_video_id'],
             :artist_name      => metadata['artist_name'],
             :song_name        => metadata['song_name'],
-            :song_id          => song_id,
+            :scraped_song_id  => scraped_song_id,
             :line             => line,
             :line_num         => line_num,
             :alignment        => alignment,
@@ -86,8 +87,9 @@ module FerretSearch
     all_excerpts[offset..-1]
   end
 
-  def self.find_song_by_id(song_id)
-    ferret_query = Ferret::Search::TermQuery.new(:song_id, song_id)
+  def self.find_song_by_scraped_song_id(scraped_song_id)
+    ferret_query = Ferret::Search::TermQuery.new(
+      :scraped_song_id, scraped_song_id)
     searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
     doc = nil
     searcher.search_each(ferret_query) do |doc_id, score|
@@ -98,9 +100,8 @@ module FerretSearch
     doc
   end
 
-  def self.update_index_from_db(song_id)
+  def self.update_index_from_db(song)
     with_ferret_index do |index|
-      song = Song.find_by_song_id(song_id)
       metadata = {}
       metadata['song_name'] = song.song_name
       metadata['artist_name'] = song.artist_name
@@ -112,7 +113,7 @@ module FerretSearch
         :has_alignments => (song.alignments.size > 0) ? 1 : 0,
         :metadata       => JSON.dump(metadata),
       }
-      index.query_update "song_id:#{song.song_id}", to_update
+      index.query_update "scraped_song_id:#{song.scraped_song_id}", to_update
     end
   end
 end

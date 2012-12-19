@@ -8,16 +8,16 @@ $stemmed_to_word_to_count = {}
 $stemmed_to_count = {}
 
 def add_unlabeled_song(
-    index, song_id, song_name, artist_id, artist_name, lyrics)
+    index, scraped_song_id, song_name, artist_id, artist_name, lyrics)
   metadata = {}
   metadata['song_name'] = song_name
   metadata['artist_name'] = artist_name
   to_add = {
-    :song_id        => song_id,
-    :artist_id      => artist_id,
-    :lyrics         => lyrics,
-    :has_alignments => 0,
-    :metadata       => JSON.dump(metadata),
+    :scraped_song_id => scraped_song_id,
+    :artist_id       => artist_id,
+    :lyrics          => lyrics,
+    :has_alignments  => 0,
+    :metadata        => JSON.dump(metadata),
   }
   index << to_add
 
@@ -59,8 +59,8 @@ Dir.foreach(artist_names_path) do |artist_id|
   end
 end
 
-puts "Reading song_id -> song_name mappings..."
-song_id_to_song_name = {}
+puts "Reading scraped_song_id -> song_name mappings..."
+scraped_song_id_to_song_name = {}
 Dir.entries(song_names_path).each do |artist_id|
   next if artist_id == '.' || artist_id == '..'
   File.open(File.join(song_names_path, artist_id)) do |file|
@@ -69,9 +69,9 @@ Dir.entries(song_names_path).each do |artist_id|
       if line_match = line.match(/^:: Letras de (.*) - (.*)$/)
         content = line_match[2]
         song_name, song_link = content.split("\t")
-        if song_id_match = song_link.match(/([0-9]+)$/)
-          song_id = song_id_match[1].to_i
-          song_id_to_song_name[song_id] = song_name
+        if scraped_song_id_match = song_link.match(/([0-9]+)$/)
+          scraped_song_id = scraped_song_id_match[1].to_i
+          scraped_song_id_to_song_name[scraped_song_id] = song_name
         end
       end
     end
@@ -79,12 +79,12 @@ Dir.entries(song_names_path).each do |artist_id|
 end
 
 puts 'Getting existing list in index...'
-existing_song_ids = {}
+existing_scraped_song_ids = {}
 with_ferret_index do |index|
   index.each do |doc|
-    song_id = doc[:song_id]
-    if song_id
-      existing_song_ids[song_id] = true
+    scraped_song_id = doc[:scraped_song_id]
+    if scraped_song_id
+      existing_scraped_song_ids[scraped_song_id] = true
     end
   end
 end
@@ -93,17 +93,19 @@ puts 'Adding to index...'
 with_ferret_index do |index|
   Dir.entries(song_lyrics_path).each do |artist_id|
     next if artist_id == '.' || artist_id == '..'
-    Dir.entries(File.join(song_lyrics_path, artist_id)).each do |song_id|
-      next if song_id == '.' || song_id == '..'
-      unless existing_song_ids[song_id]
-        song_name = song_id_to_song_name[song_id.to_i]
+    Dir.entries(File.join(song_lyrics_path, artist_id)).each do
+        |scraped_song_id|
+      next if scraped_song_id == '.' || scraped_song_id == '..'
+      unless existing_scraped_song_ids[scraped_song_id]
+        song_name = scraped_song_id_to_song_name[scraped_song_id.to_i]
         if song_name
-          puts "Inserting song #{song_id}..."
-          File.open(File.join(song_lyrics_path, artist_id, song_id)) do |file|
+          puts "Inserting song #{scraped_song_id}..."
+          File.open(File.join(song_lyrics_path, artist_id, scraped_song_id)) \
+              do |file|
             lyrics = file.read
             artist_name = artist_id_to_name[artist_id]
             add_unlabeled_song(
-              index, song_id, song_name, artist_id, artist_name, lyrics)
+              index, scraped_song_id, song_name, artist_id, artist_name, lyrics)
           end
         end
       end

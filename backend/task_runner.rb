@@ -129,7 +129,7 @@ def run_any_existing_tasks(log)
       task.exit_status = -1
     end
   elsif task.action == 'update_index'
-    FerretSearch.update_index_from_db(task.song_id)
+    FerretSearch.update_index_from_db(task.song)
     task.exit_status = 0 # simulate running command-line utility successfully
   end
 
