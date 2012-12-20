@@ -1,6 +1,7 @@
 require './model'
 require './analyzer'
 require 'json'
+require './connect_to_db'
 
 $stem_analyzer = MyAnalyzer.new(true)
 $non_stem_analyzer = MyAnalyzer.new(false)
