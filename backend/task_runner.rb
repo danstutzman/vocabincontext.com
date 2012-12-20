@@ -82,7 +82,7 @@ def run_any_existing_tasks(log)
   log.info "Looking for tasks..."
   task = Task \
     .where(:started_at => nil) \
-    .where("action in ('download_mp4', 'split_mp4', 'update_index')")
+    .where("action in ('download_mp4', 'split_mp4')")
     .order(:id).first
   if task
     log.info "Found #{task.inspect}"
@@ -128,9 +128,6 @@ def run_any_existing_tasks(log)
       task.stderr = 'missing song or alignment for song_id or alignment_id'
       task.exit_status = -1
     end
-  elsif task.action == 'update_index'
-    FerretSearch.update_index_from_db(task.song)
-    task.exit_status = 0 # simulate running command-line utility successfully
   end
 
   if task.exit_status == 0

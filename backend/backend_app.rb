@@ -188,14 +188,6 @@ class BackendApp < Sinatra::Base
         end # if this alignment has start and finish_centis
       end # loop through lines
     end # if removing youtube video or not
-  
-    unless Task.exists?({ :action => 'update_index', :song_id => @song.id })
-      task = Task.new({
-        :action => 'update_index',
-        :song_id => @song.id,
-      })
-      task.save!
-    end
 
     begin
       socket = UNIXSocket.new("/tmp/wake_up_vocabincontext_task_runner")
@@ -204,6 +196,8 @@ class BackendApp < Sinatra::Base
     rescue Errno::ENOENT => e
       p e
     end
+
+    FerretSearch.update_index_from_db @song
 
     redirect "/song/#{scraped_song_id}"
   end
