@@ -77,12 +77,14 @@ class BackendApp < Sinatra::Base
 
   post '/' do
     query = params['query']
-    redirect "/query/#{query}"
+    exact_match = params['exact_match']
+    redirect URI.escape("/query/#{query}?exact_match=#{exact_match}")
   end
 
   get '/query/:query' do |query|
     offset = params['offset'].to_i
-    @excerpts = FerretSearch.search_for(query, offset)
+    exact_match = (params['exact_match'] == 'true')
+    @excerpts = FerretSearch.search_for(query, exact_match, offset)
     @title = query
     haml :query
   end
@@ -198,7 +200,7 @@ class BackendApp < Sinatra::Base
       p e
     end
 
-    FerretSearch.update_index_from_db @song
+    FerretSearch.update_indexes_from_db @song
 
     redirect "/song/#{scraped_song_id}"
   end

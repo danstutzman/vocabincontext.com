@@ -21,7 +21,9 @@ def add_unlabeled_song(
     :metadata        => JSON.dump(metadata),
   }
   index << to_add
+end
 
+def update_best_words(lyrics)
   lyrics = lyrics.split("\n").join(' ')
   non_stem_token_stream = $non_stem_analyzer.token_stream(:lyrics, lyrics)
   while non_stem_token = non_stem_token_stream.next
@@ -79,42 +81,46 @@ Dir.entries(song_names_path).each do |artist_id|
   end
 end
 
-puts 'Getting existing list in index...'
-existing_scraped_song_ids = {}
-with_ferret_index do |index|
-  index.each do |doc|
-    scraped_song_id = doc[:scraped_song_id]
-    if scraped_song_id
-      existing_scraped_song_ids[scraped_song_id] = true
+[false, true].each do |exact_match|
+  with_ferret_index(exact_match) do |index|
+    puts "Getting existing list in index (exact_match=#{exact_match}..."
+    existing_scraped_song_ids = {}
+    index.each do |doc|
+      scraped_song_id = doc[:scraped_song_id]
+      if scraped_song_id
+        existing_scraped_song_ids[scraped_song_id] = true
+      end
     end
-  end
-end
 
-puts 'Adding to index...'
-with_ferret_index do |index|
-  Dir.entries(song_lyrics_path).each do |artist_id|
-    next if artist_id == '.' || artist_id == '..'
-    Dir.entries(File.join(song_lyrics_path, artist_id)).each do
-        |scraped_song_id|
-      next if scraped_song_id == '.' || scraped_song_id == '..'
-      unless existing_scraped_song_ids[scraped_song_id]
-        song_name = scraped_song_id_to_song_name[scraped_song_id.to_i]
-        if song_name
-          puts "Inserting song #{scraped_song_id}..."
-          File.open(File.join(song_lyrics_path, artist_id, scraped_song_id)) \
-              do |file|
-            lyrics = file.read
-            artist_name = artist_id_to_name[artist_id]
+    puts "Adding to index (exact_match=#{exact_match})..."
+    Dir.entries(song_lyrics_path).each do |artist_id|
+      next if artist_id == '.' || artist_id == '..'
+      Dir.entries(File.join(song_lyrics_path, artist_id)).each do
+          |scraped_song_id|
+        next if scraped_song_id == '.' || scraped_song_id == '..'
+        unless existing_scraped_song_ids[scraped_song_id]
+          song_name = scraped_song_id_to_song_name[scraped_song_id.to_i]
+          if song_name
+            puts "Inserting song #{scraped_song_id}..."
+            File.open(File.join(song_lyrics_path, artist_id, scraped_song_id)) \
+                do |file|
+              lyrics = file.read
+              artist_name = artist_id_to_name[artist_id]
 
-            # remove <i><b>Artist Name</b></i> as the last line
-            lines = lyrics.split("\n")
-            if lines.last && lines.last.match(/^<i><b>.*<\/b><\/i>$/)
-              lines.pop
-              lyrics = lines.join("\n")
+              # remove <i><b>Artist Name</b></i> as the last line
+              lines = lyrics.split("\n")
+              if lines.last && lines.last.match(/^<i><b>.*<\/b><\/i>$/)
+                lines.pop
+                lyrics = lines.join("\n")
+              end
+
+              add_unlabeled_song(index, scraped_song_id, song_name, artist_id,
+                artist_name, lyrics)
+
+              if !exact_match
+                update_best_words(lyrics)
+              end
             end
-
-            add_unlabeled_song(
-              index, scraped_song_id, song_name, artist_id, artist_name, lyrics)
           end
         end
       end

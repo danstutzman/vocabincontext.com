@@ -4,8 +4,8 @@ require 'json'
 module FerretSearch
   MAX_NUM_EXCERPTS_TO_RETURN = 10
 
-  def self.search_for(query_string, offset)
-    analyzer = MyAnalyzer.new(true)
+  def self.search_for(query_string, exact_match, offset)
+    analyzer = MyAnalyzer.new(!exact_match)
     if query_string.split(' ').size > 1
       ferret_query = Ferret::Search::PhraseQuery.new(:lyrics)
       token_stream = analyzer.token_stream(:lyrics, query_string)
@@ -19,10 +19,10 @@ module FerretSearch
 
     num_excerpts_returned = 0
 
-    do_query(ferret_query, offset)
+    do_query(ferret_query, exact_match, offset)
   end
 
-  def self.do_query(ferret_query, offset)
+  def self.do_query(ferret_query, exact_match, offset)
     options = {
       :sort => [
         Ferret::Search::SortField.new(:has_alignments,
@@ -33,7 +33,9 @@ module FerretSearch
     }
 
     all_excerpts = []
-    searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
+    index_path = FERRET_INDEXES_DIR +
+      (exact_match ? '/es_exact' : '/es_stemmed')
+    searcher = Ferret::Search::Searcher.new(index_path)
     searcher.search_each(ferret_query, options) do |doc_id, score|
       doc = searcher[doc_id]
       metadata        = JSON.load(doc[:metadata] || '{}')
@@ -100,20 +102,22 @@ module FerretSearch
     doc
   end
 
-  def self.update_index_from_db(song)
-    with_ferret_index do |index|
-      metadata = {}
-      metadata['song_name'] = song.song_name
-      metadata['artist_name'] = song.artist_name
-      if song.youtube_video_id
-        metadata['youtube_video_id'] = song.youtube_video_id
+  def self.update_indexes_from_db(song)
+    [false, true].each do |exact_match|
+      with_ferret_index(exact_match) do |index|
+        metadata = {}
+        metadata['song_name'] = song.song_name
+        metadata['artist_name'] = song.artist_name
+        if song.youtube_video_id
+          metadata['youtube_video_id'] = song.youtube_video_id
+        end
+        to_update = {
+          :lyrics         => song.lyrics,
+          :has_alignments => (song.alignments.size > 0) ? 1 : 0,
+          :metadata       => JSON.dump(metadata),
+        }
+        index.query_update "scraped_song_id:#{song.scraped_song_id}", to_update
       end
-      to_update = {
-        :lyrics         => song.lyrics,
-        :has_alignments => (song.alignments.size > 0) ? 1 : 0,
-        :metadata       => JSON.dump(metadata),
-      }
-      index.query_update "scraped_song_id:#{song.scraped_song_id}", to_update
     end
   end
 end

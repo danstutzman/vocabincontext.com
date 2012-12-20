@@ -6,7 +6,7 @@ require File.join(File.dirname(__FILE__), './analyzer')
 require File.join(File.dirname(__FILE__), './airbrake')
 
 ROOT_DIR = File.expand_path('../../', __FILE__) unless defined? ROOT_DIR
-FERRET_INDEX_DIR = File.join(ROOT_DIR, 'backend', 'ferret_index')
+FERRET_INDEXES_DIR = File.join(ROOT_DIR, 'backend', 'ferret_indexes')
 
 #DataMapper::Logger.new(STDERR, :debug)
 
@@ -45,23 +45,29 @@ end
 # see https://github.com/jkraemer/ferret/blob/master/ruby/TUTORIAL
 require 'ferret'
 
-def with_ferret_index(&block)
-  analyzer = MyAnalyzer.new(true)
+def with_ferret_index(exact_match, &block)
+  if exact_match
+    analyzer = MyAnalyzer.new(false) # false means don't stem
+    index_path = "#{FERRET_INDEXES_DIR}/es_exact"
+  else
+    analyzer = MyAnalyzer.new(true) # true means do stem
+    index_path = "#{FERRET_INDEXES_DIR}/es_stemmed"
+  end
 
   # for some reason it helps to open and close the index first
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
     :id_field => :scraped_song_id,
-    :path => FERRET_INDEX_DIR,
+    :path => index_path,
     :analyzer => analyzer,
   })
   index.close
 
-  index_already_existed = File.exists?(FERRET_INDEX_DIR)
+  index_already_existed = File.exists?(index_path)
   index = Ferret::Index::Index.new({
     :default_input_field => nil,
     :id_field => :scraped_song_id,
-    :path => FERRET_INDEX_DIR,
+    :path => index_path,
     :analyzer => analyzer,
   })
 

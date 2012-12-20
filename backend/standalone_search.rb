@@ -6,7 +6,18 @@ require './ferret_search'
 load File.join(File.dirname(__FILE__), 'connect_to_db.rb')
 
 query_string = ARGV[0] or raise "First argument: query params"
-offset = ARGV[1].to_i or raise "Second argument: offset"
+
+if ARGV[1]
+  offset = ARGV[1].to_i
+else
+  raise "Second argument: offset"
+end
+
+if ARGV[2]
+  exact_match = (ARGV[2] == 'true')
+else
+  raise "Third argument: exact_match (true or false)"
+end
 
 def excerpt_to_s(excerpt)
   [
@@ -22,7 +33,7 @@ end
 
 excerpts = nil
 seconds = Benchmark.realtime {
-  excerpts = FerretSearch.search_for(query_string, offset)
+  excerpts = FerretSearch.search_for(query_string, exact_match, offset)
 }
 puts "#{seconds} seconds"
 

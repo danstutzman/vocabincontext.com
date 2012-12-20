@@ -7,6 +7,12 @@
     %input.query-input.inline{ :type => 'text', :name => 'query',
                                :value => params['query'] }
     was found in the following songs:
+  %br
+
+  %input#exact-match{ :type => 'checkbox', :name => 'exact_match',
+    :checked => (params['exact_match'] == 'true') ? 'checked' : nil,
+    :value => 'true' }
+  Require exact match
 
 - if @excerpts.nil?
   -# no query was entered yet
@@ -38,5 +44,5 @@
             =excerpt[:song_name]
 
   %hr
-  %a{ :href => "/query/#{params['query']}?offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
+  %a{ :href => "/query/#{params['query']}?offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}&exact_match=#{params['exact_match']}" }
     Next page

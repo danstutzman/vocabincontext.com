@@ -52,6 +52,11 @@ define (require) ->
         $('#youtube-embed').attr 'src', url
         false
 
+    # reload the query results as soon as [] Exact Match value is changed
+    $('#exact-match').click =>
+      $('form').submit()
+      false
+
     callback()
 
   setupFromRequestParams: ->

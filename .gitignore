@@ -3,7 +3,7 @@
 .DS_Store
 
 backend/db.sqlite3
-backend/ferret_index
+backend/ferret_indexes
 
 bible
 
