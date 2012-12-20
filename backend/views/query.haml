@@ -1,0 +1,42 @@
+%iframe#youtube-embed(style='border:1px black solid;display:none')
+
+%h1 Vocab in Context
+%form#query-form(method='post' action='/')
+  %p
+    The word
+    %input.query-input.inline{ :type => 'text', :name => 'query',
+                               :value => params['query'] }
+    was found in the following songs:
+
+- if @excerpts.nil?
+  -# no query was entered yet
+- elsif @excerpts.size == 0
+  No results for this query.
+- else
+  %table#excerpts-list
+    %tr
+      %th.action
+      %th.lyric Line of the song
+      %th.artist-name Artist
+      %th.song-name Song title
+    - @excerpts.each do |excerpt|
+      %tr
+        %td.action
+          - if excerpt[:alignment]
+            - if excerpt[:alignment].location == 'fs'
+              %a{ :href => sprintf("/split_mp3s/%s.%05d.%05d.mp3", excerpt[:youtube_video_id], excerpt[:alignment].start_centis, excerpt[:alignment].finish_centis), :target => '_blank' }
+                %button.play-excerpt-mp3 Play
+            - else
+              %a{ :href => "http://youtube.googleapis.com/v/#{excerpt[:youtube_video_id]}?start=#{[excerpt[:alignment].start_centis / 100.0 - 1.0, 0.0].max}&end=#{excerpt[:alignment].finish_centis / 100.0 + 1.0}&version=3&autoplay=1", :target => '_blank' }
+                %button.play-excerpt-youtube Play
+          - else
+            %button Label
+        %td.lyric= "\u201c#{excerpt[:line]}\u201d"
+        %td.artist-name= excerpt[:artist_name]
+        %td.song-name
+          %a{ :href => "/song/#{excerpt[:scraped_song_id]}" }
+            =excerpt[:song_name]
+
+  %hr
+  %a{ :href => "/query/#{params['query']}?offset=#{params['offset'].to_i + FerretSearch::MAX_NUM_EXCERPTS_TO_RETURN}" }
+    Next page

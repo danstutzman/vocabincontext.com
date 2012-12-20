@@ -4,7 +4,7 @@
     %title= @title
     %link(href="/css/application.css" rel="stylesheet" type="text/css")
 
-    - if ENV['ENV'] != 'production' && !(request.path == '/' && request.get?)
+    - if ENV['ENV'] != 'production' && request.path != '/'
       %script(src="/js/require.js")
       :coffeescript
         window.SM2_DEFER = true
@@ -21,13 +21,13 @@
 
     != yield
 
-    - if ENV['ENV'] == 'production' && !(request.path == '/' && request.get?)
+    - if ENV['ENV'] == 'production' && request.path != '/'
       %script window.SM2_DEFER = true;
       %script(src="/js/main-compiled.js")
       %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
       %script(src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js")
 
-    - if request.path == '/' && request.get?
+    - if request.path == '/'
       :coffeescript
         onload = ->
           # give focus to query-input field

@@ -41,14 +41,6 @@ class BackendApp < Sinatra::Base
     '404 Your page cannot be found'
   end
 
-  def serve_search
-    query = params['query']
-    offset = params['offset'].to_i
-    @excerpts = FerretSearch.search_for(query, offset) if query
-    @title = 'Search for vocab in context'
-    haml :search
-  end
-
   def youtube_video_link_to_video_id(link)
     if match = link.match(/v=(.{11})/)
       match[1]
@@ -79,11 +71,20 @@ class BackendApp < Sinatra::Base
   end
 
   get '/' do
-    serve_search
+    @title = 'Search for vocab in context'
+    haml :search
   end
 
   post '/' do
-    serve_search
+    query = params['query']
+    redirect "/query/#{query}"
+  end
+
+  get '/query/:query' do |query|
+    offset = params['offset'].to_i
+    @excerpts = FerretSearch.search_for(query, offset)
+    @title = query
+    haml :query
   end
 
   helpers do
