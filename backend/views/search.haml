@@ -1,6 +1,11 @@
 %h1 Vocab in Context
 %form#query-form(method='post' action='/')
   #search-prompt Enter a Spanish word to hear it in context.
+  #search-examples
+    Examples:
+    - %w[noche preguntar Dios].each do |example|
+      %a{ :href => "/query/#{example}" }= example
+
   %input.query-input{ :type => 'text', :name => 'query',
                       :value => params['query'] }
   %input#query-submit(type='submit' value='Search')
