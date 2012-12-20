@@ -27,8 +27,12 @@
       %tr
         %td.action
           - if excerpt[:alignment]
-            %a{ :href => sprintf("/split_mp3s/%s.%05d.%05d.mp3", excerpt[:youtube_video_id], excerpt[:alignment].start_centis, excerpt[:alignment].finish_centis), :target => '_blank' }
-              %button Play
+            - if excerpt[:alignment].location == 'fs'
+              %a{ :href => sprintf("/split_mp3s/%s.%05d.%05d.mp3", excerpt[:youtube_video_id], excerpt[:alignment].start_centis, excerpt[:alignment].finish_centis), :target => '_blank' }
+                %button Play
+            - else
+              %a{ :href => "http://youtube.googleapis.com/v/#{excerpt[:youtube_video_id]}?start=#{[excerpt[:alignment].start_centis / 100.0 - 1.0, 0.0].max}&end=#{excerpt[:alignment].finish_centis / 100.0 + 1.0}&version=3&autoplay=1", :target => '_blank' }
+                %button Play
           - else
             %button Label
         %td.lyric= "\u201c#{excerpt[:line]}\u201d"
