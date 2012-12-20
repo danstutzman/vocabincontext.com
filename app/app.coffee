@@ -34,6 +34,24 @@ define (require) ->
       pop_up.init \
         $('.need-video'), $('.modal-background'), song_name, artist_name
 
+    # enhance play buttons to stay on same page instead of loading new page
+    $('.play-excerpt-mp3').each (i, button) ->
+      $(button).click ->
+        soundManager.onready -> # if hasn't loaded yet, wait until loaded
+          sound = soundManager.createSound
+            id: "sound#{i}"
+            url: $(button).parent().attr('href')
+            autoplay: false
+          sound.play()
+        false
+
+    # enhance play buttons to stay on same page instead of loading new page
+    $('.play-excerpt-youtube').each (i, button) ->
+      url = $(button).parent().attr('href')
+      $(button).click ->
+        $('#youtube-embed').attr 'src', url
+        false
+
     callback()
 
   setupFromRequestParams: ->
