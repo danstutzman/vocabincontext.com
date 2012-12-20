@@ -16,23 +16,28 @@ define (require) ->
       # keypress doesn't work for space bar
       $(document).keyup (event) =>
         if event.which == @constructor.SPACE_KEY && @stepNumber == 1
-          @_sound.startPlayingImmediately()
           $dialog.find('.step1').hide()
           $dialog.find('.step2').show()
           @stepNumber = 2
-          true
-        else
-          true
+          @_sound.startPlayingAsap()
+        true
 
-      $(document).keypress (event) =>
-        if event.which == @constructor.LOWER_S_KEY && @stepNumber == 2
+      @_sound.addListener 'stateChange', (event) =>
+        if event.state == 1 && @stepNumber == 2
           $dialog.find('.step2').hide()
           $dialog.find('.step3').show()
           @stepNumber = 3
+
+      $(document).keypress (event) =>
+        if event.which == @constructor.LOWER_S_KEY && @stepNumber == 3
+          $dialog.find('.step3').hide()
+          $dialog.find('.step4').show()
+          @stepNumber = 4
 
           hideDialog = ->
             $dialog.fadeOut(500)
             $background.fadeOut(500)
           window.setTimeout hideDialog, 3000
+          false
         else
           true

@@ -12,12 +12,14 @@ define (require) ->
       super()
       @_swf = null
       @_video_id = video_id
+      @_playAsap = false
 
     init: ->
       window.onYouTubePlayerReady = =>
         console.log 'ready'
         @_swf = document.getElementById(@constructor.SWF_ID)
         @_swf.addEventListener 'onStateChange', 'onytplayerStateChange'
+        @_playAsap && @_swf.playVideo()
 
         updateProgress = =>
           @fire 'updateProgress' if @_swf
@@ -56,8 +58,11 @@ define (require) ->
     getVideoLoadedFraction: ->
       @_swf && @_swf.getVideoLoadedFraction()
 
-    startPlayingImmediately: ->
-      @_swf && @_swf.playVideo()
+    startPlayingAsap: ->
+      if @_swf
+        @_swf.playVideo()
+      else
+        @_playAsap = true
 
     toggleIsPlaying: ->
       if @_swf
