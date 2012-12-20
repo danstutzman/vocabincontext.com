@@ -105,6 +105,14 @@ with_ferret_index do |index|
               do |file|
             lyrics = file.read
             artist_name = artist_id_to_name[artist_id]
+
+            # remove <i><b>Artist Name</b></i> as the last line
+            lines = lyrics.split("\n")
+            if lines.last && lines.last.match(/^<i><b>.*<\/b><\/i>$/)
+              lines.pop
+              lyrics = lines.join("\n")
+            end
+
             add_unlabeled_song(
               index, scraped_song_id, song_name, artist_id, artist_name, lyrics)
           end
