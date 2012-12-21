@@ -36,7 +36,8 @@
               %a{ :href => "http://youtube.googleapis.com/v/#{excerpt[:youtube_video_id]}?start=#{[excerpt[:alignment].start_centis / 100.0 - 1.0, 0.0].max}&end=#{excerpt[:alignment].finish_centis / 100.0 + 1.0}&version=3&autoplay=1", :target => '_blank' }
                 %button.play-excerpt-youtube Play
           - else
-            %button Label
+            %a{ :href => "/song/#{excerpt[:scraped_song_id]}", :target => '_blank' }
+              %button Label
         %td.lyric= "\u201c#{excerpt[:line]}\u201d"
         %td.artist-name= excerpt[:artist_name]
         %td.song-name
