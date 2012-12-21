@@ -92,7 +92,7 @@ module FerretSearch
   def self.find_song_by_scraped_song_id(scraped_song_id)
     ferret_query = Ferret::Search::TermQuery.new(
       :scraped_song_id, scraped_song_id)
-    searcher = Ferret::Search::Searcher.new(FERRET_INDEX_DIR)
+    searcher = Ferret::Search::Searcher.new("#{FERRET_INDEXES_DIR}/es_exact")
     doc = nil
     searcher.search_each(ferret_query) do |doc_id, score|
       doc = searcher[doc_id]
