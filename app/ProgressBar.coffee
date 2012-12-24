@@ -9,13 +9,13 @@ define (require) ->
     init: ($progress_bar, $play_button) ->
       @$progress_bar = $progress_bar
       @$progress_bar.append "
-        <div class='total-time'></div>
-        <div class='bar'></div>
         <div class='loaded-bar'></div>
+        <div class='bar'></div>
+        <div class='total-time'></div>
         <div class='bar-caption'></div>"
-      @$total_time  = @$progress_bar.children('.total-time')
-      @$bar         = @$progress_bar.children('.bar')
       @$loaded_bar  = @$progress_bar.children('.loaded-bar')
+      @$bar         = @$progress_bar.children('.bar')
+      @$total_time  = @$progress_bar.children('.total-time')
       @$bar_caption = @$progress_bar.children('.bar-caption')
 
       @_player.addListener 'stateChange', (event) =>
@@ -67,4 +67,4 @@ define (require) ->
       @$bar.width Math.round(barLength)
       @$bar_caption.css 'margin-left', Math.round(barLength)
 
-      @$loaded_bar.width (outerLength * percentLoaded) - barLength
+      @$loaded_bar.width outerLength * percentLoaded
