@@ -1,0 +1,9 @@
+%button.play-button.clickable Play
+.progress-bar
+:coffeescript
+  require ['jquery', 'cs!app/EventTarget', 'cs!app/ProgressBar'], \
+      ($, EventTarget, ProgressBar) ->
+    player = new EventTarget()
+    progress_bar = new ProgressBar(player)
+    progress_bar.init $('.progress-bar'), $('.play-button')
+    progress_bar._updateProgressBar 100, 200, 0.9

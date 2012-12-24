@@ -26,14 +26,16 @@ define (require) ->
       inProgressDrag = false
       @_player.addListener 'updateProgress', =>
         unless inProgressDrag || @_player.getPosition() == null
-          @_updateProgressBar @_player.getPosition(), @_player.getDuration()
+          @_updateProgressBar @_player.getPosition(), @_player.getDuration(), \
+            @_player.getVideoLoadedFraction()
 
       doSeek = (inDrag) =>
         (event) =>
           inProgressDrag = inDrag
           x = event.pageX - @$progress_bar[0].offsetLeft
           position = x * @_player.getDuration() / @$progress_bar.width()
-          @_updateProgressBar position, @_player.getDuration()
+          percentLoaded = @_player.getVideoLoadedFraction()
+          @_updateProgressBar position, @_player.getDuration(), percentLoaded
           @_player.seekTo position, !inDrag
       draggingSeek = doSeek(true)
       doneDraggingSeek = doSeek(false)
@@ -46,7 +48,7 @@ define (require) ->
           doneDraggingSeek(event)
         $('body').mouseup doneDragging
 
-    _updateProgressBar: (soFar, toGo) ->
+    _updateProgressBar: (soFar, toGo, percentLoaded) ->
       outerLength = @$progress_bar.width()
       barLength = outerLength * soFar / toGo
 
@@ -65,5 +67,4 @@ define (require) ->
       @$bar.width Math.round(barLength)
       @$bar_caption.css 'margin-left', Math.round(barLength)
 
-      percent = @_player.getVideoLoadedFraction()
-      @$loaded_bar.width (outerLength * percent) - barLength
+      @$loaded_bar.width (outerLength * percentLoaded) - barLength
